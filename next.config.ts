@@ -3,7 +3,14 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true, // optional but recommended
   images: {
-    domains: ["media.api-sports.io"], // allow API Sports logos
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "media.api-sports.io",
+        port: "",
+        pathname: "/**", // allow all paths from this domain
+      },
+    ],
   },
 };
 
