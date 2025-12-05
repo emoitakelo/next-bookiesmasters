@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";         // ⭐ IMPORTANT
 import fixtureRoutes from "./routes/fixtureRoutes.js";
+import "./services/liveScoreService.js"; // <-- start live updates on server start
+
 import leagueRoutes from "./routes/leagueRoutes.js";
 
 
