@@ -82,17 +82,18 @@ export default function FixtureCard({
         </div>
 
         {/* ODDS */}
-        <div className="flex flex-col text-center w-[50px] sm:w-[60px]">
-          <span className="text-xs sm:text-sm font-semibold text-gray-700">
-            {odds.home ?? "-"}
-          </span>
-          <span className="text-xs sm:text-sm font-semibold text-gray-700">
-            {odds.draw ?? "-"}
-          </span>
-          <span className="text-xs sm:text-sm font-semibold text-gray-700">
-            {odds.away ?? "-"}
-          </span>
-        </div>
+        <div className="flex flex-row justify-between w-[120px] sm:w-[150px]">
+  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+    {odds.home ?? "-"}
+  </span>
+  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+    {odds.draw ?? "-"}
+  </span>
+  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+    {odds.away ?? "-"}
+  </span>
+</div>
+
 
         {/* SCORE */}
         <div
