@@ -2,10 +2,13 @@ import { getFixturesGroupedByLeague } from "../services/fixtureCardService.js";
 
 export async function fetchFixtureCardsByDate(req, res) {
   try {
-    const { date } = req.query;
+    let { date } = req.query;
 
+    // If no date is provided, always use Kenya timezone
     if (!date) {
-      return res.status(400).json({ error: "Missing date parameter" });
+      date = new Date().toLocaleDateString("en-CA", {
+        timeZone: "Africa/Nairobi",
+      });
     }
 
     const data = await getFixturesGroupedByLeague(date);
