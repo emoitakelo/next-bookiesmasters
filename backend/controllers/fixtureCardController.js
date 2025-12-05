@@ -1,5 +1,4 @@
 import { getFixturesGroupedByLeague } from "../services/fixtureCardService.js";
-import { utcToZonedTime, formatISO } from "date-fns-tz";
 
 export async function fetchFixtureCardsByDate(req, res) {
   try {
@@ -12,15 +11,18 @@ export async function fetchFixtureCardsByDate(req, res) {
       });
     }
 
-    // Fetch fixtures grouped by league
     const data = await getFixturesGroupedByLeague(date);
 
-    // Convert all fixture times to Africa/Nairobi
+    // Convert all fixture times to Kenya timezone using plain JS
     data.forEach(leagueGroup => {
       leagueGroup.matches.forEach(match => {
         if (match.fixture && match.fixture.date) {
-          const kenyaTime = utcToZonedTime(match.fixture.date, "Africa/Nairobi");
-          match.fixture.date = formatISO(kenyaTime); // ISO string with +03:00
+          const kenyaDate = new Date(
+            new Date(match.fixture.date).toLocaleString("en-US", {
+              timeZone: "Africa/Nairobi",
+            })
+          );
+          match.fixture.date = kenyaDate.toISOString(); // keeps ISO format
         }
       });
     });

@@ -97,7 +97,7 @@ export default function PredictionsList({
                 className="w-6 h-6"
               />
             )}
-            <span className="font-semibold text-gray-800">
+            <span className="font-semibold text-gray-300">
               {league.name} ({league.country})
             </span>
           </div>
