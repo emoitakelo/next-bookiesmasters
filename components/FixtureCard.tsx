@@ -34,6 +34,37 @@ export default function FixtureCard({
 }: FixtureCardProps) {
   const isLive = status.includes("'");
 
+ // helper function
+function getOddsColor(
+  value: string | null,
+  allOdds: (string | null)[]
+): string {
+  if (!value) return "text-gray-400";
+
+  // Convert all odds to numbers, ignore nulls
+  const nums = allOdds.map(o => (o ? Number(o) : NaN)).filter(n => !isNaN(n));
+  const num = Number(value);
+
+  if (nums.every(n => n === num)) {
+    // All odds are the same
+    return "text-orange-400";
+  }
+
+  const max = Math.max(...nums);
+  const min = Math.min(...nums);
+
+  // Check for ties
+  const countMax = nums.filter(n => n === max).length;
+  const countMin = nums.filter(n => n === min).length;
+
+  if (num === min && countMin === 1) return "text-green-600"; // lowest unique → green
+  if (num === max && countMax === 1) return "text-red-600";   // highest unique → red
+  return "text-orange-400"; // second highest OR tied values → orange
+}
+
+
+
+
   return (
     <Link href={`/predictions/${fixtureId}`} className="block">
       <div
@@ -81,18 +112,38 @@ export default function FixtureCard({
           </div>
         </div>
 
-        {/* ODDS */}
-        <div className="flex flex-row justify-between w-[120px] sm:w-[150px]">
-  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+
+        {/* odds */}
+
+      <div className="flex flex-row justify-between w-[120px] sm:w-[150px]">
+  <span
+    className={`text-[10px] sm:text-xs ${getOddsColor(
+      odds.home,
+      [odds.home, odds.draw, odds.away]
+    )}`}
+  >
     {odds.home ?? "-"}
   </span>
-  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+  <span
+    className={`text-[10px] sm:text-xs  ${getOddsColor(
+      odds.draw,
+      [odds.home, odds.draw, odds.away]
+    )}`}
+  >
     {odds.draw ?? "-"}
   </span>
-  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+  <span
+    className={`text-[10px] sm:text-xs  ${getOddsColor(
+      odds.away,
+      [odds.home, odds.draw, odds.away]
+    )}`}
+  >
     {odds.away ?? "-"}
   </span>
 </div>
+
+
+
 
 
         {/* SCORE */}
