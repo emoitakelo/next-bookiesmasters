@@ -1,4 +1,5 @@
 import { getFixturesGroupedByLeague } from "../services/fixtureCardService.js";
+import { utcToZonedTime, formatISO } from "date-fns-tz";
 
 export async function fetchFixtureCardsByDate(req, res) {
   try {
@@ -11,7 +12,18 @@ export async function fetchFixtureCardsByDate(req, res) {
       });
     }
 
+    // Fetch fixtures grouped by league
     const data = await getFixturesGroupedByLeague(date);
+
+    // Convert all fixture times to Africa/Nairobi
+    data.forEach(leagueGroup => {
+      leagueGroup.matches.forEach(match => {
+        if (match.fixture && match.fixture.date) {
+          const kenyaTime = utcToZonedTime(match.fixture.date, "Africa/Nairobi");
+          match.fixture.date = formatISO(kenyaTime); // ISO string with +03:00
+        }
+      });
+    });
 
     res.json({
       date,
