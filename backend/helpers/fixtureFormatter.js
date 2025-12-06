@@ -26,12 +26,14 @@ else if (status.short === "FT") {
 // 3️⃣ NOT STARTED → show time
 else if (status.short === "NS") {
   const dateObj = new Date(fx.fixture.date);
-  displayStatus = dateObj.toLocaleTimeString("en-US", {
+  displayStatus = dateObj.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false
+    hour12: false,
+    timeZone: "Africa/Nairobi", // ← important
   });
 }
+
 
 // 4️⃣ FALLBACK (use fixture status.elapsed if exists)
 else if (status.elapsed) {
