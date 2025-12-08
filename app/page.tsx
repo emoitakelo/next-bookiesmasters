@@ -1,9 +1,13 @@
 import { redirect } from "next/navigation";
 
-export default function Home() {
-  // Convert to YYYY-MM-DD
-  const today = new Date().toISOString().split("T")[0];
+export const dynamic = "force-dynamic"; // ensure fresh render
 
-  // Redirect to the daily predictions page
-  redirect(`/predictions/${today}`);
+export default function Home() {
+  // Force Kenya timezone reliably
+  const now = new Date();
+  const kenyaTime = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Nairobi",
+  }).format(now);
+
+  redirect(`/predictions/${kenyaTime}`);
 }

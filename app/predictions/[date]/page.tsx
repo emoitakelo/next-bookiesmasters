@@ -1,8 +1,10 @@
 import PredictionsList from "./predictionList";
 
-export const dynamic = "force-dynamic"; // 🔥 Important (no caching)
+export const revalidate = 60; // ISR (regenerates every 60 seconds)
 
-// Backend types
+// ---------------------
+// Backend Types
+// ---------------------
 interface BackendLeague {
   id: number;
   name: string;
@@ -43,6 +45,7 @@ interface BackendResponse {
   fixtures: BackendFixture[];
 }
 
+// Type expected by the component
 export interface LeagueGroup {
   id: number;
   name: string;
@@ -51,14 +54,17 @@ export interface LeagueGroup {
   matches: BackendMatch[];
 }
 
-interface Props {
+// ---------------------
+// PAGE COMPONENT
+// ---------------------
+export default async function PredictionsPage({
+  params,
+}: {
   params: { date?: string };
-}
-
-export default async function PredictionsPage({ params }: Props) {
+}) {
   let date = params?.date;
 
-  // 🔥 If no date is passed → ALWAYS use today's Kenya date
+  // If no date is provided (e.g. homepage route) → ALWAYS use today's Kenya date
   if (!date) {
     date = new Date().toLocaleDateString("en-CA", {
       timeZone: "Africa/Nairobi",
@@ -72,15 +78,13 @@ export default async function PredictionsPage({ params }: Props) {
 
   const backendData: BackendResponse = await res.json();
 
-  const initialData: LeagueGroup[] = Array.isArray(backendData.fixtures)
-    ? backendData.fixtures.map((f) => ({
-        id: f.league.id,
-        name: f.league.name,
-        logo: f.league.logo,
-        country: f.league.country,
-        matches: f.matches,
-      }))
-    : [];
+  const initialData: LeagueGroup[] = backendData.fixtures.map((f) => ({
+    id: f.league.id,
+    name: f.league.name,
+    logo: f.league.logo,
+    country: f.league.country,
+    matches: f.matches,
+  }));
 
   return <PredictionsList initialData={initialData} date={date} />;
 }
