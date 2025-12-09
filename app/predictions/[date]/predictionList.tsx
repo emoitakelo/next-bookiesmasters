@@ -105,7 +105,7 @@ export default function PredictionsList({
 
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1">
             {league.matches.map((fixture) => (
               <FixtureCard key={fixture.fixtureId} {...fixture} />
             ))}
