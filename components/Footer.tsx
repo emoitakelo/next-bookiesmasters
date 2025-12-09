@@ -12,7 +12,7 @@ export default function Footer() {
         {/* Brand */}
         <div>
           <h5 className="text-sm font-semibold text-white mb-2">Bookiesmasters</h5>
-          <p className="text-sm leading-relaxed">
+          <p className="text-xs leading-relaxed">
             Get guided football predictions, fixtures, livescores and insights powered by data — all in one place.
           </p>
         </div>
@@ -20,7 +20,7 @@ export default function Footer() {
         {/* Contact + Socials */}
         <div>
           <h5 className="text-sm font-semibold text-white mb-2">Stay connected</h5>
-          <p className="text-sm text-gray-400 mb-2">
+          <p className="text-sm text-gray-400 ">
             Have questions? Reach us anytime.
           </p>
 
@@ -47,7 +47,7 @@ export default function Footer() {
         {/* Quick Links */}
         <div>
           <h5 className="text-sm font-semibold text-white mb-2">Quick links</h5>
-          <ul className="text-sm space-y-2">
+          <ul className="text-xs ">
             <li>
               <Link href="/terms-of-service" className="hover:text-teal-400 transition">
                 Terms of Service
