@@ -87,18 +87,18 @@ export default function PredictionsList({
 
       {safeData.map((league, idx) => (
         <div key={league.id || idx}>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-1 mb-1">
             {league.logo && (
               <Image
                 src={league.logo}
                 alt={league.name}
-                width={24}
-                height={24}
-                className="w-6 h-6"
+                width={20}
+                height={20}
+                className="w-5 h-5"
               />
             )}
             <div className="flex flex-col">
-  <span className="font-semibold text-gray-300">{league.name}</span>
+  <span className="font-semibold text-sm text-gray-300">{league.name}</span>
   <span className="text-xs text-gray-400">{league.country}</span>
 </div>
 

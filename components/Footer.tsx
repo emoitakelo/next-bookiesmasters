@@ -13,7 +13,7 @@ export default function Footer() {
         <div>
           <h5 className="text-sm font-semibold text-white mb-2">Bookiesmasters</h5>
           <p className="text-xs leading-relaxed">
-            Get guided football predictions, fixtures, livescores and insights powered by data — all in one place.
+            Get guided football predictions, fixtures, odds, events, livescores and insights powered by data — all in one place.
           </p>
         </div>
 
