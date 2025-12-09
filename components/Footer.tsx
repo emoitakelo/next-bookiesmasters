@@ -7,12 +7,12 @@ export default function Footer() {
   return (
     <footer className="bg-black  text-gray-400 md:justify-center px-2">
       {/* Main section */}
-<div className="max-w-3xl mx-auto py-1 grid grid-cols-1 md:grid-cols-3 gap-3 md:w-max md:mx-auto">
+<div className="max-w-3xl mx-auto py-1 grid grid-cols-1 md:grid-cols-3 gap-2 md:w-max md:mx-auto">
   
         
         {/* Brand */}
 <div className="md:text-center">   
-         <h5 className="text-sm font-semibold text-white mb-1">Bookiesmasters</h5>
+         <h5 className="text-sm font-semibold text-white ">Bookiesmasters</h5>
           <p className="text-xs leading-relaxed">
             Get guided football predictions, fixtures, odds, events, livescores and insights powered by data — all in one place.
           </p>
@@ -20,19 +20,19 @@ export default function Footer() {
 
         {/* Contact + Socials */}
 <div className="md:text-center"> 
-           <h5 className="text-sm font-semibold text-white mb-1">Stay connected</h5>
+           <h5 className="text-sm font-semibold text-white ">Stay connected</h5>
           <p className="text-xs text-gray-400 ">
             Have questions? Reach us anytime.
           </p>
 
           <a
             href="mailto:support@bookiesmasters.com"
-            className="flex items-center text-[#5eead4] hover:text-teal-300 text-xs mb-1 md:justify-center"
+            className="flex items-center text-[#5eead4] hover:text-teal-300 text-xs md:justify-center"
           >
             <Mail size={16} className="mr-2" /> support@bookiesmasters.com
           </a>
 
-          <div className="flex space-x-5 mt-2 md:justify-center">
+          <div className="flex space-x-5 mt-1 md:justify-center">
             <a href="#" className="text-gray-400 hover:text-teal-400 transition">
               <Facebook size={16} />
             </a>
