@@ -1,6 +1,6 @@
 import PredictionsList from "./predictionList";
 
-export const revalidate = 60; // ISR (regenerates every 60 seconds)
+export const revalidate = 30; // ISR (regenerates every 60 seconds)
 
 // ---------------------
 // Backend Types
