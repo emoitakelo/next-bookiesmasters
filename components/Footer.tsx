@@ -18,26 +18,26 @@ export default function Footer() {
 
         {/* Contact + Socials */}
 <div className="md:text-center">          <h5 className="text-sm font-semibold text-white mb-1">Stay connected</h5>
-          <p className="text-sm text-gray-400 ">
+          <p className="text-xs text-gray-400 ">
             Have questions? Reach us anytime.
           </p>
 
           <a
             href="mailto:support@bookiesmasters.com"
-            className="flex items-center text-[#5eead4] hover:text-teal-300 text-sm mb-2"
+            className="flex items-center text-[#5eead4] hover:text-teal-300 text-xs mb-1"
           >
-            <Mail size={18} className="mr-2" /> support@bookiesmasters.com
+            <Mail size={16} className="mr-2" /> support@bookiesmasters.com
           </a>
 
           <div className="flex space-x-5 mt-2">
             <a href="#" className="text-gray-400 hover:text-teal-400 transition">
-              <Facebook size={20} />
+              <Facebook size={16} />
             </a>
             <a href="#" className="text-gray-400 hover:text-teal-400 transition">
-              <Twitter size={20} />
+              <Twitter size={16} />
             </a>
             <a href="#" className="text-gray-400 hover:text-teal-400 transition">
-              <Instagram size={20} />
+              <Instagram size={16} />
             </a>
           </div>
         </div>
