@@ -5,13 +5,13 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-black font-semibold text-gray-400 px-3 mt-10">
+    <footer className="bg-black  text-gray-400 px-3 mt-10">
       {/* Main section */}
       <div className="max-w-5xl mx-auto px-3 md:px-6 py-6 grid grid-cols-1 md:grid-cols-3 gap-6 border-b border-gray-700">
         
         {/* Brand */}
         <div>
-          <h5 className="text-sm text-white mb-2">Bookiesmasters</h5>
+          <h5 className="text-sm font-semibold text-white mb-2">Bookiesmasters</h5>
           <p className="text-sm leading-relaxed">
             Get guided football predictions, fixtures, livescores and insights powered by data — all in one place.
           </p>
@@ -19,7 +19,7 @@ export default function Footer() {
 
         {/* Contact + Socials */}
         <div>
-          <h5 className="text-sm text-white mb-2">Stay connected</h5>
+          <h5 className="text-sm font-semibold text-white mb-2">Stay connected</h5>
           <p className="text-sm text-gray-400 mb-2">
             Have questions? Reach us anytime.
           </p>
@@ -46,7 +46,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div>
-          <h5 className="text-sm text-white mb-2">Quick links</h5>
+          <h5 className="text-sm font-semibold text-white mb-2">Quick links</h5>
           <ul className="text-sm space-y-2">
             <li>
               <Link href="/terms-of-service" className="hover:text-teal-400 transition">
