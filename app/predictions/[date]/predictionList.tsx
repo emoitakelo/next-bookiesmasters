@@ -78,7 +78,7 @@ export default function PredictionsList({
   const safeData: LeagueGroup[] = Array.isArray(data) ? data : initialData;
 
   return (
-    <div className="max-w-3xl mx-auto py-2 space-y-3">
+    <div className="max-w-3xl mx-auto py-2 space-y-1">
       {safeData.length === 0 && (
         <p className="text-center py-8 text-gray-500">
           No fixtures available for this date.
