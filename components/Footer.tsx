@@ -46,7 +46,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div>
-          <h5 className="text-sm font-semibold text-white mb-1">Quick links</h5>
+          <h5 className="text-sm font-semibold text-white ">Quick links</h5>
           <ul className="text-xs ">
             <li>
               <Link href="/terms-of-service" className="hover:text-teal-400 transition">
