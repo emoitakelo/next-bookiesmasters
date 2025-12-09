@@ -27,12 +27,12 @@ export default function Footer() {
 
           <a
             href="mailto:support@bookiesmasters.com"
-            className="flex items-center text-[#5eead4] hover:text-teal-300 text-xs mb-1"
+            className="flex items-center text-[#5eead4] hover:text-teal-300 text-xs mb-1 md:justify-center"
           >
             <Mail size={16} className="mr-2" /> support@bookiesmasters.com
           </a>
 
-          <div className="flex space-x-5 mt-2">
+          <div className="flex space-x-5 mt-2 md:justify-center">
             <a href="#" className="text-gray-400 hover:text-teal-400 transition">
               <Facebook size={16} />
             </a>
