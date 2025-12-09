@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "BookiesMasters",
-  description: "Football predictions, fixtures, livescores & insights",
+  description: "Free football predictions, fixtures, events, odds, livescores & insights",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-800`}
       >
         <Navbar />
         <main className="min-h-screen">{children}</main>
