@@ -22,7 +22,7 @@ export default function Navbar() {
           <Image
             src={logo}
             alt="BookiesMasters Logo"
-            className="h-40 w-40 object-contain"
+            className="h-40 w-36 object-contain"
             priority
           />
         </Link>
@@ -46,7 +46,7 @@ export default function Navbar() {
   onClick={() => setMenuOpen(!menuOpen)}
   aria-label="Toggle Menu"
 >
-  {menuOpen ? <X size={24} /> : <Menu size={24} />}
+  {menuOpen ? <X size={22} /> : <Menu size={22} />}
 </button>
 
       </div>
