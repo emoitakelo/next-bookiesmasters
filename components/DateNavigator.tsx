@@ -45,10 +45,10 @@ export default function DateNavigator({ date }: Props) {
   };
 
   return (
-    <div className="max-w-3xl border-b bg-[#1F1F1F] text-white py-2 px-3 flex items-center justify-between gap-2">
+    <div className="max-w-3xl border-b bg-black text-white py-2 px-3 flex items-center justify-between gap-2">
 
       {/* LEFT: LIVE button (circular) */}
-      <button className=" bg-gray-700 w-8 h-8 rounded-md flex items-center justify-center text-xs ">
+      <button className=" bg-[#1F1F1F] w-8 h-8 rounded-md flex items-center justify-center text-xs ">
         Live
       </button>
 
