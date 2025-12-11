@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
 
 interface Props {
   date: string; // yyyy-mm-dd from page params
@@ -8,6 +9,7 @@ interface Props {
 
 export default function DateNavigator({ date }: Props) {
   const router = useRouter();
+  const hiddenCalendar = useRef<HTMLInputElement>(null);
 
   const currentDate = new Date(date);
 
@@ -17,6 +19,8 @@ export default function DateNavigator({ date }: Props) {
     day: "numeric",
     month: "short",
   });
+
+  const dayOnly = currentDate.getDate(); // e.g. 11
 
   // Go to previous day
   const goPrev = () => {
@@ -36,19 +40,20 @@ export default function DateNavigator({ date }: Props) {
 
   // Calendar change
   const onPickDate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) return;
     router.push(`/predictions/${e.target.value}`);
   };
 
   return (
     <div className="max-w-3xl border-b bg-black text-white py-2 px-1 flex items-center justify-between gap-2">
 
-      {/* LEFT: LIVE button */}
-      <button className="bg-red-600 text-white px-3 py-1 text-sm rounded">
-        LIVE
+      {/* LEFT: LIVE button (circular) */}
+      <button className="bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold">
+        L
       </button>
 
       {/* CENTER: < Date > */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <button
           onClick={goPrev}
           className="text-lg font-bold px-2 py-1 border rounded"
@@ -68,12 +73,21 @@ export default function DateNavigator({ date }: Props) {
         </button>
       </div>
 
-      {/* RIGHT: Calendar */}
+      {/* RIGHT: Circular calendar showing only the day number */}
+      <button
+        onClick={() => hiddenCalendar.current?.showPicker?.()}
+        className="w-10 h-10 bg-gray-700 text-white rounded-full flex items-center justify-center font-semibold"
+      >
+        {dayOnly}
+      </button>
+
+      {/* Hidden HTML date picker */}
       <input
+        ref={hiddenCalendar}
         type="date"
         value={date}
         onChange={onPickDate}
-        className="border rounded px-2 py-1"
+        className="hidden"
       />
     </div>
   );
