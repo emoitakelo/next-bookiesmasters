@@ -41,13 +41,14 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-teal-400 hover:text-[#99f6e4]"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle Menu"
-        >
-          {menuOpen ? <X size={26} /> : <Menu size={26} />}
-        </button>
+       <button
+  className="md:hidden text-[#A8E6A1] hover:text-[#99f6e4]"
+  onClick={() => setMenuOpen(!menuOpen)}
+  aria-label="Toggle Menu"
+>
+  {menuOpen ? <X size={26} /> : <Menu size={26} />}
+</button>
+
       </div>
 
       {/* Mobile Dropdown */}
