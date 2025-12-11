@@ -56,18 +56,18 @@ export default function DateNavigator({ date }: Props) {
       <div className="flex items-center gap-3">
         <button
           onClick={goPrev}
-          className="text-lg font-bold px-2 py-1 bor rounded"
+          className="text-sm font-bold px-4 py-1 bor rounded"
         >
           {"<"}
         </button>
 
-        <div className="text-md font-semibold whitespace-nowrap">
+        <div className="text-sm font-semibold whitespace-nowrap">
           {formattedDate}
         </div>
 
         <button
           onClick={goNext}
-          className="text-lg font-bold px-2 py-1 border rounded"
+          className="text-sm font-bold px-4 py-1  rounded"
         >
           {">"}
         </button>
