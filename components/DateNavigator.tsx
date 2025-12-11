@@ -61,7 +61,7 @@ export default function DateNavigator({ date }: Props) {
           {"<"}
         </button>
 
-        <div className="text-xs text-gray-400 whitespace-nowrap">
+        <div className="text-xs font-semibold text-gray-400 whitespace-nowrap">
           {formattedDate}
         </div>
 
