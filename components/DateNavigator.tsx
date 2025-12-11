@@ -67,7 +67,7 @@ export default function DateNavigator({ date }: Props) {
 
         <button
           onClick={goNext}
-          className="text-3xl text-gray-400 font-bold px-4 py-1  rounded"
+          className="text-xl text-gray-400  px-4 py-1  rounded"
         >
           {">"}
         </button>
