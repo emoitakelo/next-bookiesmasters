@@ -48,8 +48,8 @@ export default function DateNavigator({ date }: Props) {
     <div className="max-w-3xl border-b bg-black text-white py-2 px-1 flex items-center justify-between gap-2">
 
       {/* LEFT: LIVE button (circular) */}
-      <button className="bg-red-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold">
-        L
+      <button className="bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs ">
+        Live
       </button>
 
       {/* CENTER: < Date > */}
@@ -76,7 +76,7 @@ export default function DateNavigator({ date }: Props) {
       {/* RIGHT: Circular calendar showing only the day number */}
       <button
         onClick={() => hiddenCalendar.current?.showPicker?.()}
-        className="w-10 h-10 bg-gray-700 text-white rounded-full flex items-center justify-center font-semibold"
+        className="w-6 h-6 bg-gray-700 text-white rounded-full flex items-center justify-center "
       >
         {dayOnly}
       </button>
