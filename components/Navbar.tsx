@@ -42,11 +42,11 @@ className="w-[140px] h-50 object-contain"
 
         {/* Mobile Toggle */}
        <button
-  className="md:hidden text-[#00bf63] hover:text-[#00bf63]"
+  className="md:hidden text-[#00bf63] hover:text-[#00bf63] font-semibold"
   onClick={() => setMenuOpen(!menuOpen)}
   aria-label="Toggle Menu"
 >
-  {menuOpen ? <X size={22} /> : <Menu size={22} />}
+  {menuOpen ? <X size={20} /> : <Menu size={20} />}
 </button>
 
       </div>
