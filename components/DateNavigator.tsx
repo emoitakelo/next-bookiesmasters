@@ -48,7 +48,7 @@ export default function DateNavigator({ date }: Props) {
     <div className="max-w-3xl border-b bg-black text-white py-2 px-3 flex items-center justify-between gap-2">
 
       {/* LEFT: LIVE button (circular) */}
-      <button className="bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs ">
+      <button className=" bg-gray-700 w-8 h-8 rounded-full flex items-center justify-center text-xs ">
         Live
       </button>
 
