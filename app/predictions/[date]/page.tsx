@@ -1,4 +1,7 @@
 import PredictionsList from "./predictionList";
+import DateNavigator from "@/components/DateNavigator";
+
+
 
 export const revalidate = 30; // ISR (regenerates every 60 seconds)
 
@@ -86,5 +89,10 @@ export default async function PredictionsPage({
     matches: f.matches,
   }));
 
-  return <PredictionsList initialData={initialData} date={date} />;
-}
+return (
+    <>
+      <DateNavigator date={date} />
+
+      <PredictionsList initialData={initialData} date={date} />
+    </>
+  );}

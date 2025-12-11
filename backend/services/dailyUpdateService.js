@@ -18,13 +18,16 @@ const api = axios.create({
 });
 
 /* ---------------------------------------------
-   GET TODAY DATE (UTC)
+   UTIL: GET DATE + N DAYS (UTC)
 --------------------------------------------- */
-function todayDate() {
+function getDatePlus(days) {
   const d = new Date();
+  d.setUTCDate(d.getUTCDate() + days);
+
   const yyyy = d.getUTCFullYear();
   const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
   const dd = String(d.getUTCDate()).padStart(2, "0");
+
   return `${yyyy}-${mm}-${dd}`;
 }
 
@@ -37,26 +40,33 @@ async function getSavedLeagueIds() {
 }
 
 /* ---------------------------------------------
-   FETCH TODAY'S FIXTURES FOR SAVED LEAGUES
+   FETCH FIXTURES FOR MULTIPLE DATES
 --------------------------------------------- */
-async function fetchTodayFixtures(savedLeagueIds) {
-  const date = todayDate();
+async function fetchFixturesForDates(savedLeagueIds, daysAhead = 2) {
+  let combined = [];
 
-  const res = await api.get(`/fixtures`, {
-    params: { date }
-  });
+  for (let day = 0; day <= daysAhead; day++) {
+    const date = getDatePlus(day);
+    console.log(`📅 Fetching fixtures for ${date}`);
 
-  const allFixtures = res.data.response || [];
-  console.log(`📌 All fixtures today: ${allFixtures.length}`);
+    const res = await api.get(`/fixtures`, {
+      params: { date }
+    });
 
-  // filter by saved leagues
-  const filtered = allFixtures.filter(f =>
-    savedLeagueIds.includes(f.league.id)
-  );
+    const fixtures = res.data.response || [];
+    console.log(`   → Total fixtures on ${date}: ${fixtures.length}`);
 
-  console.log(`📌 Fixtures from saved leagues: ${filtered.length}\n`);
+    // filter by saved leagues
+    const filtered = fixtures.filter(f =>
+      savedLeagueIds.includes(f.league.id)
+    );
 
-  return filtered;
+    console.log(`   → Saved league fixtures on ${date}: ${filtered.length}\n`);
+
+    combined = combined.concat(filtered);
+  }
+
+  return combined;
 }
 
 /* ---------------------------------------------
@@ -69,7 +79,6 @@ async function fetchPrediction(fixtureId) {
     });
 
     const data = res.data?.response?.[0];
-
     if (!data) return { prediction: null, h2h: null };
 
     return {
@@ -91,7 +100,7 @@ async function fetchOdds(fixtureId) {
     const res = await api.get(`/odds`, {
       params: {
         fixture: fixtureId,
-        bookmaker: 8   // Bet365 (you can change)
+        bookmaker: 8   // Bet365
       }
     });
 
@@ -124,31 +133,26 @@ export async function updateDailyFixtures() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ Connected to MongoDB\n");
 
-    console.log("📡 Updating today's fixtures...\n");
+    console.log("📡 Updating fixtures from today up to +2 days...\n");
 
-    // load saved leagues
+    // 1. Load saved leagues
     const savedLeagueIds = await getSavedLeagueIds();
     if (savedLeagueIds.length === 0) {
       console.log("⚠ No saved leagues found. Add leagues first.");
       return;
     }
 
-    // fetch fixtures for today
-    const fixtures = await fetchTodayFixtures(savedLeagueIds);
+    // 2. Fetch fixtures for multiple days
+    const fixtures = await fetchFixturesForDates(savedLeagueIds, 2);
 
     if (fixtures.length === 0) {
-      console.log("⚠ No fixtures today for saved leagues.");
+      console.log("⚠ No fixtures found for saved leagues between today and +2 days.");
       return;
     }
 
-    // loop each fixture
+    // 3. Process each fixture
     for (const f of fixtures) {
       const fixtureId = f.fixture.id;
-
-
-//       console.log(`\n📌 Fixture ID: ${fixtureId}`);
-//   console.log(Object.keys(f.fixture));
-
 
       // 1️⃣ predictions
       const { prediction, h2h } = await fetchPrediction(fixtureId);
@@ -156,28 +160,26 @@ export async function updateDailyFixtures() {
       // 2️⃣ odds
       const bets = await fetchOdds(fixtureId);
 
-      // 3️⃣ save/update
-     await Fixture.findOneAndUpdate(
-  { fixtureId: f.fixture.id },       // use top-level fixtureId
-  {
-    fixtureId: f.fixture.id,
-    fixture: f,
-    prediction,
-    h2h,
-    odds:bets
-  },
-  { upsert: true }
-);
-
-
+      // 3️⃣ save/update in Mongo
+      await Fixture.findOneAndUpdate(
+        { fixtureId: fixtureId },
+        {
+          fixtureId: fixtureId,
+          fixture: f,
+          prediction,
+          h2h,
+          odds: bets
+        },
+        { upsert: true }
+      );
 
       console.log(`✔ Saved fixture ${fixtureId}`);
     }
 
-    console.log("\n🎉 DAILY UPDATE COMPLETED");
+    console.log("\n🎉 FIXTURE UPDATE COMPLETED");
 
   } catch (err) {
-    console.error("❌ ERROR UPDATING DAILY FIXTURES:", err);
+    console.error("❌ ERROR UPDATING FIXTURES:", err);
   } finally {
     await mongoose.disconnect();
     console.log("🔌 MongoDB disconnected");
