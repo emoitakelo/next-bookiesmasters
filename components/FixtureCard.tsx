@@ -68,7 +68,7 @@ function getOddsColor(
   return (
     <Link href={`/predictions/${fixtureId}`} className="block">
       <div
-        className={`max-w-xl mx-auto bg-white rounded-xl shadow-sm hover:shadow-md transition flex items-center justify-evenly p-2 border-l-4 ${
+        className={`max-w-xl mx-auto bg-white rounded-xl shadow-sm hover:shadow-md transition flex items-center justify-evenly p-1 border-l-4 ${
           isLive ? "border-red-500 " : "border-transparent"
         }`}
       >
