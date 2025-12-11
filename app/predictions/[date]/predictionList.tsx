@@ -99,7 +99,7 @@ export default function PredictionsList({
               />
             )}
             <div className="flex flex-col">
-  <span className="font-semibold text-sm text-gray-300">{league.name}</span>
+  <span className="font-semibold text-xs text-gray-300">{league.name}</span>
   <span className="text-xs text-gray-400">{league.country}</span>
 </div>
 
