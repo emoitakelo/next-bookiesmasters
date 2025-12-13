@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { Search } from "lucide-react";
 
 interface Props {
   date: string; // yyyy-mm-dd from page params
@@ -9,9 +9,16 @@ interface Props {
 
 export default function DateNavigator({ date }: Props) {
   const router = useRouter();
-  const hiddenCalendar = useRef<HTMLInputElement>(null);
-
   const currentDate = new Date(date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Normalize today to midnight for accurate comparison
+
+  // Calculate limits (7 days before and after today)
+  const minDate = new Date(today);
+  minDate.setDate(today.getDate() - 7);
+
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 7);
 
   // Format: Saturday, 14 Dec
   const formattedDate = currentDate.toLocaleDateString("en-GB", {
@@ -20,10 +27,13 @@ export default function DateNavigator({ date }: Props) {
     month: "short",
   });
 
-  const dayOnly = currentDate.getDate(); // e.g. 11
+  // Check if navigation is allowed
+  const canGoPrev = currentDate > minDate;
+  const canGoNext = currentDate < maxDate;
 
   // Go to previous day
   const goPrev = () => {
+    if (!canGoPrev) return;
     const prev = new Date(currentDate);
     prev.setDate(prev.getDate() - 1);
     const newDate = prev.toISOString().split("T")[0];
@@ -32,16 +42,11 @@ export default function DateNavigator({ date }: Props) {
 
   // Go to next day
   const goNext = () => {
+    if (!canGoNext) return;
     const next = new Date(currentDate);
     next.setDate(next.getDate() + 1);
     const newDate = next.toISOString().split("T")[0];
     router.push(`/predictions/${newDate}`);
-  };
-
-  // Calendar change
-  const onPickDate = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) return;
-    router.push(`/predictions/${e.target.value}`);
   };
 
   return (
@@ -56,7 +61,9 @@ export default function DateNavigator({ date }: Props) {
       <div className="flex items-center gap-3">
         <button
           onClick={goPrev}
-          className="text-xl text-gray-400 px-4 py-1  rounded"
+          disabled={!canGoPrev}
+          className={`text-xl px-4 py-1 rounded transition-colors ${canGoPrev ? "text-gray-400 hover:text-white" : "text-gray-700 cursor-not-allowed"
+            }`}
         >
           {"<"}
         </button>
@@ -67,28 +74,20 @@ export default function DateNavigator({ date }: Props) {
 
         <button
           onClick={goNext}
-          className="text-xl text-gray-400  px-4 py-1  rounded"
+          disabled={!canGoNext}
+          className={`text-xl px-4 py-1 rounded transition-colors ${canGoNext ? "text-gray-400 hover:text-white" : "text-gray-700 cursor-not-allowed"
+            }`}
         >
           {">"}
         </button>
       </div>
 
-      {/* RIGHT: Circular calendar showing only the day number */}
+      {/* RIGHT: Search button */}
       <button
-        onClick={() => hiddenCalendar.current?.showPicker?.()}
-        className="w-8 h-6 bg-[#1F1F1F] text-white text-xs rounded-md border-white flex items-center justify-center "
+        className="w-8 h-6 bg-[#1F1F1F] text-white rounded-md flex items-center justify-center hover:bg-[#2F2F2F] transition-colors"
       >
-        {dayOnly}
+        <Search size={14} />
       </button>
-
-      {/* Hidden HTML date picker */}
-      <input
-        ref={hiddenCalendar}
-        type="date"
-        value={date}
-        onChange={onPickDate}
-        className="hidden"
-      />
     </div>
   );
 }
