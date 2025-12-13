@@ -78,7 +78,7 @@ export default function PredictionsList({
   const safeData: LeagueGroup[] = Array.isArray(data) ? data : initialData;
 
   return (
-    <div className="max-w-3xl mx-auto px-1 py-2 space-y-1">
+    <div className="max-w-xl mx-auto px-1 py-2 space-y-1">
       {safeData.length === 0 && (
         <p className="text-center py-8 text-gray-500">
           No fixtures available for this date.
@@ -99,9 +99,9 @@ export default function PredictionsList({
               />
             )}
             <div className="flex flex-col">
-  <span className="font-semibold text-xs text-gray-300">{league.name}</span>
-  <span className="text-xs text-gray-400">{league.country}</span>
-</div>
+              <span className="font-semibold text-xs text-gray-300">{league.name}</span>
+              <span className="text-xs text-gray-400">{league.country}</span>
+            </div>
 
           </div>
 
