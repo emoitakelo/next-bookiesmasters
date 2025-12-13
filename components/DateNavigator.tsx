@@ -9,9 +9,11 @@ interface Props {
 
 export default function DateNavigator({ date }: Props) {
   const router = useRouter();
-  const currentDate = new Date(date);
+  const [year, month, day] = date.split("-").map(Number);
+  const currentDate = new Date(year, month - 1, day); // Local midnight
+
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Normalize today to midnight for accurate comparison
+  today.setHours(0, 0, 0, 0); // Local midnight today
 
   // Calculate limits (7 days before and after today)
   const minDate = new Date(today);
@@ -31,13 +33,20 @@ export default function DateNavigator({ date }: Props) {
   const canGoPrev = currentDate > minDate;
   const canGoNext = currentDate < maxDate;
 
+  // Helper to format YYYY-MM-DD locally
+  const toYYYYMMDD = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
   // Go to previous day
   const goPrev = () => {
     if (!canGoPrev) return;
     const prev = new Date(currentDate);
     prev.setDate(prev.getDate() - 1);
-    const newDate = prev.toISOString().split("T")[0];
-    router.push(`/predictions/${newDate}`);
+    router.push(`/predictions/${toYYYYMMDD(prev)}`);
   };
 
   // Go to next day
@@ -45,8 +54,7 @@ export default function DateNavigator({ date }: Props) {
     if (!canGoNext) return;
     const next = new Date(currentDate);
     next.setDate(next.getDate() + 1);
-    const newDate = next.toISOString().split("T")[0];
-    router.push(`/predictions/${newDate}`);
+    router.push(`/predictions/${toYYYYMMDD(next)}`);
   };
 
   return (
