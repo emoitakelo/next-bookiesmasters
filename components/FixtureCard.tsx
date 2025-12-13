@@ -89,11 +89,11 @@ function getOddsColor(
             <Image
               src={homeTeam.logo}
               alt={homeTeam.name}
-              width={16}
-              height={16}
+              width={14}
+              height={14}
               className="w-4 h-4"
             />
-            <span className="font-medium text-gray-800 text-xs sm:text-sm truncate">
+            <span className="font-medium text-gray-800 text-xs sm:text-xs truncate">
               {homeTeam.name}
             </span>
           </div>
@@ -102,11 +102,11 @@ function getOddsColor(
             <Image
               src={awayTeam.logo}
               alt={awayTeam.name}
-              width={16}
-              height={16}
+              width={14}
+              height={14}
               className="w-4 h-4"
             />
-            <span className="font-medium text-gray-800 text-xs sm:text-sm truncate">
+            <span className="font-medium text-gray-800 text-xs sm:text-xs truncate">
               {awayTeam.name}
             </span>
           </div>
