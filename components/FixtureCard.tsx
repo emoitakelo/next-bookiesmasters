@@ -117,7 +117,7 @@ function getOddsColor(
 
       <div className="flex flex-row justify-between w-[120px] sm:w-[150px]">
   <span
-    className={`text-[10px] sm:text-xs ${getOddsColor(
+    className={`text-xs sm:text-xs ${getOddsColor(
       odds.home,
       [odds.home, odds.draw, odds.away]
     )}`}
@@ -125,7 +125,7 @@ function getOddsColor(
     {odds.home ?? "-"}
   </span>
   <span
-    className={`text-[10px] sm:text-xs  ${getOddsColor(
+    className={`text-xs sm:text-xs  ${getOddsColor(
       odds.draw,
       [odds.home, odds.draw, odds.away]
     )}`}
@@ -148,7 +148,7 @@ function getOddsColor(
 
         {/* SCORE */}
         <div
-          className={`text-right font-medium text-xs sm:text-sm flex flex-col justify-center items-center w-[35px] sm:w-[45px] ${
+          className={`text-right font-medium text-xs sm:text-xs flex flex-col justify-center items-center w-[35px] sm:w-[45px] ${
             isLive ? "text-red-600" : "text-gray-800"
           }`}
         >
