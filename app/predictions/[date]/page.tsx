@@ -63,9 +63,10 @@ export interface LeagueGroup {
 export default async function PredictionsPage({
   params,
 }: {
-  params: { date?: string };
+  params: Promise<{ date?: string }>;
 }) {
-  let date = params?.date;
+  const resolvedParams = await params;
+  let date = resolvedParams.date;
 
   // If no date is provided (e.g. homepage route) → ALWAYS use today's Kenya date
   if (!date) {
@@ -89,10 +90,11 @@ export default async function PredictionsPage({
     matches: f.matches,
   }));
 
-return (
+  return (
     <>
       <DateNavigator date={date} />
 
       <PredictionsList initialData={initialData} date={date} />
     </>
-  );}
+  );
+}
