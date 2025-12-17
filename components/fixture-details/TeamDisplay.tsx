@@ -14,9 +14,10 @@ interface TeamDisplayProps {
     homeTeam: Team;
     awayTeam: Team;
     status: string;
+    // displayDate usually contains time or "FT"
     displayDate: string;
     venue?: string;
-    date: string;
+    date: string; // ISO date string
 }
 
 const TeamDisplay: React.FC<TeamDisplayProps> = ({
@@ -45,8 +46,8 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
     };
 
     return (
-        <div className="flex flex-col items-center mb-8 text-gray-100 bg-[#1F1F1F] p-4 rounded-lg shadow-sm border border-gray-800">
-            <h2 className="text-lg sm:text-xl font-semibold mb-6 text-center text-gray-200">
+        <div className="flex flex-col items-center mb-8 text-gray-800 bg-white p-4 rounded-lg shadow-sm">
+            <h2 className="text-lg sm:text-xl font-semibold mb-6 text-center text-gray-700">
                 {homeTeam?.name} vs {awayTeam?.name}
             </h2>
 
@@ -61,13 +62,13 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                             className="object-contain"
                         />
                     </div>
-                    <span className="font-bold text-center text-sm md:text-base text-white">{homeTeam.name}</span>
+                    <span className="font-bold text-center text-sm md:text-base">{homeTeam.name}</span>
                     {homeTeam.form && renderFormBars(homeTeam.form)}
                 </div>
 
                 {/* Center */}
                 <div className="flex flex-col items-center justify-center text-center">
-                    <div className="text-sm sm:text-lg font-bold text-gray-400 mb-2">
+                    <div className="text-sm sm:text-lg font-bold text-gray-600 mb-2">
                         {status === "FT" ? "Full Time" : displayDate}
                     </div>
                 </div>
@@ -82,13 +83,13 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                             className="object-contain"
                         />
                     </div>
-                    <span className="font-bold text-center text-sm md:text-base text-white">{awayTeam.name}</span>
+                    <span className="font-bold text-center text-sm md:text-base">{awayTeam.name}</span>
                     {awayTeam.form && renderFormBars(awayTeam.form)}
                 </div>
             </div>
 
             {venue && (
-                <p className="mt-6 text-gray-500 text-sm text-center italic border-t border-gray-700 pt-2 w-full max-w-md">
+                <p className="mt-6 text-gray-500 text-sm text-center italic border-t pt-2 w-full max-w-md">
                     🏟 {venue}
                 </p>
             )}

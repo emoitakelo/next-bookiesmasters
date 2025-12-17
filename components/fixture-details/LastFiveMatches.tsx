@@ -21,9 +21,9 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
     if (!matches || matches.length === 0) return null;
 
     return (
-        <div className="mb-8 max-w-3xl mx-auto bg-[#1F1F1F] p-4 rounded-lg shadow-sm border border-gray-800">
+        <div className="mb-8 max-w-3xl mx-auto bg-white p-4 rounded-lg shadow-sm border border-gray-100">
             {/* 🏆 Title + Team Logo centered */}
-            <div className="flex flex-col items-center mb-4 border-b border-gray-700 pb-2">
+            <div className="flex flex-col items-center mb-4 border-b pb-2">
                 <div className="flex items-center justify-center gap-2">
                     {teamLogo && (
                         <Image
@@ -34,8 +34,8 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                             className="object-contain"
                         />
                     )}
-                    <h4 className="text-md sm:text-lg font-semibold text-gray-200 text-center">
-                        Last 5 Matches: <span className="text-teal-500">{teamName}</span>
+                    <h4 className="text-md sm:text-lg font-semibold text-gray-800 text-center">
+                        Last 5 Matches: <span className="text-teal-600">{teamName}</span>
                     </h4>
                 </div>
             </div>
@@ -52,26 +52,26 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                     return (
                         <div
                             key={i}
-                            className="grid grid-cols-[auto_1fr_auto_1fr] md:grid-cols-4 items-center bg-[#282828] border border-gray-700 p-2 rounded text-sm hover:bg-[#333333] transition-colors"
+                            className="grid grid-cols-[auto_1fr_auto_1fr] md:grid-cols-4 items-center bg-gray-50 border p-2 rounded text-sm hover:shadow-sm transition-shadow"
                         >
                             {/* 1️⃣ Date */}
-                            <div className="truncate text-gray-400 text-xs md:text-sm mr-2">{matchDate}</div>
+                            <div className="truncate text-gray-500 text-xs md:text-sm mr-2">{matchDate}</div>
 
                             {/* 2️⃣ Home Team */}
-                            <div className="truncate font-medium text-right pr-3 text-gray-300">{m.homeTeam.name}</div>
+                            <div className="truncate font-medium text-right pr-3 text-gray-700">{m.homeTeam.name}</div>
 
                             {/* 3️⃣ Score with perspective-based badge */}
                             <div className="flex justify-center">
                                 <span
-                                    className="w-16 text-center px-2 py-1 rounded font-bold text-xs text-white"
-                                    style={{ backgroundColor: m.color }}
+                                    className="w-16 text-center px-2 py-1 rounded font-bold text-xs"
+                                    style={{ backgroundColor: m.color, color: m.result === "D" ? "#7c2d12" : (m.result === "W" ? "#14532d" : "#7f1d1d") }}
                                 >
                                     {m.score.home} - {m.score.away}
                                 </span>
                             </div>
 
                             {/* 4️⃣ Away Team */}
-                            <div className="truncate font-medium text-left pl-3 text-gray-300">{m.awayTeam.name}</div>
+                            <div className="truncate font-medium text-left pl-3 text-gray-700">{m.awayTeam.name}</div>
                         </div>
                     );
                 })}
