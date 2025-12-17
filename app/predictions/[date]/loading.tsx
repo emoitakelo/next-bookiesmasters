@@ -4,7 +4,7 @@ export default function Loading() {
             <div className="relative">
 
                 {/* Inner Spinning Ring */}
-                <div className="absolute top-0 left-0 w-10 h-10 rounded-full border-4 border-t-white border-transparent animate-spin"></div>
+                <div className="absolute top-0 left-0 w-10 h-10 rounded-full border-2 border-t-white border-transparent animate-shimmer"></div>
             </div>
 
         </div>
