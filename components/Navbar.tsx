@@ -16,13 +16,13 @@ export default function Navbar() {
 
   return (
     <nav className="w-full bg-[#1F1F1F] text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-2 py-0 md:px-8 flex items-center justify-between  h-[80px]">
+      <div className="max-w-7xl mx-auto px-2 py-0 md:px-8 flex items-center justify-between  h-[60px]">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Image
             src={logo}
             alt="BookiesMasters Logo"
-            className="w-auto h-[30px] md:h-[60px] object-contain"
+            className="w-auto h-[30px] md:h-[45px] object-contain"
             priority
           />
         </Link>
@@ -42,7 +42,7 @@ export default function Navbar() {
 
         {/* Mobile Toggle */}
         <button
-          className="md:hidden text-[#00bf63] hover:text-[#00bf63] font-bold"
+          className="md:hidden text-white hover:text-gray-300 font-bold"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle Menu"
         >
