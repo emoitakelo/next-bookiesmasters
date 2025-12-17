@@ -22,7 +22,7 @@ export default function Navbar() {
           <Image
             src={logo}
             alt="BookiesMasters Logo"
-            className="w-auto h-[60px] object-contain"
+            className="w-auto h-[40px] md:h-[60px] object-contain"
             priority
           />
         </Link>
