@@ -1,0 +1,141 @@
+/* Navbar Link Styling */
+.navbar-custom-link {
+  color: #a7ffeb; /* Light teal */
+  transition: color 0.3s ease;
+}
+
+.navbar-custom-link:hover {
+  color: #ffffff; /* White on hover */
+}
+.navbar-custom-link:focus {
+  color: #ffffff; /* White on hover */
+}
+
+/* Prediction Card Hover Effect */
+.card {
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer; /* works on desktop */
+  user-select: none;
+}
+.card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card:active {
+  transform: scale(0.99);
+}
+
+/* Custom Teal Button */
+.btn-teal {
+  background-color: #00796b !important;
+  border: none !important;
+  color: white !important;
+  transition: background-color 0.3s ease;
+}
+
+.btn-teal:hover,
+.btn-teal:focus,
+.btn-teal:active {
+  background-color: #00695c !important;
+  color: white !important;
+  box-shadow: none !important;
+}
+
+/* Custom Inactive Button */
+.btn-inactive {
+  background-color: #e0f2f1 !important; /* Very light teal */
+  border: 1px solid #00796b !important;
+  color: #00796b !important;
+  transition: background-color 0.3s ease;
+}
+
+.btn-inactive:hover {
+  background-color: #b2dfdb !important;
+  color: #004d40 !important;
+}.nav-link:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.btn:focus,
+.navbar-toggler:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.bg-greyish {
+  background-color: #f2f2f2; /* Soft grey */
+}
+
+.btn {
+  white-space: nowrap;      /* Prevent text from wrapping */
+  overflow: hidden;         /* Prevent content overflow */
+  text-overflow: ellipsis;  /* Add ellipsis if text is too long */
+  padding: 0.5rem 0.75rem;  /* Add some padding */
+  font-size: 0.9rem;        /* Slightly smaller font */
+  min-height: 40px;         /* Ensure uniform height */
+}
+
+.responsive-footer {
+  font-size: 1rem !important; /* Default font size */
+}
+
+@media (max-width: 576px) {
+  .responsive-footer {
+    font-size: 0.65rem !important; /* Smaller font on small screens */
+  }
+}
+
+.custom-toggler {
+  background-image: none;
+  width: 30px;
+  height: 22px;
+  position: relative;
+  display: inline-block;
+}
+
+.custom-toggler::before,
+.custom-toggler::after,
+.custom-toggler div {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: rgba(0, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.custom-toggler::before {
+  top: 0;
+}
+
+.custom-toggler::after {
+  bottom: 0;
+}
+
+.custom-toggler::after,
+.custom-toggler::before {
+  background-color: rgba(0, 255, 255, 0.8);
+}
+
+.custom-toggler div {
+  top: 9px;
+}
+/* Remove background, border, and outline from the toggler button */
+.navbar-toggler {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Remove the outline when toggler is focused (clicked) */
+.navbar-toggler:focus {
+  outline: none;
+  box-shadow: none;
+}

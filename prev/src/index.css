@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🌍 Global Custom Styles */
+html,
+body {
+  @apply  text-gray-100 font-sans;
+  scroll-behavior: smooth;
+}
+
+a {
+  @apply text-accent hover:text-primary transition-colors;
+}
+
+button {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary;
+}
+
+/* 🧩 Reusable Components */
+.card {
+  @apply bg-card rounded-2xl p-4 shadow-md border border-gray-800 hover:shadow-lg transition-all;
+}
+
+.btn {
+  @apply px-4 py-2 rounded-md bg-accent text-black font-semibold hover:bg-primary transition-colors;
+}
+
+.input {
+  @apply px-3 py-2 bg-card border border-gray-700 rounded-md text-gray-200 focus:ring-2 focus:ring-accent;
+}
+
+/* 🎚 Responsive Typography */
+h1 {
+  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+}
+h2 {
+  font-size: clamp(1.5rem, 2vw, 2rem);
+}
+p {
+  font-size: clamp(0.9rem, 1vw, 1rem);
+  line-height: 1.6;
+}

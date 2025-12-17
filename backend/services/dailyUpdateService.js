@@ -133,7 +133,7 @@ export async function updateDailyFixtures() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("✅ Connected to MongoDB\n");
 
-    console.log("📡 Updating fixtures from today up to +2 days...\n");
+    console.log("📡 Updating fixtures from today up to +7 days...\n");
 
     // 1. Load saved leagues
     const savedLeagueIds = await getSavedLeagueIds();
@@ -143,10 +143,10 @@ export async function updateDailyFixtures() {
     }
 
     // 2. Fetch fixtures for multiple days
-    const fixtures = await fetchFixturesForDates(savedLeagueIds, 2);
+    const fixtures = await fetchFixturesForDates(savedLeagueIds, 7);
 
     if (fixtures.length === 0) {
-      console.log("⚠ No fixtures found for saved leagues between today and +2 days.");
+      console.log("⚠ No fixtures found for saved leagues between today and +7 days.");
       return;
     }
 
