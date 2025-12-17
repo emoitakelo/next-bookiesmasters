@@ -22,7 +22,7 @@ export default function Navbar() {
           <Image
             src={logo}
             alt="BookiesMasters Logo"
-className="w-[140px] h-50 object-contain"
+            className="w-auto h-[40px] object-contain"
             priority
           />
         </Link>
@@ -41,13 +41,13 @@ className="w-[140px] h-50 object-contain"
         </div>
 
         {/* Mobile Toggle */}
-       <button
-  className="md:hidden text-[#00bf63] hover:text-[#00bf63] font-bold"
-  onClick={() => setMenuOpen(!menuOpen)}
-  aria-label="Toggle Menu"
->
-  {menuOpen ? <X size={20} /> : <Menu size={20} />}
-</button>
+        <button
+          className="md:hidden text-[#00bf63] hover:text-[#00bf63] font-bold"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle Menu"
+        >
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
 
       </div>
 
