@@ -50,8 +50,8 @@ export default async function FixtureDetailPage({
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4">
-            <div className="max-w-4xl mx-auto space-y-6">
+        <div className="min-h-screen bg-gray-50 py-4 px-2">
+            <div className="max-w-xl mx-auto space-y-4">
                 {/* Back Button (Optional) */}
                 {/* <Link href="/" ... > &larr; Back </Link> */}
 
