@@ -1,7 +1,7 @@
 import axios from "axios";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import League from "./models/League.js"; // adjust path if needed
+import League from "../models/League.js"; // adjust path if needed
 
 dotenv.config();
 
@@ -19,7 +19,7 @@ function findLatestSeasonMatching(seasons = [], predicate = () => false) {
 
 async function fetchAndSaveLeaguesWithPredictions() {
   try {
-   await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI);
 
     console.log("✅ Connected to MongoDB");
 
