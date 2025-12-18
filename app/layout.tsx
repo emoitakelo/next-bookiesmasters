@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "BookiesMasters",
   description: "Free football predictions, fixtures, events, odds, livescores & insights",
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export default function RootLayout({
