@@ -1,10 +1,5 @@
-
 import { notFound } from "next/navigation";
-import LeagueHeader from "@/components/fixture-details/LeagueHeader";
-import TeamDisplay from "@/components/fixture-details/TeamDisplay";
-import H2HSection from "@/components/fixture-details/H2HSection";
-import LastFiveMatches from "@/components/fixture-details/LastFiveMatches";
-// import PredictionAdvice from "@/components/fixture-details/PredictionAdvice"; // Skipped as per request
+import FixtureDetailsClient from "./FixtureDetailsClient";
 
 // Force dynamic rendering since we fetch fresh data
 export const dynamic = "force-dynamic";
@@ -49,40 +44,5 @@ export default async function FixtureDetailPage({
         notFound();
     }
 
-    return (
-        <div className="min-h-screen bg-transparent text-white py-4 px-2">
-            <div className="max-w-xl mx-auto space-y-4">
-                {/* Back Button (Optional) */}
-                {/* <Link href="/" ... > &larr; Back </Link> */}
-
-                <LeagueHeader league={data.league} logo={data.leagueLogo} />
-
-                <TeamDisplay
-                    homeTeam={data.homeTeam}
-                    awayTeam={data.awayTeam}
-                    status={data.status}
-                    displayDate={data.displayDate}
-                    venue={data.venue}
-                    date={data.date}
-                />
-
-                {/* Prediction Advice (Skipped) */}
-                {/* <PredictionAdvice tip={data.tip} /> */}
-
-                <H2HSection h2h={data.h2h} />
-
-                <LastFiveMatches
-                    teamName={data.homeTeam.name}
-                    teamLogo={data.homeTeam.logo}
-                    matches={data.homeTeam.last5Matches}
-                />
-
-                <LastFiveMatches
-                    teamName={data.awayTeam.name}
-                    teamLogo={data.awayTeam.logo}
-                    matches={data.awayTeam.last5Matches}
-                />
-            </div>
-        </div>
-    );
+    return <FixtureDetailsClient data={data} />;
 }
