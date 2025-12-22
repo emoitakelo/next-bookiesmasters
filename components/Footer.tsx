@@ -20,7 +20,7 @@ export default function Footer() {
 
         {/* Contact + Socials */}
         <div className="md:text-center">
-          <h5 className="text-sm font-semibold text-gray-300">Stay connected</h5>
+          <h5 className="text-sm font-semibold text-gray-350">Stay connected</h5>
           <p className="text-xs text-gray-400 ">
             Have questions? Reach us anytime.
           </p>
@@ -47,7 +47,7 @@ export default function Footer() {
 
         {/* Quick Links */}
         <div className="md:text-center">
-          <h5 className="text-sm font-semibold text-gray-300 ">Quick links</h5>
+          <h5 className="text-sm font-semibold text-gray-350 ">Quick links</h5>
           <ul className="text-xs ">
             <li>
               <Link href="/terms-of-service" className="hover:text-teal-400 transition">
