@@ -7,20 +7,20 @@ export default function Footer() {
   return (
     <footer className="bg-black  text-gray-400 md:justify-center px-2">
       {/* Main section */}
-<div className="max-w-3xl mx-auto py-1 grid grid-cols-1 md:grid-cols-3 gap-2 md:w-max md:mx-auto">
-  
-        
+      <div className="max-w-3xl mx-auto py-1 grid grid-cols-1 md:grid-cols-3 gap-2 md:w-max md:mx-auto">
+
+
         {/* Brand */}
-<div className="md:text-center">   
-         <h5 className="text-sm font-semibold text-gray-300 ">Bookiesmasters</h5>
+        <div className="md:text-center">
+          <h5 className="text-sm font-semibold text-gray-350 ">Bookiesmasters</h5>
           <p className="text-xs leading-relaxed">
             Get guided football predictions, fixtures, odds, events, livescores and insights powered by data — all in one place.
           </p>
         </div>
 
         {/* Contact + Socials */}
-<div className="md:text-center"> 
-           <h5 className="text-sm font-semibold text-gray-300">Stay connected</h5>
+        <div className="md:text-center">
+          <h5 className="text-sm font-semibold text-gray-300">Stay connected</h5>
           <p className="text-xs text-gray-400 ">
             Have questions? Reach us anytime.
           </p>
@@ -46,8 +46,8 @@ export default function Footer() {
         </div>
 
         {/* Quick Links */}
-<div className="md:text-center">         
-   <h5 className="text-sm font-semibold text-gray-300 ">Quick links</h5>
+        <div className="md:text-center">
+          <h5 className="text-sm font-semibold text-gray-300 ">Quick links</h5>
           <ul className="text-xs ">
             <li>
               <Link href="/terms-of-service" className="hover:text-teal-400 transition">
