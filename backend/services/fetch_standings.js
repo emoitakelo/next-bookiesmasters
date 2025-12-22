@@ -1,0 +1,101 @@
+import axios from "axios";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import path from "path";
+
+import League from "../models/League.js";
+import Standing from "../models/Standing.js";
+
+dotenv.config({ path: path.resolve(process.cwd(), "backend", ".env") });
+
+const api = axios.create({
+    baseURL: "https://v3.football.api-sports.io",
+    headers: {
+        "x-apisports-key": process.env.API_KEY
+    }
+});
+
+async function getSavedLeagues() {
+    const leagues = await League.find({});
+    return leagues.map(l => ({
+        id: l.league.id,
+        name: l.league.name,
+        currentSeason: l.season
+    }));
+}
+
+async function fetchLeagueStandings(leagueId, season) {
+    try {
+        const res = await api.get("/standings", {
+            params: {
+                league: leagueId,
+                season: season
+            }
+        });
+
+        // Response structure: { response: [ { league: { id, name, ..., standings: [...] } } ] }
+        return res.data?.response?.[0]?.league || null;
+    } catch (err) {
+        console.error(`⚠ Error fetching standings for league ${leagueId}:`, err.message);
+        return null;
+    }
+}
+
+export async function run() {
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        console.log("✅ Connected to MongoDB");
+
+        const savedLeagues = await getSavedLeagues();
+        if (!savedLeagues.length) {
+            console.log("⚠ No saved leagues found in DB.");
+            return;
+        }
+
+        console.log(`Checking standings for ${savedLeagues.length} leagues...`);
+
+        for (const l of savedLeagues) {
+            if (!l.currentSeason) continue;
+
+            console.log(`\nFetching standings: ${l.name} (${l.id}) - Season ${l.currentSeason}`);
+            const leagueData = await fetchLeagueStandings(l.id, l.currentSeason);
+
+            if (leagueData) {
+                // Upsert the standings document
+                // We store the whole league object part which includes 'standings'
+                await Standing.findOneAndUpdate(
+                    { "league.id": l.id, "league.season": l.currentSeason },
+                    {
+                        league: {
+                            id: leagueData.id,
+                            name: leagueData.name,
+                            country: leagueData.country,
+                            logo: leagueData.logo,
+                            flag: leagueData.flag,
+                            season: leagueData.season
+                        },
+                        standings: leagueData.standings
+                    },
+                    { upsert: true }
+                );
+
+                // Check if it's a grouped tournament
+                const isGrouped = leagueData.standings.length > 1;
+                const groups = isGrouped ? leagueData.standings.map(g => g[0]?.group).filter(Boolean) : ["Single Table"];
+
+                console.log(`   ✔ Saved Standings. Structure: ${groups.join(", ")}`);
+            } else {
+                console.log(`   ⚠ No standings data available.`);
+            }
+        }
+
+        console.log("\n🎉 Finished fetching standings.");
+
+    } catch (err) {
+        console.error("❌ Error:", err);
+    } finally {
+        await mongoose.disconnect();
+    }
+}
+
+run();

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Tabs from "@/components/Tabs";
 import H2HSection from "@/components/fixture-details/H2HSection";
 import LastFiveMatches from "@/components/fixture-details/LastFiveMatches";
-import ThinkingStandings from "@/components/fixture-details/ThinkingStandings";
+import Standings from "@/components/fixture-details/Standings";
 import ThinkingOdds from "@/components/fixture-details/ThinkingOdds";
 import ThinkingEvents from "@/components/fixture-details/ThinkingEvents";
 import TeamDisplay from "@/components/fixture-details/TeamDisplay";
@@ -45,7 +45,7 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data }) => 
                     </div>
                 );
             case "standings":
-                return <ThinkingStandings />;
+                return <Standings standings={data.standings} />;
             case "odds":
                 return <ThinkingOdds />;
             case "events":

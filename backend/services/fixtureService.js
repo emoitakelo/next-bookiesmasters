@@ -1,5 +1,6 @@
 
 import Fixture from "../models/Fixture.js";
+import Standing from "../models/Standing.js";
 import { calculateTeamForm } from "../helpers/formCalculator.js";
 
 export const getFixtureById = async (fixtureId) => {
@@ -20,6 +21,8 @@ export const getFixtureById = async (fixtureId) => {
 
         const matchData = fixtureDoc.fixture;
         const predictionData = fixtureDoc.prediction; // Embedded prediction
+
+        // Use the root 'h2h' field as requested, which stores the H2H data from API
         const h2hData = fixtureDoc.h2h || [];
 
         // Calculate Form for Home/Away
@@ -39,7 +42,7 @@ export const getFixtureById = async (fixtureId) => {
                 minute: "2-digit",
             });
 
-        return {
+        const response = {
             fixtureId: matchData.fixture.id,
             league: matchData.league.name,
             leagueLogo: matchData.league.logo,
@@ -69,6 +72,17 @@ export const getFixtureById = async (fixtureId) => {
 
             h2h: h2hData,
         };
+
+        // Fetch Standings
+        const standingsDoc = await Standing.findOne({
+            "league.id": matchData.league.id,
+            "league.season": matchData.league.season
+        }).lean();
+
+        // Add standings to response
+        response.standings = standingsDoc ? standingsDoc.standings : [];
+
+        return response;
 
     } catch (error) {
         console.error("Error in getFixtureById:", error);
