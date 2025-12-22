@@ -90,6 +90,7 @@ export default function FixtureCard({
               width={14}
               height={14}
               className="w-4 h-4"
+              unoptimized
             />
             <span className="font-medium text-gray-800 text-xs sm:text-xs truncate">
               {homeTeam.name}
@@ -103,6 +104,7 @@ export default function FixtureCard({
               width={14}
               height={14}
               className="w-4 h-4"
+              unoptimized
             />
             <span className="font-medium text-gray-800 text-xs sm:text-xs truncate">
               {awayTeam.name}

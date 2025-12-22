@@ -60,6 +60,7 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                             alt={homeTeam?.name}
                             fill
                             className="object-contain"
+                            unoptimized
                         />
                     </div>
                     <span className="font-bold text-center text-sm md:text-base">{homeTeam.name}</span>
@@ -81,6 +82,7 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                             alt={awayTeam?.name}
                             fill
                             className="object-contain"
+                            unoptimized
                         />
                     </div>
                     <span className="font-bold text-center text-sm md:text-base">{awayTeam.name}</span>

@@ -31,18 +31,14 @@ async function fetchAndSaveLeaguesWithPredictions() {
     const allLeagues = res.data?.response || [];
     console.log(`\nℹ️  Total leagues returned by API: ${allLeagues.length}`);
 
-    // ✅ Filter leagues with full coverage including fixture stats
+    // ✅ Filter leagues that have predictions and odds available.
     const predicate = (season) => {
       const cov = season?.coverage;
       const fix = cov?.fixtures;
       return (
         cov &&
         cov.predictions === true &&
-        cov.odds === true &&
-        cov.standings === true &&
-        cov.top_scorers === true &&
-        fix?.statistics_fixtures === true &&
-        fix?.statistics_players === true
+        cov.odds === true
       );
     };
 

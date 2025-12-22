@@ -16,6 +16,7 @@ const LeagueHeader: React.FC<LeagueHeaderProps> = ({ league, logo }) => (
                 width={40}
                 height={40}
                 className="mb-2 object-contain"
+                unoptimized
             />
         )}
         <h2 className="text-xl font-semibold text-teal-600">{league}</h2>
