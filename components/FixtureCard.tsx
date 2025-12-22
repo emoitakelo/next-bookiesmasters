@@ -68,7 +68,7 @@ export default function FixtureCard({
   return (
     <Link href={`/prediction/${fixtureId}`} className="block">
       <div
-        className={`max-w-xl mx-auto bg-white rounded-xl shadow-sm hover:shadow-md transition flex items-center justify-evenly p-1 border-l-4 ${isLive ? "border-red-500 " : "border-transparent"
+        className={`max-w-xl mx-auto bg-gray-300 rounded-xl shadow-sm hover:shadow-md transition flex items-center justify-evenly p-1 border-l-4 ${isLive ? "border-red-500 " : "border-transparent"
           }`}
       >
         {/* STATUS */}
