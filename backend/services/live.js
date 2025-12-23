@@ -27,117 +27,67 @@ async function fetchFullFixture(fixtureId) {
 
 async function updateLiveStatus() {
   try {
-    // 0️⃣ Always poll the API for live matches
-    // We removed the local DB "sleep" check because it was causing issues (missed wake-ups).
-    // Cost: 1 Request per 30 seconds (acceptable for reliability).
+    console.log("♻️  Polling API for Live Fixtures...");
 
-    // console.log("♻️ Polling API for all live fixtures...");
+    // 1. Get ALL live matches
     const { data } = await api.get("/fixtures", { params: { live: "all" } });
     const liveFixtures = data.response || [];
-    const currentLiveIds = new Set(liveFixtures.map(f => f.fixture.id));
 
-    // console.log(`📡 Live Matches from API: ${liveFixtures.length}`);
-    // console.log("──────────────── LIVE MATCHES ────────────────");
-    // liveFixtures.forEach(f => {
-    //   console.log(`🔴 LIVE: ${f.teams.home.name} vs ${f.teams.away.name} (ID: ${f.fixture.id})`);
-    // });
-    // console.log("──────────────────────────────────────────");
-
-    // 0️⃣ Get Saved Leagues to avoid fetching data for random leagues
-    // 0️⃣ Get Saved Leagues
-    const savedLeagues = await League.find({}).select("league.id");
-    const savedLeagueIds = new Set(savedLeagues.map(l => l.league.id));
-
-    //console.log(`ℹ️ Loaded ${savedLeagueIds.size} saved leagues.`);
-
-    let relevantLiveFixtures = [];
-
-    if (savedLeagueIds.size === 0) {
-      // FAILSAFE: If no leagues are saved in DB, fetch EVERYTHING to avoid breaking the app.
-      // This ensures new installs or empty DBs still get live updates.
-      console.warn("⚠️ No saved leagues found in DB. Fetching ALL live matches (Fallback Mode).");
-      relevantLiveFixtures = liveFixtures;
-    } else {
-      // Filter: Only keep matches from our saved leagues
-      relevantLiveFixtures = liveFixtures.filter(f => savedLeagueIds.has(f.league.id));
-
-      const ignoredCount = liveFixtures.length - relevantLiveFixtures.length;
-      if (ignoredCount > 0) {
-        console.log(`ℹ️ Ignored ${ignoredCount} matches not in saved leagues. Processing ${relevantLiveFixtures.length} relevant matches.`);
-      }
+    if (liveFixtures.length === 0) {
+      console.log("💤 No live matches currently.");
+      return;
     }
 
-    // console.log(`found ${liveFixtures.length} live matches, ${relevantLiveFixtures.length} are in our saved leagues.`);
+    // 2. Filter: Only update fixtures that WE ALREADY HAVE in our database
+    const liveIds = liveFixtures.map(f => f.fixture.id);
 
-    // 1️⃣ Fetch full details for EACH RELEVANT live match
-    // OPTIMIZATION: Batch requests using 'ids' parameter (max 20 per call) to save quota
-    if (relevantLiveFixtures.length > 0) {
-      const liveCount = relevantLiveFixtures.length;
-      console.log(`⚡ Fetching full details for ${liveCount} relevant live matches (batched)...`);
+    // Check which of these IDs exist in our DB
+    // We select _id too just to return objects, but we only need the fixtureId checks
+    const existingDocs = await Fixture.find({ fixtureId: { $in: liveIds } }).select("fixtureId");
+    const existingIds = new Set(existingDocs.map(d => d.fixtureId));
 
-      const relevantIds = relevantLiveFixtures.map(f => f.fixture.id);
-      const batches = [];
+    const relevantFixtures = liveFixtures.filter(f => existingIds.has(f.fixture.id));
 
-      // Chunk into groups of 20 (API limit)
-      for (let i = 0; i < relevantIds.length; i += 20) {
-        batches.push(relevantIds.slice(i, i + 20));
-      }
+    if (relevantFixtures.length === 0) {
+      // console.log("ℹ️ No live matches match our saved fixtures.");
+      return;
+    }
 
-      const fullLiveFixtures = [];
+    console.log(`🚀 Updating ${relevantFixtures.length} live matches (out of ${liveFixtures.length} global)...`);
 
-      for (const batch of batches) {
-        try {
-          // Fetch batch
-          const idsStr = batch.join("-");
-          const { data } = await api.get("/fixtures", { params: { ids: idsStr } });
-          if (data.response) {
-            fullLiveFixtures.push(...data.response);
-          }
-        } catch (err) {
-          console.error(`❌ Batch fetch failed: ${err.message}`);
-        }
-      }
-
-      const ops = fullLiveFixtures
-        .filter(f => f) // remove nulls
-        .map(f => ({
-          updateOne: {
-            filter: { fixtureId: f.fixture.id },
-            update: {
-              $set: {
-                livescore: {
-                  goals: f.goals,
-                  score: f.score,
-                  status: f.fixture.status,
-                  events: f.events || [],
-                },
-                // Update full fixture to keep everything in sync (including stats/lineups if they change)
-                fixture: f,
-                "fixture.events": f.events || [],
-                lastLiveUpdate: new Date(),
-              },
+    // 3. Update Basic Livescore Data (Goals, Score, Status)
+    const ops = relevantFixtures.map(f => ({
+      updateOne: {
+        filter: { fixtureId: f.fixture.id },
+        update: {
+          $set: {
+            livescore: {
+              goals: f.goals,
+              score: f.score,
+              status: f.fixture.status,
             },
-            upsert: true,
+            lastLiveUpdate: new Date(),
           },
-        }));
+        },
+      },
+    }));
 
-      if (ops.length) {
-        await Fixture.bulkWrite(ops);
-        console.log(`✅ Updated ${ops.length} live fixtures with FULL details`);
-      }
-    } else {
-      console.log("⚠️ No live fixtures to update");
+    if (ops.length) {
+      await Fixture.bulkWrite(ops);
+      console.log(`✅ Updated ${ops.length} fixtures.`);
     }
 
-    // 2️⃣ Detect fixtures that just finished
+    // 4. Handle Finished Matches
+    // Use the relevant list to track completions
+    const currentLiveIds = new Set(relevantFixtures.map(f => f.fixture.id));
     const finishedIds = [...previousLiveIds].filter(id => !currentLiveIds.has(id));
+
     if (finishedIds.length) {
-      console.log(`⚡ Fetching full data for finished fixtures: ${finishedIds.join(", ")}`);
-      // Fetch full fixtures in parallel
+      console.log(`🏁 Finalizing ${finishedIds.length} finished fixtures...`);
       const fullFixtures = await Promise.all(finishedIds.map(fetchFullFixture));
 
       const ftOps = fullFixtures
-        .filter(f => f) // remove nulls
+        .filter(f => f)
         .map(f => ({
           updateOne: {
             filter: { fixtureId: f.fixture.id, ftUpdated: { $ne: true } },
@@ -153,11 +103,11 @@ async function updateLiveStatus() {
 
       if (ftOps.length) {
         await Fixture.bulkWrite(ftOps);
-        console.log(`✅ Updated ${ftOps.length} finished fixtures with full data`);
+        console.log(`✅ Finalized ${ftOps.length} matches.`);
       }
     }
 
-    // 3️⃣ Save current live IDs for next run
+    // Save state for next run
     previousLiveIds = currentLiveIds;
 
   } catch (err) {
@@ -177,7 +127,6 @@ mongoose
   })
   .catch(err => console.error("❌ MongoDB Error:", err.message));
 
-// Optional: disconnect gracefully on exit
 process.on("SIGINT", async () => {
   console.log("🔌 Closing MongoDB connection...");
   await mongoose.disconnect();

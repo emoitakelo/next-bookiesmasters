@@ -6,7 +6,6 @@ import H2HSection from "@/components/fixture-details/H2HSection";
 import LastFiveMatches from "@/components/fixture-details/LastFiveMatches";
 import Standings from "@/components/fixture-details/Standings";
 import Odds from "@/components/fixture-details/Odds";
-import Events from "@/components/fixture-details/Events";
 import TeamDisplay from "@/components/fixture-details/TeamDisplay";
 import LeagueHeader from "@/components/fixture-details/LeagueHeader";
 
@@ -22,7 +21,6 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data }) => 
         { id: "last5", label: "Last 5" },
         { id: "standings", label: "Standings" },
         { id: "odds", label: "Odds" },
-        { id: "events", label: "Events" },
     ];
 
     const renderContent = () => {
@@ -48,14 +46,6 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data }) => 
                 return <Standings standings={data.standings} />;
             case "odds":
                 return <Odds odds={data.odds} />;
-            case "events":
-                return (
-                    <Events
-                        events={data.events}
-                        homeTeamId={data.homeTeam.id}
-                        awayTeamId={data.awayTeam.id}
-                    />
-                );
             default:
                 return null;
         }
