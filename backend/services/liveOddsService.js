@@ -40,9 +40,9 @@ async function updateLiveOdds() {
 
         // Check which of these IDs exist in our DB
         const existingDocs = await Fixture.find({ fixtureId: { $in: liveIds } }).select("fixtureId");
-        const existingIds = new Set(existingDocs.map(d => d.fixtureId));
+        const existingIds = new Set(existingDocs.map(d => Number(d.fixtureId)));
 
-        const relevantOdds = allLiveOdds.filter(o => existingIds.has(o.fixture.id));
+        const relevantOdds = allLiveOdds.filter(o => existingIds.has(Number(o.fixture.id)));
 
         console.log(`🔍 Matches in DB: ${existingIds.size}. Live Odds matching DB: ${relevantOdds.length}`);
 
