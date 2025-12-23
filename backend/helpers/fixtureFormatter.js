@@ -4,46 +4,46 @@ export function formatFixtureCard(fixtureDoc) {
   // -----------------------------
   // STATUS HANDLING
   // -----------------------------
- // -----------------------------
-// STATUS HANDLING (FINAL FIX)
-// -----------------------------
-let displayStatus = "";
-const status = fx.fixture.status;
+  // -----------------------------
+  // STATUS HANDLING (FINAL FIX)
+  // -----------------------------
+  let displayStatus = "";
+  const status = fx.fixture.status;
 
-// Live elapsed from live scores
-const liveElapsed = fixtureDoc.livescore?.status?.elapsed;
+  // Live elapsed from live scores
+  const liveElapsed = fixtureDoc.livescore?.status?.elapsed;
 
-// 1️⃣ LIVE (highest priority)
-if (liveElapsed != null && liveElapsed >= 0) {
-  displayStatus = `${liveElapsed}'`;
-}
+  // 1️⃣ LIVE (highest priority)
+  if (liveElapsed != null && liveElapsed >= 0) {
+    displayStatus = `${liveElapsed}'`;
+  }
 
-// 2️⃣ FINISHED
-else if (status.short === "FT") {
-  displayStatus = "FT";
-}
+  // 2️⃣ FINISHED
+  else if (status.short === "FT") {
+    displayStatus = "FT";
+  }
 
-// 3️⃣ NOT STARTED → show time
-else if (status.short === "NS") {
-  const dateObj = new Date(fx.fixture.date);
-  displayStatus = dateObj.toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "Africa/Nairobi", // ← important
-  });
-}
+  // 3️⃣ NOT STARTED → show time
+  else if (status.short === "NS") {
+    const dateObj = new Date(fx.fixture.date);
+    displayStatus = dateObj.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "Africa/Nairobi", // ← important
+    });
+  }
 
 
-// 4️⃣ FALLBACK (use fixture status.elapsed if exists)
-else if (status.elapsed) {
-  displayStatus = `${status.elapsed}'`;
-}
+  // 4️⃣ FALLBACK (use fixture status.elapsed if exists)
+  else if (status.elapsed) {
+    displayStatus = `${status.elapsed}'`;
+  }
 
-// 5️⃣ UNKNOWN
-else {
-  displayStatus = "—";
-}
+  // 5️⃣ UNKNOWN
+  else {
+    displayStatus = "—";
+  }
 
 
   // -----------------------------
@@ -60,8 +60,23 @@ else {
   // ODDS HANDLING (MARKET = 1️⃣ Match Winner)
   // -----------------------------
   let odds = { home: null, draw: null, away: null };
+  const isLive = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(status.short);
 
-  if (fixtureDoc.odds && fixtureDoc.odds.length > 0) {
+  // PATH A: Live Odds (Array of Markets)
+  if (isLive && fixtureDoc.liveOdds && fixtureDoc.liveOdds.length > 0) {
+    const matchWinnerMarket = fixtureDoc.liveOdds.find(
+      (market) => market.name?.toLowerCase() === "match winner"
+    );
+
+    if (matchWinnerMarket?.values) {
+      odds.home = matchWinnerMarket.values.find(v => v.value === "Home")?.odd || null;
+      odds.draw = matchWinnerMarket.values.find(v => v.value === "Draw")?.odd || null;
+      odds.away = matchWinnerMarket.values.find(v => v.value === "Away")?.odd || null;
+    }
+  }
+
+  // PATH B: Pre-match Odds (Array of Bookmakers)
+  else if (fixtureDoc.odds && fixtureDoc.odds.length > 0) {
     for (const bookmaker of fixtureDoc.odds) {
       const matchWinnerMarket = bookmaker.markets.find(
         (market) => market.name?.toLowerCase() === "match winner"
