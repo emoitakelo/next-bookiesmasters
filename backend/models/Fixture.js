@@ -11,6 +11,7 @@ const FixtureSchema = new mongoose.Schema(
     prediction: { type: Object, default: null },
     h2h: { type: Array, default: [] },
     odds: { type: Array, default: [] },
+    liveOdds: { type: Array, default: [] }, // Separate field for live odds
 
     // Live-only data
     livescore: { type: Object, default: null },

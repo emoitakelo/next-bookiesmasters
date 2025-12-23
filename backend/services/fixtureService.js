@@ -71,7 +71,12 @@ export const getFixtureById = async (fixtureId) => {
             },
 
             h2h: h2hData,
-            odds: fixtureDoc.odds || [],
+
+            // LOGIC: If match is LIVE (or finished recently/HT) AND we have liveOdds, use them.
+            // Otherwise use pre-match odds.
+            odds: (["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(matchData.fixture.status.short) && fixtureDoc.liveOdds?.length > 0)
+                ? fixtureDoc.liveOdds
+                : (fixtureDoc.odds || []),
         };
 
         // Fetch Standings
