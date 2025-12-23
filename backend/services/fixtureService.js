@@ -42,6 +42,9 @@ export const getFixtureById = async (fixtureId) => {
                 minute: "2-digit",
             });
 
+        // Calculate odds preference
+        const shouldUseLiveOdds = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(matchData.fixture.status.short) && fixtureDoc.liveOdds?.length > 0;
+
         const response = {
             fixtureId: matchData.fixture.id,
             league: matchData.league.name,
@@ -74,9 +77,7 @@ export const getFixtureById = async (fixtureId) => {
 
             // LOGIC: If match is LIVE (or finished recently/HT) AND we have liveOdds, use them.
             // Otherwise use pre-match odds.
-            odds: (["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(matchData.fixture.status.short) && fixtureDoc.liveOdds?.length > 0)
-                ? fixtureDoc.liveOdds
-                : (fixtureDoc.odds || []),
+            odds: shouldUseLiveOdds ? fixtureDoc.liveOdds : (fixtureDoc.odds || []),
         };
 
         // Fetch Standings

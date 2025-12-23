@@ -54,9 +54,12 @@ async function updateLiveOdds() {
         console.log(`🚀 Updating live odds for ${relevantOdds.length} fixtures...`);
 
         // 3. Bulk Update
+        const updateIds = relevantOdds.map(o => o.fixture.id);
+        console.log(`📝 IDs to update: ${updateIds.join(", ")}`);
+
         const ops = relevantOdds.map(o => ({
             updateOne: {
-                filter: { fixtureId: o.fixture.id },
+                filter: { fixtureId: Number(o.fixture.id) },
                 update: {
                     $set: {
                         liveOdds: o.odds || [], // Save into dedicated field
