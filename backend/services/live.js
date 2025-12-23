@@ -44,11 +44,28 @@ async function updateLiveStatus() {
     // console.log("──────────────────────────────────────────");
 
     // 0️⃣ Get Saved Leagues to avoid fetching data for random leagues
+    // 0️⃣ Get Saved Leagues
     const savedLeagues = await League.find({}).select("league.id");
     const savedLeagueIds = new Set(savedLeagues.map(l => l.league.id));
 
-    // Filter: Only keep matches from our saved leagues
-    const relevantLiveFixtures = liveFixtures.filter(f => savedLeagueIds.has(f.league.id));
+    //console.log(`ℹ️ Loaded ${savedLeagueIds.size} saved leagues.`);
+
+    let relevantLiveFixtures = [];
+
+    if (savedLeagueIds.size === 0) {
+      // FAILSAFE: If no leagues are saved in DB, fetch EVERYTHING to avoid breaking the app.
+      // This ensures new installs or empty DBs still get live updates.
+      console.warn("⚠️ No saved leagues found in DB. Fetching ALL live matches (Fallback Mode).");
+      relevantLiveFixtures = liveFixtures;
+    } else {
+      // Filter: Only keep matches from our saved leagues
+      relevantLiveFixtures = liveFixtures.filter(f => savedLeagueIds.has(f.league.id));
+
+      const ignoredCount = liveFixtures.length - relevantLiveFixtures.length;
+      if (ignoredCount > 0) {
+        console.log(`ℹ️ Ignored ${ignoredCount} matches not in saved leagues. Processing ${relevantLiveFixtures.length} relevant matches.`);
+      }
+    }
 
     // console.log(`found ${liveFixtures.length} live matches, ${relevantLiveFixtures.length} are in our saved leagues.`);
 
