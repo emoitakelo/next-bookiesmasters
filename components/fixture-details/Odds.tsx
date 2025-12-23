@@ -23,41 +23,53 @@ interface OddsProps {
 const Odds: React.FC<OddsProps> = ({ odds }) => {
     if (!odds || odds.length === 0) {
         return (
-            <div className="text-center p-4 text-gray-400 bg-zinc-900 rounded-lg">
-                No odds available
+            <div className="text-center p-8 text-gray-500 bg-[#1e1e1e] rounded-lg border border-[#2a2a2a]">
+                <p className="text-sm">No markets available</p>
             </div>
         );
     }
 
-    // Since we only fetch one bookmaker (Bet365), we can focus on the first item
-    const bet365 = odds[0];
+    // We focus on the first bookmaker (usually Bet365)
+    const bookmakerData = odds[0];
+
+    // Helper to determine grid columns based on number of outcomes
+    const getGridClass = (valuesCount: number) => {
+        if (valuesCount === 2) return "grid-cols-2";
+        if (valuesCount === 3) return "grid-cols-3";
+        return "grid-cols-2"; // default fallback
+    };
 
     return (
-        <div className="space-y-6">
-            <div className="bg-zinc-900 rounded-lg p-4">
-                <h3 className="text-gray-200 font-semibold mb-3 px-2 flex items-center justify-between">
-                    <span>{bet365.bookmaker} Odds</span>
-                    <span className="text-xs text-gray-500 font-normal">All markets</span>
-                </h3>
+        <div className="space-y-3">
+            {/* Removed the 'Bet365 Odds' header as requested */}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {bet365.markets.map((market) => (
-                        <div key={market.id} className="bg-zinc-800/50 rounded-md p-3">
-                            <h4 className="text-sm font-medium text-gray-300 mb-2 truncate">
-                                {market.name}
-                            </h4>
-                            <div className="space-y-1">
-                                {market.values.map((val, idx) => (
-                                    <div key={idx} className="flex justify-between items-center text-sm py-1 border-b border-zinc-700/50 last:border-0">
-                                        <span className="text-gray-400">{val.value}</span>
-                                        <span className="font-bold text-green-400">{val.odd}</span>
-                                    </div>
-                                ))}
-                            </div>
+            {bookmakerData.markets.map((market) => (
+                <div key={market.id} className="bg-[#1e1e1e] rounded-lg overflow-hidden border border-[#2a2a2a]">
+                    <div className="bg-[#252525] px-4 py-2.5 border-b border-[#333]">
+                        <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wide">
+                            {market.name}
+                        </h3>
+                    </div>
+
+                    <div className="p-3">
+                        <div className={`grid ${getGridClass(market.values.length)} gap-2`}>
+                            {market.values.map((val, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex flex-col items-center justify-center bg-[#2a2a2a] hover:bg-[#333] active:bg-[#404040] transition-colors rounded py-2 px-1 cursor-pointer group"
+                                >
+                                    <span className="text-[11px] text-gray-400 font-medium mb-0.5 group-hover:text-gray-300">
+                                        {val.value}
+                                    </span>
+                                    <span className="text-[13px] font-bold text-yellow-500 group-hover:text-yellow-400">
+                                        {val.odd}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
                 </div>
-            </div>
+            ))}
         </div>
     );
 };
