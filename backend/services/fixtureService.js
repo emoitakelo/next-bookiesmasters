@@ -71,6 +71,7 @@ export const getFixtureById = async (fixtureId) => {
             },
 
             h2h: h2hData,
+            odds: fixtureDoc.odds || [],
         };
 
         // Fetch Standings
