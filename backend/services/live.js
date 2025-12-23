@@ -27,7 +27,33 @@ async function fetchFullFixture(fixtureId) {
 
 async function updateLiveStatus() {
   try {
-    console.log("♻️ Fetching live fixtures...");
+    console.log("♻️ Checking for active matches...");
+
+    // 0️⃣ PRE-CHECK: Do we even have any matches that SHOULD be live right now?
+    // We want to avoid API calls if no leagues we care about are playing.
+    const now = new Date();
+    const threeHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+
+    const activeMatchesCount = await Fixture.countDocuments({
+      $or: [
+        // Case A: Status says it IS live
+        { "fixture.fixture.status.short": { $in: ["1H", "2H", "HT", "ET", "P", "BT", "LIVE"] } },
+
+        // Case B: Status says 'NS' (Not Started) but start time was recent (e.g. started 10 mins ago)
+        // or suspended/interrupted matches we want to keep checking
+        {
+          "fixture.fixture.status.short": { $in: ["NS", "INT", "SUSP"] },
+          "fixture.fixture.date": { $gte: threeHoursAgo.toISOString(), $lte: now.toISOString() }
+        }
+      ]
+    });
+
+    if (activeMatchesCount === 0) {
+      console.log("💤 No active matches expected. Sleeping (0 API calls).");
+      return;
+    }
+
+    console.log(`🚀 Found ${activeMatchesCount} potential live matches. Polling API...`);
 
     const { data } = await api.get("/fixtures", { params: { live: "all" } });
     const liveFixtures = data.response || [];
