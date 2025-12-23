@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import axios from "axios";
 import Fixture from "../models/Fixture.js";
+import League from "../models/League.js";
 
 dotenv.config();
 
@@ -39,30 +40,71 @@ async function updateLiveStatus() {
     // });
     // console.log("──────────────────────────────────────────");
 
-    // 1️⃣ Update live scores
-    const ops = liveFixtures.map(f => ({
-      updateOne: {
-        filter: { fixtureId: f.fixture.id },
-        update: {
-          $set: {
-            livescore: {
-              goals: f.goals,
-              score: f.score,
-              status: f.fixture.status,
-              events: f.events || [], // Save live events here
-            },
-            // Also update the main events array if you want it persistent there too
-            "fixture.events": f.events || [],
-            lastLiveUpdate: new Date(),
-          },
-        },
-        upsert: true,
-      },
-    }));
+    // 0️⃣ Get Saved Leagues to avoid fetching data for random leagues
+    const savedLeagues = await League.find({}).select("league.id");
+    const savedLeagueIds = new Set(savedLeagues.map(l => l.league.id));
 
-    if (ops.length) {
-      await Fixture.bulkWrite(ops);
-      console.log(`✅ Updated ${ops.length} live fixtures`);
+    // Filter: Only keep matches from our saved leagues
+    const relevantLiveFixtures = liveFixtures.filter(f => savedLeagueIds.has(f.league.id));
+
+    // console.log(`found ${liveFixtures.length} live matches, ${relevantLiveFixtures.length} are in our saved leagues.`);
+
+    // 1️⃣ Fetch full details for EACH RELEVANT live match
+    // OPTIMIZATION: Batch requests using 'ids' parameter (max 20 per call) to save quota
+    if (relevantLiveFixtures.length > 0) {
+      const liveCount = relevantLiveFixtures.length;
+      console.log(`⚡ Fetching full details for ${liveCount} relevant live matches (batched)...`);
+
+      const relevantIds = relevantLiveFixtures.map(f => f.fixture.id);
+      const batches = [];
+
+      // Chunk into groups of 20 (API limit)
+      for (let i = 0; i < relevantIds.length; i += 20) {
+        batches.push(relevantIds.slice(i, i + 20));
+      }
+
+      const fullLiveFixtures = [];
+
+      for (const batch of batches) {
+        try {
+          // Fetch batch
+          const idsStr = batch.join("-");
+          const { data } = await api.get("/fixtures", { params: { ids: idsStr } });
+          if (data.response) {
+            fullLiveFixtures.push(...data.response);
+          }
+        } catch (err) {
+          console.error(`❌ Batch fetch failed: ${err.message}`);
+        }
+      }
+
+      const ops = fullLiveFixtures
+        .filter(f => f) // remove nulls
+        .map(f => ({
+          updateOne: {
+            filter: { fixtureId: f.fixture.id },
+            update: {
+              $set: {
+                livescore: {
+                  goals: f.goals,
+                  score: f.score,
+                  status: f.fixture.status,
+                  events: f.events || [],
+                },
+                // Update full fixture to keep everything in sync (including stats/lineups if they change)
+                fixture: f,
+                "fixture.events": f.events || [],
+                lastLiveUpdate: new Date(),
+              },
+            },
+            upsert: true,
+          },
+        }));
+
+      if (ops.length) {
+        await Fixture.bulkWrite(ops);
+        console.log(`✅ Updated ${ops.length} live fixtures with FULL details`);
+      }
     } else {
       console.log("⚠️ No live fixtures to update");
     }

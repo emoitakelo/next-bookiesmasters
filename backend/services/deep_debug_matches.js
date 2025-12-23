@@ -10,11 +10,15 @@ async function deepDebug() {
         await mongoose.connect(process.env.MONGO_URI);
         console.log("Connected to MongoDB");
 
-        // 1. Find a Premier League match (ID 39) to check events
-        // Let's search by league ID
+        // 1. Find the specific match user mentioned
+        const teamName = "Macarthur";
+        console.log(`Searching for team: ${teamName}`);
+
         const sample = await Fixture.findOne({
-            "fixture.league.id": 39,
-            "fixture.fixture.status.short": "FT"
+            $or: [
+                { "fixture.teams.home.name": { $regex: teamName, $options: "i" } },
+                { "fixture.teams.away.name": { $regex: teamName, $options: "i" } }
+            ]
         }).lean();
 
         if (!sample) {
@@ -26,18 +30,27 @@ async function deepDebug() {
         const away = sample.fixture.teams.away;
         const targetId = home.name === "Birmingham" ? home.id : away.id; // Just using logic to compile, but logic below relies on actual match data
 
-        console.log(`Found Premier League Match: ${sample.fixture.teams.home.name} vs ${sample.fixture.teams.away.name} (ID: ${sample.fixtureId})`);
+        console.log(`Found Match: ${sample.fixture.teams.home.name} vs ${sample.fixture.teams.away.name} (ID: ${sample.fixtureId})`);
 
+        console.log("\n--- LiveScore Data (from 'livescore' field) ---");
+        if (sample.livescore) {
+            console.log(JSON.stringify(sample.livescore, null, 2));
+        } else {
+            console.log("No 'livescore' field found.");
+        }
+
+        console.log("\n--- Fixture Events (from 'fixture.events' field) ---");
         const events = sample.fixture.events;
         console.log(`Has 'events' property: ${!!events}`);
         if (events) {
             console.log(`Events count: ${events.length}`);
             if (events.length > 0) {
-                console.log("Sample Event:", JSON.stringify(events[0], null, 2));
+                console.log("Events:", JSON.stringify(events, null, 2));
             }
         }
 
-        console.log(`Found Team ID for ${teamName}: ${targetId} (from fixture ${sample.fixtureId})`);
+        // Return early for this specific debug
+        process.exit(0);
 
         // 2. Count ALL matches involving this ID, regardless of status
         const allMatches = await Fixture.find({
