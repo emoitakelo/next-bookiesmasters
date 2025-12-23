@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 import axios from "axios";
 import Fixture from "../models/Fixture.js";
 
-dotenv.config();
+import path from "path";
+
+dotenv.config({ path: path.resolve(process.cwd(), "backend", ".env") });
 
 const UPDATE_INTERVAL = 60 * 1000; // 1 minute
 const api = axios.create({
@@ -19,13 +21,14 @@ async function updateLiveOdds() {
         // This returns odds for ALL fixtures currently live on API-Football
         const { data } = await api.get("/odds/live", {
             params: {
-                bet: 1 // Match Winner (simplest for now, or omit to get all markets)
+                // bet: 1 // Removing bet filter to see IF we get ANY odds at all
                 // Note: omitting bet returns all markets which is heavier but better for 'events'. 
                 // Let's start with omitting to get full data, assuming we want to replicate 'odds' structure.
             }
         });
 
         const allLiveOdds = data.response || [];
+        console.log(`📡 API returned ${allLiveOdds.length} live odds objects.`);
 
         if (allLiveOdds.length === 0) {
             console.log("💤 No live odds returned from API.");
@@ -40,6 +43,8 @@ async function updateLiveOdds() {
         const existingIds = new Set(existingDocs.map(d => d.fixtureId));
 
         const relevantOdds = allLiveOdds.filter(o => existingIds.has(o.fixture.id));
+
+        console.log(`🔍 Matches in DB: ${existingIds.size}. Live Odds matching DB: ${relevantOdds.length}`);
 
         if (relevantOdds.length === 0) {
             // console.log("ℹ️ Live odds found, but none match our saved fixtures.");
