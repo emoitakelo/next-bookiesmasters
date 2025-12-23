@@ -72,6 +72,7 @@ export const getFixtureById = async (fixtureId) => {
 
             h2h: h2hData,
             odds: fixtureDoc.odds || [],
+            events: fixtureDoc.livescore?.events || fixtureDoc.fixture.events || [], // Prioritize live events, fallback to API response events
         };
 
         // Fetch Standings

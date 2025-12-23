@@ -10,17 +10,11 @@ async function deepDebug() {
         await mongoose.connect(process.env.MONGO_URI);
         console.log("Connected to MongoDB");
 
-        // 1. Find Birmingham's ID again (we saw 54 before)
-        // Let's search by name to be sure we are looking at the right team
-        const teamName = "Birmingham";
-        console.log(`Searching for team: ${teamName}`);
-
-        // Find ONE fixture with this team to get the ID
+        // 1. Find a Premier League match (ID 39) to check events
+        // Let's search by league ID
         const sample = await Fixture.findOne({
-            $or: [
-                { "fixture.teams.home.name": teamName },
-                { "fixture.teams.away.name": teamName }
-            ]
+            "fixture.league.id": 39,
+            "fixture.fixture.status.short": "FT"
         }).lean();
 
         if (!sample) {
@@ -30,7 +24,18 @@ async function deepDebug() {
 
         const home = sample.fixture.teams.home;
         const away = sample.fixture.teams.away;
-        const targetId = home.name === teamName ? home.id : away.id;
+        const targetId = home.name === "Birmingham" ? home.id : away.id; // Just using logic to compile, but logic below relies on actual match data
+
+        console.log(`Found Premier League Match: ${sample.fixture.teams.home.name} vs ${sample.fixture.teams.away.name} (ID: ${sample.fixtureId})`);
+
+        const events = sample.fixture.events;
+        console.log(`Has 'events' property: ${!!events}`);
+        if (events) {
+            console.log(`Events count: ${events.length}`);
+            if (events.length > 0) {
+                console.log("Sample Event:", JSON.stringify(events[0], null, 2));
+            }
+        }
 
         console.log(`Found Team ID for ${teamName}: ${targetId} (from fixture ${sample.fixtureId})`);
 

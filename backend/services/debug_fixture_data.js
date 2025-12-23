@@ -22,9 +22,18 @@ async function debugFixtureData() {
         console.log(`\nAnalyzing Fixture ID: ${fixtureDoc.fixtureId}`);
         console.log(`Match: ${fixtureDoc.fixture.teams.home.name} vs ${fixtureDoc.fixture.teams.away.name}`);
 
-        // Check H2H Data
-        console.log(`\n--- H2H Analysis ---`);
-        console.log(`Root 'h2h' property length: ${fixtureDoc.h2h ? fixtureDoc.h2h.length : 0}`);
+        // Check Events
+        // Note: In our storage, 'fixture' field holds the entire API response object
+        // API-Football structure: res.response[0] = { fixture:..., league:..., teams:..., events:[...], ... }
+        const storedObject = fixtureDoc.fixture;
+        console.log(`\n--- Events Analysis ---`);
+        console.log(`Has 'events' property: ${!!storedObject.events}`);
+        if (storedObject.events) {
+            console.log(`Events count: ${storedObject.events.length}`);
+            if (storedObject.events.length > 0) {
+                console.log("Sample Event:", JSON.stringify(storedObject.events[0], null, 2));
+            }
+        }
 
         if (fixtureDoc.prediction) {
             console.log(`Prediction object exists.`);

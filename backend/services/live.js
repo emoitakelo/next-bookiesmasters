@@ -49,7 +49,10 @@ async function updateLiveStatus() {
               goals: f.goals,
               score: f.score,
               status: f.fixture.status,
+              events: f.events || [], // Save live events here
             },
+            // Also update the main events array if you want it persistent there too
+            "fixture.events": f.events || [],
             lastLiveUpdate: new Date(),
           },
         },
