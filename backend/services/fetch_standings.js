@@ -6,7 +6,10 @@ import path from "path";
 import League from "../models/League.js";
 import Standing from "../models/Standing.js";
 
-dotenv.config({ path: path.resolve(process.cwd(), "backend", ".env") });
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const api = axios.create({
     baseURL: "https://v3.football.api-sports.io",
