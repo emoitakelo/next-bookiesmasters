@@ -1,98 +1,55 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
 import axios from "axios";
 import Fixture from "../models/Fixture.js";
-
+import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config({ path: path.resolve(process.cwd(), "backend", ".env") });
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-const UPDATE_INTERVAL = 60 * 1000; // 1 minute
-const api = axios.create({
-    baseURL: "https://v3.football.api-sports.io",
-    headers: { "x-apisports-key": process.env.API_KEY },
-});
+const API_KEY = process.env.API_KEY;
+const BASE_URL = "https://v3.football.api-sports.io";
 
-async function updateLiveOdds() {
+export async function pollLiveOdds() {
     try {
-        // console.log("🎲 Polling API for Live Odds...");
-
-        // 1. Get ALL live odds from API (Bulk)
-        // This returns odds for ALL fixtures currently live on API-Football
-        const { data } = await api.get("/odds/live", {
-            params: {
-                // bet: 1 // Removing bet filter to see IF we get ANY odds at all
-                // Note: omitting bet returns all markets which is heavier but better for 'events'. 
-                // Let's start with omitting to get full data, assuming we want to replicate 'odds' structure.
-            }
+        // 1. Fetch ALL live odds globally (Cost: 1 API Call)
+        // This endpoint returns odds for ALL currently in-play matches
+        const response = await axios.get(`${BASE_URL}/odds/live`, {
+            headers: { "x-apisports-key": API_KEY }
         });
 
-        const allLiveOdds = data.response || [];
-        console.log(`📡 API returned ${allLiveOdds.length} live odds objects.`);
+        const oddsList = response.data.response;
 
-        if (allLiveOdds.length === 0) {
-            console.log("💤 No live odds returned from API.");
-            return;
-        }
+        if (!oddsList || oddsList.length === 0) return;
 
-        // 2. Filter: Only update odds for fixtures WE HAVE in our database
-        const liveIds = allLiveOdds.map(o => o.fixture.id);
-
-        // Check which of these IDs exist in our DB
-        const existingDocs = await Fixture.find({ fixtureId: { $in: liveIds } }).select("fixtureId");
-        const existingIds = new Set(existingDocs.map(d => Number(d.fixtureId)));
-
-        const relevantOdds = allLiveOdds.filter(o => existingIds.has(Number(o.fixture.id)));
-
-        console.log(`🔍 Matches in DB: ${existingIds.size}. Live Odds matching DB: ${relevantOdds.length}`);
-
-        if (relevantOdds.length === 0) {
-            // console.log("ℹ️ Live odds found, but none match our saved fixtures.");
-            return;
-        }
-
-        console.log(`🚀 Updating live odds for ${relevantOdds.length} fixtures...`);
-
-        // 3. Bulk Update
-        const updateIds = relevantOdds.map(o => o.fixture.id);
-        console.log(`📝 IDs to update: ${updateIds.join(", ")}`);
-
-        const ops = relevantOdds.map(o => ({
+        // 2. Bulk Update in MongoDB
+        const bulkOps = oddsList.map(item => ({
             updateOne: {
-                filter: { fixtureId: Number(o.fixture.id) },
+                filter: { fixtureId: item.fixture.id },
                 update: {
                     $set: {
-                        liveOdds: o.odds || [], // Save into dedicated field
-                        lastLiveUpdate: new Date(),
-                    },
-                },
-            },
+                        // We store live odds in a specific field to separate from pre-match
+                        "liveOdds": item.odds,
+                        lastLiveUpdate: new Date()
+                    }
+                }
+            }
         }));
 
-        if (ops.length) {
-            await Fixture.bulkWrite(ops);
-            console.log(`✅ updated live odds.`);
+        if (bulkOps.length > 0) {
+            await Fixture.bulkWrite(bulkOps, { ordered: false });
+            // console.log(`   🎲 Updated Live Odds for ${bulkOps.length} matches.`);
         }
 
     } catch (err) {
-        console.error("❌ Live odds update failed:", err.message);
+        // Suppress 404s or empty (ofter happens if no live odds available)
+        // console.error("❌ [LiveOdds] Error:", err.message);
     }
 }
 
-// -----------------------------------------
-// CONNECT TO DB AND RUN
-// -----------------------------------------
-mongoose
-    .connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log("✅ Connected to MongoDB (Live Odds Service)");
-        updateLiveOdds(); // first run
-        setInterval(updateLiveOdds, UPDATE_INTERVAL); // repeat
-    })
-    .catch(err => console.error("❌ MongoDB Error:", err.message));
+export function startLiveOddsService() {
+    console.log("🚀 Live Odds Service Started (Polling every 60s)");
 
-process.on("SIGINT", async () => {
-    console.log("🔌 Closing MongoDB connection...");
-    await mongoose.disconnect();
-    process.exit(0);
-});
+    pollLiveOdds();
+    setInterval(pollLiveOdds, 60000);
+}

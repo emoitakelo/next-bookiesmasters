@@ -75,6 +75,9 @@ export const getFixtureById = async (fixtureId) => {
             // LOGIC: If match is LIVE (or finished recently/HT) AND we have liveOdds, use them.
             // Otherwise use pre-match odds.
             odds: fixtureDoc.odds || [],
+
+            // Events (Goals, Cards, Subs)
+            events: matchData.events || [],
         };
 
         // Fetch Standings

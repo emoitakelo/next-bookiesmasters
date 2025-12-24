@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Tabs from "@/components/Tabs";
 import H2HSection from "@/components/fixture-details/H2HSection";
 import LastFiveMatches from "@/components/fixture-details/LastFiveMatches";
+import Events from "@/components/fixture-details/Events";
 import Standings from "@/components/fixture-details/Standings";
 import Odds from "@/components/fixture-details/Odds";
 import TeamDisplay from "@/components/fixture-details/TeamDisplay";
@@ -14,9 +15,10 @@ interface FixtureDetailsClientProps {
 }
 
 const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data }) => {
-    const [activeTab, setActiveTab] = useState("h2h");
+    const [activeTab, setActiveTab] = useState("events");
 
     const tabs = [
+        { id: "events", label: "Events" }, // Added Events tab
         { id: "h2h", label: "H2H" },
         { id: "last5", label: "Last 5" },
         { id: "standings", label: "Standings" },
@@ -25,6 +27,8 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data }) => 
 
     const renderContent = () => {
         switch (activeTab) {
+            case "events":
+                return <Events events={data.events} homeTeamId={data.homeTeam.id} awayTeamId={data.awayTeam.id} />;
             case "h2h":
                 return <H2HSection h2h={data.h2h} />;
             case "last5":

@@ -19,7 +19,9 @@ interface FixtureDetailData {
 }
 
 async function getFixture(id: string) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/${id}`, {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/${id}`;
+    console.log("🔍 Fetching URL:", url); // <--- DEBUG LOG
+    const res = await fetch(url, {
         cache: "no-store",
     });
 
