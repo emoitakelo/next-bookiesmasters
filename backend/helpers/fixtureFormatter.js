@@ -1,92 +1,86 @@
 export function formatFixtureCard(fixtureDoc) {
   const fx = fixtureDoc.fixture;
+  const status = fx.fixture.status; // { long, short, elapsed }
+  const goals = fx.goals; // { home, away } (live or final)
 
   // -----------------------------
   // STATUS HANDLING
   // -----------------------------
-  // -----------------------------
-  // STATUS HANDLING (FINAL FIX)
-  // -----------------------------
   let displayStatus = "";
-  const status = fx.fixture.status;
+  const shortStatus = status.short; // "NS", "1H", "FT", etc.
 
-  // Live elapsed from live scores
-  const liveElapsed = fixtureDoc.livescore?.status?.elapsed;
+  // Helper: Is the match live?
+  const isLive = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(shortStatus);
 
-  // 1️⃣ LIVE (highest priority)
-  if (liveElapsed != null && liveElapsed >= 0) {
-    displayStatus = `${liveElapsed}'`;
+  // 1️⃣ LIVE → Show Minutes (e.g. "34'")
+  if (isLive) {
+    displayStatus = status.elapsed ? `${status.elapsed}'` : "Live";
   }
 
-  // 2️⃣ FINISHED
-  else if (status.short === "FT") {
+  // 2️⃣ FINISHED → Show "FT"
+  else if (shortStatus === "FT" || shortStatus === "AET" || shortStatus === "PEN") {
     displayStatus = "FT";
   }
 
-  // 3️⃣ NOT STARTED → show time
-  else if (status.short === "NS") {
+  // 3️⃣ NOT STARTED → Show Time (e.g. "22:00")
+  else if (shortStatus === "NS") {
     const dateObj = new Date(fx.fixture.date);
     displayStatus = dateObj.toLocaleTimeString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-      timeZone: "Africa/Nairobi", // ← important
+      timeZone: "Africa/Nairobi",
     });
   }
 
-
-  // 4️⃣ FALLBACK (use fixture status.elapsed if exists)
-  else if (status.elapsed) {
-    displayStatus = `${status.elapsed}'`;
-  }
-
-  // 5️⃣ UNKNOWN
+  // 4️⃣ OTHERS (Postponed, Cancelled, etc.)
   else {
-    displayStatus = "—";
+    displayStatus = shortStatus;
   }
 
-
   // -----------------------------
-  // SCORE HANDLING (LIVE OR FT)
+  // SCORE HANDLING
   // -----------------------------
+  // Show score if Live or Finished
   let scoreDisplay = null;
-  if (status.short === "FT") {
-    scoreDisplay = `${fx.goals.home} - ${fx.goals.away}`;
-  } else if (fixtureDoc.livescore?.goals) {
-    scoreDisplay = `${fixtureDoc.livescore.goals.home} - ${fixtureDoc.livescore.goals.away}`;
-  }
-
-  // -----------------------------
-  // ODDS HANDLING (MARKET = 1️⃣ Match Winner)
-  // -----------------------------
-  let odds = { home: null, draw: null, away: null };
-  const isLive = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(status.short);
-
-  // PATH A: Live Odds (Array of Markets)
-  if (isLive && fixtureDoc.liveOdds && fixtureDoc.liveOdds.length > 0) {
-    const matchWinnerMarket = fixtureDoc.liveOdds.find(
-      (market) => market.name?.toLowerCase() === "match winner"
-    );
-
-    if (matchWinnerMarket?.values) {
-      odds.home = matchWinnerMarket.values.find(v => v.value === "Home")?.odd || null;
-      odds.draw = matchWinnerMarket.values.find(v => v.value === "Draw")?.odd || null;
-      odds.away = matchWinnerMarket.values.find(v => v.value === "Away")?.odd || null;
+  if (isLive || ["FT", "AET", "PEN"].includes(shortStatus)) {
+    if (goals && goals.home !== null && goals.away !== null) {
+      scoreDisplay = `${goals.home} - ${goals.away}`;
     }
   }
 
-  // PATH B: Pre-match Odds (Array of Bookmakers)
-  else if (fixtureDoc.odds && fixtureDoc.odds.length > 0) {
+  // -----------------------------
+  // ODDS HANDLING
+  // -----------------------------
+  let odds = { home: null, draw: null, away: null };
+
+  // PATH A: Live Odds (from fixtureDoc.liveOdds)
+  // Only use if match is live AND we have live odds data
+  if (isLive && fixtureDoc.liveOdds && fixtureDoc.liveOdds.length > 0) {
+    const matchWinner = fixtureDoc.liveOdds.find(
+      m => m.name && m.name.toLowerCase() === "match winner"
+    );
+
+    if (matchWinner && matchWinner.values) {
+      odds.home = matchWinner.values.find(v => v.value === "Home")?.odd || null;
+      odds.draw = matchWinner.values.find(v => v.value === "Draw")?.odd || null;
+      odds.away = matchWinner.values.find(v => v.value === "Away")?.odd || null;
+    }
+  }
+
+  // PATH B: Pre-match Odds (from fixtureDoc.odds)
+  // Use if NOT live OR if live odds are missing
+  if ((!odds.home && !odds.draw && !odds.away) && fixtureDoc.odds && fixtureDoc.odds.length > 0) {
     for (const bookmaker of fixtureDoc.odds) {
-      const matchWinnerMarket = bookmaker.markets.find(
-        (market) => market.name?.toLowerCase() === "match winner"
+      const matchWinner = bookmaker.markets.find(
+        m => m.name && m.name.toLowerCase() === "match winner"
       );
 
-      if (matchWinnerMarket?.values) {
-        odds.home = matchWinnerMarket.values.find(v => v.value === "Home")?.odd || null;
-        odds.draw = matchWinnerMarket.values.find(v => v.value === "Draw")?.odd || null;
-        odds.away = matchWinnerMarket.values.find(v => v.value === "Away")?.odd || null;
-        break; // stop after first bookmaker that has match winner
+      if (matchWinner && matchWinner.values) {
+        odds.home = matchWinner.values.find(v => v.value === "Home")?.odd || null;
+        odds.draw = matchWinner.values.find(v => v.value === "Draw")?.odd || null;
+        odds.away = matchWinner.values.find(v => v.value === "Away")?.odd || null;
+        break; // Stop after first provider
       }
     }
   }
