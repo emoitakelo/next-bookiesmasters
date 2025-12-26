@@ -115,7 +115,7 @@ export default function FixtureCard({
 
         {/* odds */}
 
-        <div className="flex flex-row justify-between w-[120px] sm:w-[150px]">
+        <div className={`flex flex-row justify-between w-[120px] sm:w-[150px] ${isLive ? "animate-pulse" : ""}`}>
           <span
             className={`text-xs sm:text-xs ${getOddsColor(
               odds.home,
