@@ -58,7 +58,7 @@ export function formatFixtureCard(fixtureDoc) {
   // Only use if match is live AND we have live odds data
   if (isLive && fixtureDoc.liveOdds && fixtureDoc.liveOdds.length > 0) {
     const matchWinner = fixtureDoc.liveOdds.find(
-      m => m.name && m.name.toLowerCase() === "match winner"
+      m => m.name && (m.name.toLowerCase() === "match winner" || m.name.toLowerCase() === "fulltime result")
     );
 
     if (matchWinner && matchWinner.values) {
