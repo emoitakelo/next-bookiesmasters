@@ -88,13 +88,20 @@ export default function PredictionsList({
 
   if (Array.isArray(backendFixtures)) {
     // Transform raw API response to match component state
-    safeData = backendFixtures.map((f: any) => ({
-      id: f.league.id,
-      name: f.league.name,
-      logo: f.league.logo,
-      country: f.league.country,
-      matches: f.matches
-    }));
+    safeData = backendFixtures.map((f: any) => {
+      // Case 1: API Data (Nested: f.league.name)
+      if (f.league) {
+        return {
+          id: f.league.id,
+          name: f.league.name,
+          logo: f.league.logo,
+          country: f.league.country,
+          matches: f.matches
+        };
+      }
+      // Case 2: Fallback/Initial Data (Already Flattened: f.name)
+      return f;
+    });
   }
 
   return (
