@@ -78,9 +78,24 @@ export default function PredictionsList({
   );
 
   // UNWRAP LOGIC: backend returns { fixtures: [...] }
-  // If data exists and has fixtures, use it. Otherwise use initialData.
+  // The backend fixtures have a NESTED league object: { league: { id, name... }, matches: [] }
+  // But our component expects FLATTENED objects: { id, name, matches... }
+  // We must transform the SWR data to match initialData's shape.
+
   const backendFixtures = data?.fixtures;
-  const safeData: LeagueGroup[] = Array.isArray(backendFixtures) ? backendFixtures : initialData;
+
+  let safeData: LeagueGroup[] = initialData;
+
+  if (Array.isArray(backendFixtures)) {
+    // Transform raw API response to match component state
+    safeData = backendFixtures.map((f: any) => ({
+      id: f.league.id,
+      name: f.league.name,
+      logo: f.league.logo,
+      country: f.league.country,
+      matches: f.matches
+    }));
+  }
 
   return (
     <div className="max-w-xl mx-auto px-1 py-2 space-y-1">
