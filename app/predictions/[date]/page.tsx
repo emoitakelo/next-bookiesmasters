@@ -101,7 +101,7 @@ export default async function PredictionsPage({
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/cards?date=${date}`,
-      { next: { revalidate: 60 } } // Cache for 1 minute
+      { next: { revalidate: 1 } } // Fetch fresh data almost every time (1s cache)
     );
 
     if (!res.ok) {
