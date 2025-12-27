@@ -45,8 +45,11 @@ export interface LeagueGroup {
 // ------------------------------
 // SWR FETCHER
 // ------------------------------
-const fetcher = (url: string): Promise<LeagueGroup[]> =>
-  fetch(url, { cache: "no-store" }).then(res => res.json());
+// ------------------------------
+// SWR FETCHER
+// ------------------------------
+const fetcher = (url: string) =>
+  fetch(url, { cache: "no-store" }).then((res) => res.json());
 
 // ------------------------------
 // COMPONENT PROPS
@@ -63,19 +66,21 @@ export default function PredictionsList({
   initialData,
   date,
 }: PredictionsListProps) {
-  const { data } = useSWR<LeagueGroup[]>(
+  const { data, isValidating } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/cards?date=${date}`,
     fetcher,
     {
-      refreshInterval: 15000,   // auto-update every 15s (Live Score feel)
-      fallbackData: initialData, // Use Server Data immediately
+      refreshInterval: 15000,   // auto-update every 15s
+      fallbackData: { fixtures: initialData }, // Mock the backend structure for fallback
       revalidateOnFocus: false,
-      dedupingInterval: 5000, // Debounce duplicate requests
+      dedupingInterval: 5000,
     }
   );
 
-  // ensure always array
-  const safeData: LeagueGroup[] = Array.isArray(data) ? data : initialData;
+  // UNWRAP LOGIC: backend returns { fixtures: [...] }
+  // If data exists and has fixtures, use it. Otherwise use initialData.
+  const backendFixtures = data?.fixtures;
+  const safeData: LeagueGroup[] = Array.isArray(backendFixtures) ? backendFixtures : initialData;
 
   return (
     <div className="max-w-xl mx-auto px-1 py-2 space-y-1">
