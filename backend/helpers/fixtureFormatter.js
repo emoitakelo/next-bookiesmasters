@@ -1,7 +1,13 @@
 export function formatFixtureCard(fixtureDoc) {
   const fx = fixtureDoc.fixture;
-  const status = fx.fixture.status; // { long, short, elapsed }
-  const goals = fx.goals; // { home, away } (live or final)
+
+  // 🔥 PRIORITY: Use live data if available
+  const live = fixtureDoc.livescore;
+
+  // Determine source of truth for Status and Goals
+  // If we have live data, use it. Otherwise use the main (static) fixture data.
+  const status = live?.status || fx.fixture.status;
+  const goals = live?.goals || fx.goals;
 
   // -----------------------------
   // STATUS HANDLING
@@ -10,6 +16,7 @@ export function formatFixtureCard(fixtureDoc) {
   const shortStatus = status.short; // "NS", "1H", "FT", etc.
 
   // Helper: Is the match live?
+  // Note: API-Football live statuses
   const isLive = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(shortStatus);
 
   // 1️⃣ LIVE → Show Minutes (e.g. "34'")
