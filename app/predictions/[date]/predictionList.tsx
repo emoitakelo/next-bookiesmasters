@@ -70,10 +70,10 @@ export default function PredictionsList({
     `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/cards?date=${date}`,
     fetcher,
     {
-      refreshInterval: 15000,   // auto-update every 15s
+      refreshInterval: 5000,   // auto-update every 5s (synced with detail page)
       fallbackData: { fixtures: initialData }, // Mock the backend structure for fallback
       revalidateOnFocus: false,
-      dedupingInterval: 5000,
+      dedupingInterval: 2000,
     }
   );
 
