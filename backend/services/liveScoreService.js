@@ -44,7 +44,13 @@ export async function pollLiveScores() {
                         "fixture.goals": apiFixture.goals,
                         "fixture.score": apiFixture.score,
                         "fixture.events": apiFixture.events,
-                        "fixture.status": apiFixture.fixture.status, // Ensure top-level status is updated if you use it
+                        "fixture.status": apiFixture.fixture.status,
+                        // 🔥 POPULATE LIVESCORE FIELD (Preferred by Formatter)
+                        livescore: {
+                            status: apiFixture.fixture.status,
+                            goals: apiFixture.goals,
+                            score: apiFixture.score
+                        },
                         lastLiveUpdate: new Date()
                     }
                 }
@@ -69,5 +75,5 @@ export function startLiveService() {
     pollLiveScores();
 
     // Then interval
-    setInterval(pollLiveScores, 15000);
+    setInterval(pollLiveScores, 10000);
 }
