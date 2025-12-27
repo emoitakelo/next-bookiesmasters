@@ -32,15 +32,41 @@ export const getFixtureById = async (fixtureId) => {
         // Prepare Response Object matching frontend expectations
         // Logic adapted from prev/helpers/predictionMerger.js
 
-        const isFinished = matchData.fixture.status.short === "FT";
+        // 🔥 LIVE DATA CHECK
+        const live = fixtureDoc.livescore;
 
-        const displayDate = isFinished
-            ? "FT"
-            : new Date(matchData.fixture.date).toLocaleString("en-GB", {
+        // Priority: Use Live data if available
+        const currentStatus = live?.status || matchData.fixture.status;
+        const currentGoals = live?.goals || matchData.goals;
+
+        const isFinished = ["FT", "AET", "PEN"].includes(currentStatus.short);
+        const isLive = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(currentStatus.short);
+
+        // Calculate "Display Date" or "Time"
+        let displayDate = "";
+
+        if (isFinished) {
+            displayDate = "FT";
+        } else if (isLive) {
+            displayDate = currentStatus.elapsed ? `${currentStatus.elapsed}'` : "Live";
+        } else {
+            // Not started
+            displayDate = new Date(matchData.fixture.date).toLocaleString("en-GB", {
                 weekday: "short",
                 hour: "2-digit",
                 minute: "2-digit",
+                timeZone: "Africa/Nairobi",
             });
+        }
+
+        // Format Score
+        let score = null;
+        if ((isLive || isFinished) && currentGoals?.home !== null) {
+            score = {
+                home: currentGoals.home,
+                away: currentGoals.away
+            };
+        }
 
         const response = {
             fixtureId: matchData.fixture.id,
@@ -48,7 +74,8 @@ export const getFixtureById = async (fixtureId) => {
             leagueLogo: matchData.league.logo,
             date: matchData.fixture.date,
             displayDate,
-            status: matchData.fixture.status.short || "NS",
+            score, // { home: 1, away: 2 } or null
+            status: currentStatus.short || "NS",
             venue: matchData.fixture.venue?.name || "Unknown venue",
 
             // Predictions (optional, kept if needed later or for reference)
