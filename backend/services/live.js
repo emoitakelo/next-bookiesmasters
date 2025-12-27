@@ -7,7 +7,7 @@ import League from "../models/League.js";
 
 dotenv.config();
 
-const LIVE_UPDATE_INTERVAL = 30 * 1000; // 30 seconds
+const LIVE_UPDATE_INTERVAL = 15 * 1000; // 30 seconds
 const api = axios.create({
   baseURL: "https://v3.football.api-sports.io",
   headers: { "x-apisports-key": process.env.API_KEY },

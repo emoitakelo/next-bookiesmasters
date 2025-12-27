@@ -51,5 +51,5 @@ export function startLiveOddsService() {
     console.log("🚀 Live Odds Service Started (Polling every 60s)");
 
     pollLiveOdds();
-    setInterval(pollLiveOdds, 60000);
+    setInterval(pollLiveOdds, 30000);
 }
