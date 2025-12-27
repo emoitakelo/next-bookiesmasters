@@ -14,11 +14,25 @@ interface FixtureDetailsClientProps {
     data: any;
 }
 
-const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data }) => {
+import useSWR from "swr";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json().then(json => json.data));
+
+const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data: initialData }) => {
+    const { data } = useSWR(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/${initialData.fixtureId}`,
+        fetcher,
+        {
+            fallbackData: initialData,
+            refreshInterval: 10000, // Update every 10s
+            revalidateOnFocus: false,
+        }
+    );
+
     const [activeTab, setActiveTab] = useState("events");
 
     const tabs = [
-        { id: "events", label: "Events" }, // Added Events tab
+        { id: "events", label: "Events" },
         { id: "h2h", label: "H2H" },
         { id: "last5", label: "Last 5" },
         { id: "standings", label: "Standings" },
@@ -67,6 +81,7 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data }) => 
                     displayDate={data.displayDate}
                     venue={data.venue}
                     date={data.date}
+                    score={data.score}
                 />
 
                 <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
