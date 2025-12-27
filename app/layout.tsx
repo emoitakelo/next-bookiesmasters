@@ -33,6 +33,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black`}
       >
+        <Navbar />
+        <main className="min-h-screen">{children}</main>
+        <Footer />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-N2MSB811W7"
           strategy="afterInteractive"
