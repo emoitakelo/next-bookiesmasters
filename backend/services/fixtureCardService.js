@@ -4,13 +4,29 @@ import { formatFixtureCard } from "../helpers/fixtureFormatter.js";
 export async function getFixturesGroupedByLeague(date) {
   if (!date) throw new Error("Date parameter is required");
 
+  // 1. Calculate Kenya Start & End of Day in UTC
+  // Kenya is UTC+3.
+  // "2025-12-27 00:00:00" Kenya = "2025-12-26 21:00:00" UTC
+  // "2025-12-27 23:59:59" Kenya = "2025-12-27 20:59:59" UTC
+
+  // We can use standard Date logic by forcing the time string parsing
+
+  const startOfDayKenya = new Date(`${date}T00:00:00+03:00`);
+  const endOfDayKenya = new Date(`${date}T23:59:59.999+03:00`);
+
+  // Convert to native Date objects (which is what Mongoose queries against)
+  // Note: Mongoose stores dates as UTC dates.
+
   const matchFilter = {
-    "fixture.fixture.date": { $regex: `^${date}` } // target ISO string starting with YYYY-MM-DD
+    "fixture.fixture.date": {
+      $gte: startOfDayKenya.toISOString(),
+      $lte: endOfDayKenya.toISOString()
+    }
   };
 
   // Fetch all fixtures for the date
   const fixtures = await Fixture.find(matchFilter)
-    .sort({ "fixture.league.id": 1, "fixture.fixture.timestamp": 1 })
+    .sort({ "fixture.league.id": 1, "fixture.fixture.date": 1 }) // sort by date string (ISO) works chronologically
     .lean();
 
   // Filter out fixtures that **do not have match winner odds**
