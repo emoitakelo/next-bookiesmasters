@@ -78,7 +78,7 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                                 {score.home} - {score.away}
                             </div>
                             <div className="text-sm font-semibold text-green-500 mt-2 animate-pulse">
-                                {status === "FT" ? "Full Time" : status}
+                                {status === "FT" ? "Full Time" : displayDate}
                             </div>
                         </div>
                     ) : (

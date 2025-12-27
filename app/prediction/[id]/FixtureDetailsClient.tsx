@@ -24,7 +24,7 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data: initi
         fetcher,
         {
             fallbackData: initialData,
-            refreshInterval: 10000, // Update every 10s
+            refreshInterval: 5000, // Update every 5s for minimal lag
             revalidateOnFocus: false,
         }
     );
