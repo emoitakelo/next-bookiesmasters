@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import FixtureDetailsClient from "./FixtureDetailsClient";
 
-// Force dynamic rendering since we fetch fresh data
-export const dynamic = "force-dynamic";
+// Enable ISR with 1-second regeneration (matches Homepage speed)
+export const revalidate = 1;
+
+// Note: dynamicParams = true is default, so we don't need to force-dynamic
 
 interface FixtureDetailData {
     fixtureId: number;

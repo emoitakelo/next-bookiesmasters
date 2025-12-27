@@ -18,6 +18,7 @@ interface TeamDisplayProps {
     displayDate: string;
     venue?: string;
     date: string; // ISO date string
+    score?: { home: number | null; away: number | null };
 }
 
 const TeamDisplay: React.FC<TeamDisplayProps> = ({
@@ -26,6 +27,7 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
     status,
     displayDate,
     venue,
+    score,
 }) => {
     const renderFormBars = (forms: { result: string; color: string }[]) => {
         if (!forms || !Array.isArray(forms) || forms.length === 0) return null;
@@ -69,9 +71,21 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
 
                 {/* Center */}
                 <div className="flex flex-col items-center justify-center text-center">
-                    <div className="text-sm sm:text-lg font-bold text-gray-600 mb-2">
-                        {status === "FT" ? "Full Time" : displayDate}
-                    </div>
+                    {/* 🔥 LIVE SCORE DISPLAY */}
+                    {score ? (
+                        <div className="flex flex-col items-center">
+                            <div className="text-3xl font-bold tracking-widest text-white px-4 py-1 bg-gray-800 rounded-lg">
+                                {score.home} - {score.away}
+                            </div>
+                            <div className="text-sm font-semibold text-green-500 mt-2 animate-pulse">
+                                {status === "FT" ? "Full Time" : status}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-sm sm:text-lg font-bold text-gray-600 mb-2">
+                            {status === "FT" ? "Full Time" : displayDate}
+                        </div>
+                    )}
                 </div>
 
                 {/* Away */}
