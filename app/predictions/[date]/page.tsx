@@ -3,7 +3,7 @@ import DateNavigator from "@/components/DateNavigator";
 
 
 
-export const revalidate = 30; // ISR (regenerates every 60 seconds)
+export const revalidate = 15; // ISR (regenerates every 60 seconds)
 
 // ---------------------
 // Backend Types
@@ -58,6 +58,26 @@ export interface LeagueGroup {
 }
 
 // ---------------------
+// STATIC PARAMS GENERATION (SSG/ISR)
+// ---------------------
+export async function generateStaticParams() {
+  const dates = [];
+  const now = new Date();
+
+  // Pre-build: Yesterday, Today, Tomorrow
+  for (let i = -1; i <= 1; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() + i);
+    dates.push(d.toLocaleDateString("en-CA", { timeZone: "Africa/Nairobi" }));
+  }
+
+  // Returns array of params: [{ date: '2025-12-26' }, { date: '2025-12-27' }, ...]
+  return dates.map((date) => ({
+    date: date,
+  }));
+}
+
+// ---------------------
 // PAGE COMPONENT
 // ---------------------
 export default async function PredictionsPage({
@@ -81,7 +101,7 @@ export default async function PredictionsPage({
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/cards?date=${date}`,
-      { cache: "no-store" } // Ensure we always fetch fresh data
+      { next: { revalidate: 60 } } // Cache for 1 minute
     );
 
     if (!res.ok) {
