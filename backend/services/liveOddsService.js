@@ -48,8 +48,8 @@ export async function pollLiveOdds() {
 }
 
 export function startLiveOddsService() {
-    console.log("🚀 Live Odds Service Started (Polling every 60s)");
+    console.log("🚀 Live Odds Service Started (Polling every 15s)");
 
     pollLiveOdds();
-    setInterval(pollLiveOdds, 60000);
+    setInterval(pollLiveOdds, 15000);
 }
