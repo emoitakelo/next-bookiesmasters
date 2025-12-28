@@ -26,6 +26,23 @@ export async function getFixturesGroupedByLeague(date) {
 
   // Fetch all fixtures for the date
   const fixtures = await Fixture.find(matchFilter)
+    .select({
+      "fixture.id": 1,
+      "fixture.name": 1,
+      "fixture.logo": 1,
+      "fixture.country": 1,
+      "fixture.fixture": 1, // time, status, id
+      "fixture.league": 1,
+      "fixture.teams": 1,
+      "fixture.goals": 1,
+      "fixture.score": 1,
+      "fixture.events": 1, // needed for live status sometimes
+      "fixture.status": 1, // important for sort/filter
+      "odds": 1, // pre-match odds
+      "liveOdds": 1, // live odds
+      "livescore": 1, // our specific live data field
+      "fixtureId": 1 // legacy id
+    })
     .sort({ "fixture.league.id": 1, "fixture.fixture.date": 1 }) // sort by date string (ISO) works chronologically
     .lean();
 
