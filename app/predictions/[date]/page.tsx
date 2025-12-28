@@ -3,7 +3,7 @@ import DateNavigator from "@/components/DateNavigator";
 
 
 
-export const revalidate = 15; // ISR (regenerates every 60 seconds)
+export const revalidate = 8000; // ISR (regenerates every 60 seconds)
 
 // ---------------------
 // Backend Types
