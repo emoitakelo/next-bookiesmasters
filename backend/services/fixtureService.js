@@ -8,6 +8,7 @@ export const getFixtureById = async (fixtureId) => {
         const fixtureIdNum = Number(fixtureId);
 
         // Find custom Fixture document
+        console.log(`🔎 Querying DB for ID: ${fixtureIdNum}`);
         const fixtureDoc = await Fixture.findOne({
             $or: [
                 { fixtureId: fixtureIdNum },
@@ -16,8 +17,10 @@ export const getFixtureById = async (fixtureId) => {
         }).lean();
 
         if (!fixtureDoc) {
+            console.log("❌ DB Query returned null");
             return null;
         }
+        console.log("✅ DB Found doc. Processing...");
 
         const matchData = fixtureDoc.fixture;
         const predictionData = fixtureDoc.prediction; // Embedded prediction
