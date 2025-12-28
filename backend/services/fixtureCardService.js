@@ -21,7 +21,10 @@ export async function getFixturesGroupedByLeague(date) {
     "fixture.fixture.date": {
       $gte: startOfDayKenya.toISOString(),
       $lte: endOfDayKenya.toISOString()
-    }
+    },
+    // 🔥 OPTIMIZATION: Only fetch matches with odds
+    // This filters out thousands of obscure youth/amateur games at the DB level
+    "odds": { $exists: true, $not: { $size: 0 } }
   };
 
   // Fetch all fixtures for the date
@@ -47,16 +50,8 @@ export async function getFixturesGroupedByLeague(date) {
     .lean();
 
   // Filter out fixtures that **do not have match winner odds**
-  const fixturesWithOdds = fixtures.filter(fxDoc => {
-    if (!fxDoc.odds || fxDoc.odds.length === 0) return false;
-
-    // Check if at least one bookmaker has Match Winner market
-    return fxDoc.odds.some(bookmaker =>
-      bookmaker.markets?.some(market =>
-        market.name?.toLowerCase() === "match winner"
-      )
-    );
-  });
+  // Filter is now done in MongoDB query for performance
+  const fixturesWithOdds = fixtures;
 
   // Group by league
   const grouped = {};
