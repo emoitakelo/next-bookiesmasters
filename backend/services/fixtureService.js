@@ -25,9 +25,17 @@ export const getFixtureById = async (fixtureId) => {
         // Use the root 'h2h' field as requested, which stores the H2H data from API
         const h2hData = fixtureDoc.h2h || [];
 
-        // Calculate Form for Home/Away
-        const homeData = await calculateTeamForm(matchData.teams.home.id);
-        const awayData = await calculateTeamForm(matchData.teams.away.id);
+        // Calculate Form for Home/Away (Safe Mode)
+        let homeData = { form: [], last5Matches: [] };
+        let awayData = { form: [], last5Matches: [] };
+
+        try {
+            homeData = await calculateTeamForm(matchData.teams.home.id) || homeData;
+            awayData = await calculateTeamForm(matchData.teams.away.id) || awayData;
+        } catch (err) {
+            console.error(`⚠️ Form calculation failed for fixture ${fixtureIdNum}:`, err.message);
+            // Continue with empty form data
+        }
 
         // Prepare Response Object matching frontend expectations
         // Logic adapted from prev/helpers/predictionMerger.js

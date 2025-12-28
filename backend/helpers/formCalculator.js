@@ -21,6 +21,8 @@ export const calculateTeamForm = async (teamId) => {
         const match = doc.fixture;
 
         // In current schema, 'match' contains { fixture, league, teams, goals, score, ... }
+        if (!match || !match.teams || !match.teams.home || !match.teams.away || !match.goals) return;
+
         const isHome = match.teams.home.id === teamId;
         const teamGoals = isHome ? match.goals.home : match.goals.away;
         const oppGoals = isHome ? match.goals.away : match.goals.home;

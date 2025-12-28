@@ -74,8 +74,10 @@ async function getFixture(id: string) {
     });
 
     if (!res.ok) {
-        if (res.status === 404) return null;
-        throw new Error("Failed to fetch fixture details");
+        // If backend is down or errors during build, don't crash the whole build.
+        // Just return null, which will trigger notFound() in the component.
+        console.error(`⚠️ Failed to fetch details for ${id}. Status: ${res.status}`);
+        return null;
     }
 
     const json = await res.json();
