@@ -28,6 +28,7 @@ export async function getFixturesGroupedByLeague(date) {
   };
 
   // Fetch all fixtures for the date
+  console.time("DB:FetchFixtures");
   const fixtures = await Fixture.find(matchFilter)
     .select({
       "fixture.id": 1,
@@ -39,15 +40,17 @@ export async function getFixturesGroupedByLeague(date) {
       "fixture.teams": 1,
       "fixture.goals": 1,
       "fixture.score": 1,
-      "fixture.events": 1, // needed for live status sometimes
+      "fixture.score": 1,
+      // "fixture.events": 1, // ❌ REMOVED: Not needed for card, saves massive space
       "fixture.status": 1, // important for sort/filter
-      "odds": 1, // pre-match odds
+      "odds": { $slice: 1 }, // 🔥 OPTIMIZATION: Only fetch 1st bookmaker (saves ~90% of odds size)
       "liveOdds": 1, // live odds
       "livescore": 1, // our specific live data field
       "fixtureId": 1 // legacy id
     })
     .sort({ "fixture.league.id": 1, "fixture.fixture.date": 1 }) // sort by date string (ISO) works chronologically
     .lean();
+  console.timeEnd("DB:FetchFixtures");
 
   // Filter out fixtures that **do not have match winner odds**
   // Filter is now done in MongoDB query for performance

@@ -21,6 +21,19 @@ app.use(cors());
 // Body parser
 app.use(express.json());
 
+// ⏱️ Request Timer Middleware
+app.use((req, res, next) => {
+  const start = Date.now();
+  console.log(`➡️ [REQ] ${req.method} ${req.url}`);
+
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    console.log(`⬅️ [RES] ${req.method} ${req.url} took ${duration}ms`);
+  });
+
+  next();
+});
+
 const PORT = process.env.PORT || 5000;
 
 // ---------------------------------------------

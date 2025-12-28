@@ -10,7 +10,9 @@ export async function fetchFixtureCardsByDate(req, res) {
       date = kenyaNow.split(",")[0]; // "YYYY-MM-DD"
     }
 
+    console.time("ControllerExecution");
     const data = await getFixturesGroupedByLeague(date);
+    console.timeEnd("ControllerExecution");
 
     // Convert all fixture times to Kenya timezone
     data.forEach(leagueGroup => {
