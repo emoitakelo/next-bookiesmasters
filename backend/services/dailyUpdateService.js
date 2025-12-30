@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import League from "../models/League.js";       // your saved leagues
 import Fixture from "../models/Fixture.js";     // unified fixture model
+import { fetchInjuries } from "./enrichmentService.js";
 
 dotenv.config();
 
@@ -157,10 +158,13 @@ export async function updateDailyFixtures() {
       // 1️⃣ predictions
       const { prediction, h2h } = await fetchPrediction(fixtureId);
 
-      // 2️⃣ odds
+      // 3️⃣ odds
       const bets = await fetchOdds(fixtureId);
 
-      // 3️⃣ save/update in Mongo
+      // 4️⃣ injuries (Weekly Forecast)
+      const injuryReport = await fetchInjuries(fixtureId);
+
+      // 5️⃣ save/update in Mongo
       await Fixture.findOneAndUpdate(
         { fixtureId: fixtureId },
         {
@@ -168,7 +172,8 @@ export async function updateDailyFixtures() {
           fixture: f,
           prediction,
           h2h,
-          odds: bets
+          odds: bets,
+          injuries: injuryReport
         },
         { upsert: true }
       );
