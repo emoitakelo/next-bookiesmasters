@@ -109,14 +109,16 @@ async function fetchOdds(fixtureId) {
 
     return odds.bookmakers.map(b => ({
       bookmaker: b.name,
-      markets: b.bets.map(m => ({
-        id: m.id,
-        name: m.name,
-        values: m.values.map(v => ({
-          value: v.value,
-          odd: v.odd
+      markets: b.bets
+        .filter(m => m.name === "Match Winner") // 🔥 FILTER: Only keep Match Winner
+        .map(m => ({
+          id: m.id,
+          name: m.name,
+          values: m.values.map(v => ({
+            value: v.value,
+            odd: v.odd
+          }))
         }))
-      }))
     }));
 
   } catch (err) {

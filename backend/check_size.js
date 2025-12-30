@@ -36,7 +36,7 @@ async function checkSize() {
                 "fixture.id": 1,
                 "fixture.fixture": 1,
                 "fixture.events": 1,
-                "odds": 1
+                "odds": { $slice: 1 }
             })
             .lean();
 
