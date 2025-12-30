@@ -1,5 +1,5 @@
 import Fixture from "../models/Fixture.js";
-import { fetchLineups } from "./enrichmentService.js";
+import { fetchLineups, fetchInjuries } from "./enrichmentService.js";
 
 // Configuration
 const POLLING_INTERVAL = 5 * 60 * 1000; // 5 minutes
@@ -38,19 +38,27 @@ export async function pollLineupsForUpcoming() {
 
         // Process sequentially to be gentle on API
         for (const f of targets) {
-            const lineups = await fetchLineups(f.fixtureId);
+            // Fetch both linepus and injuries
+            const [lineups, injuries] = await Promise.all([
+                fetchLineups(f.fixtureId),
+                fetchInjuries(f.fixtureId)
+            ]);
 
-            if (lineups && lineups.length > 0) {
+            const updateFields = {};
+            if (lineups && lineups.length > 0) updateFields.lineups = lineups;
+            if (injuries && injuries.length > 0) updateFields.injuries = injuries;
+
+            if (Object.keys(updateFields).length > 0) {
                 await Fixture.updateOne(
                     { _id: f._id },
                     {
-                        $set: { lineups: lineups },
+                        $set: updateFields,
                         $currentDate: { updatedAt: true }
                     }
                 );
-                console.log(`      ✅ Saved lineups for ${f.fixture.teams.home.name} vs ${f.fixture.teams.away.name}`);
+                console.log(`      ✅ Saved rich data for ${f.fixture.teams.home.name} vs ${f.fixture.teams.away.name}`);
             } else {
-                console.log(`      ⚠️ No lineups yet for ${f.fixture.teams.home.name} vs ${f.fixture.teams.away.name}`);
+                console.log(`      ⚠️ No lineups/injuries yet for ${f.fixture.teams.home.name} vs ${f.fixture.teams.away.name}`);
             }
         }
 
