@@ -6,7 +6,7 @@ import cors from "cors";         // ⭐ IMPORTANT
 import fixtureRoutes from "./routes/fixtureRoutes.js";
 // import "./services/live.js"; // <-- DISABLED OLD SERVICE
 import { startLiveService } from "./services/liveScoreService.js";
-import { startLiveOddsService } from "./services/liveOddsService.js";
+
 import { startLineupPoller } from "./services/lineupPollingService.js";
 import { startDailyScheduler } from "./services/dailyUpdateService.js";
 
