@@ -4,25 +4,40 @@ export async function fetchFixtureCardsByDate(req, res) {
   try {
     const { date } = req.query;
     if (!date) {
-      // Original fixture date might be UTC ISO string
-      const utcDate = new Date(match.fixture.date);
-
-      // Convert to Kenya timezone by formatting with toLocaleString
-      const kenyaDateStr = utcDate.toLocaleString("en-US", { timeZone: "Africa/Nairobi" });
-
-      // Create new Date object in Kenya time and convert back to ISO
-      match.fixture.date = new Date(kenyaDateStr).toISOString();
+      return res.status(400).json({ error: "Date parameter is required (YYYY-MM-DD)" });
     }
-  });
-});
 
-res.json({
-  date,
-  totalLeagues: data.length,
-  fixtures: data
-});
-  } catch (error) {
-  console.error("❌ Error fetching fixtures by date:", error);
-  res.status(500).json({ error: "Server error" });
+    const fixtures = await getFixturesGroupedByLeague(date);
+
+    // Calculate total leagues for statistics/meta
+    const totalLeagues = fixtures.length;
+
+    res.json({
+      date,
+      totalLeagues,
+      fixtures
+    });
+  } catch (err) {
+    console.error("❌ Error fetching fixture cards:", err);
+    res.status(500).json({ error: "Server error" });
+  }
 }
+
+export async function fetchLiveFixtureCards(req, res) {
+  try {
+    const fixtures = await getLiveFixtures();
+
+    // Calculate total leagues
+    const totalLeagues = fixtures.length;
+
+    // Since frontend expects 'date' in response for PredictionsList props, we can pass dummy date
+    res.json({
+      date: "live",
+      totalLeagues,
+      fixtures
+    });
+  } catch (err) {
+    console.error("❌ Error fetching live fixtures:", err);
+    res.status(500).json({ error: "Server error" });
+  }
 }
