@@ -9,6 +9,8 @@ import Standings from "@/components/fixture-details/Standings";
 import Odds from "@/components/fixture-details/Odds";
 import TeamDisplay from "@/components/fixture-details/TeamDisplay";
 import LeagueHeader from "@/components/fixture-details/LeagueHeader";
+import Lineups from "@/components/fixture-details/Lineups";
+import Injuries from "@/components/fixture-details/Injuries";
 
 interface FixtureDetailsClientProps {
     data: any;
@@ -33,6 +35,8 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data: initi
 
     const tabs = [
         { id: "events", label: "Events" },
+        { id: "lineups", label: "Lineups" },
+        { id: "injuries", label: "Injuries" },
         { id: "h2h", label: "H2H" },
         { id: "last5", label: "Last 5" },
         { id: "standings", label: "Standings" },
@@ -43,6 +47,10 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data: initi
         switch (activeTab) {
             case "events":
                 return <Events events={data.events} homeTeamId={data.homeTeam.id} awayTeamId={data.awayTeam.id} />;
+            case "lineups":
+                return <Lineups lineups={data.lineups} />;
+            case "injuries":
+                return <Injuries injuries={data.injuries} />;
             case "h2h":
                 return <H2HSection h2h={data.h2h} />;
             case "last5":

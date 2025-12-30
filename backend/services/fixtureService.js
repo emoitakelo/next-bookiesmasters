@@ -116,6 +116,10 @@ export const getFixtureById = async (fixtureId) => {
 
             // Events (Goals, Cards, Subs)
             events: matchData.events || [],
+
+            // Rich Data
+            lineups: fixtureDoc.lineups || [],
+            injuries: fixtureDoc.injuries || [],
         };
 
         // Fetch Standings

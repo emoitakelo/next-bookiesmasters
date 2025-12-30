@@ -13,6 +13,10 @@ const FixtureSchema = new mongoose.Schema(
     odds: { type: Array, default: [] },
     odds: { type: Array, default: [] },
 
+    // Rich Data
+    lineups: { type: Array, default: [] },
+    injuries: { type: Array, default: [] },
+
     // Live-only data
     livescore: { type: Object, default: null },
     lastLiveUpdate: { type: Date, default: null }

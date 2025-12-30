@@ -61,33 +61,23 @@ export function formatFixtureCard(fixtureDoc) {
   // -----------------------------
   let odds = { home: null, draw: null, away: null };
 
-  // PATH A: Live Odds (from fixtureDoc.liveOdds)
-  // Only use if match is live AND we have live odds data
-  if (isLive && fixtureDoc.liveOdds && fixtureDoc.liveOdds.length > 0) {
-    const matchWinner = fixtureDoc.liveOdds.find(
-      m => m.name && (m.name.toLowerCase() === "match winner" || m.name.toLowerCase() === "fulltime result")
-    );
+  // ODDS HANDLING
+  // Always use Pre-match Odds (from fixtureDoc.odds) as requested
+  if (fixtureDoc.odds && fixtureDoc.odds.length > 0) {
+    // The "odds" array is now filtered by aggregation to only have Match Winner
+    // We can assume the first bookmaker has the market we want
+    const bookmaker = fixtureDoc.odds[0];
 
-    if (matchWinner && matchWinner.values) {
-      odds.home = matchWinner.values.find(v => v.value === "Home")?.odd || null;
-      odds.draw = matchWinner.values.find(v => v.value === "Draw")?.odd || null;
-      odds.away = matchWinner.values.find(v => v.value === "Away")?.odd || null;
-    }
-  }
-
-  // PATH B: Pre-match Odds (from fixtureDoc.odds)
-  // Use if NOT live OR if live odds are missing
-  if ((!odds.home && !odds.draw && !odds.away) && fixtureDoc.odds && fixtureDoc.odds.length > 0) {
-    for (const bookmaker of fixtureDoc.odds) {
+    // Safety check just in case aggregation wasn't perfect or old data
+    if (bookmaker && bookmaker.markets) {
       const matchWinner = bookmaker.markets.find(
-        m => m.name && m.name.toLowerCase() === "match winner"
+        m => m.name && (m.name === "Match Winner" || m.id === 1)
       );
 
       if (matchWinner && matchWinner.values) {
         odds.home = matchWinner.values.find(v => v.value === "Home")?.odd || null;
         odds.draw = matchWinner.values.find(v => v.value === "Draw")?.odd || null;
         odds.away = matchWinner.values.find(v => v.value === "Away")?.odd || null;
-        break; // Stop after first provider
       }
     }
   }

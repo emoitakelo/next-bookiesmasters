@@ -2,6 +2,7 @@
 
 import useSWR from "swr";
 import Image from "next/image";
+import Link from "next/link";
 import FixtureCard from "@/components/FixtureCard";
 
 // ------------------------------
@@ -114,23 +115,28 @@ export default function PredictionsList({
 
       {safeData.map((league, idx) => (
         <div key={league.id || idx}>
-          <div className="flex items-center gap-1 mb-1
-">
-            {league.logo && (
-              <Image
-                src={league.logo}
-                alt={league.name}
-                width={20}
-                height={20}
-                className="w-5 h-5"
-                unoptimized
-              />
-            )}
-            <div className="flex flex-col">
-              <span className="font-semibold text-xs text-gray-300">{league.name}</span>
-              <span className="text-xs text-gray-400">{league.country}</span>
-            </div>
-
+          <div className="flex items-center gap-1 mb-1">
+            <Link
+              href={`/league/${league.id}?name=${encodeURIComponent(league.name)}&logo=${encodeURIComponent(league.logo)}`}
+              className="flex items-center gap-1 hover:bg-white/5 p-1 rounded transition cursor-pointer"
+            >
+              {league.logo && (
+                <Image
+                  src={league.logo}
+                  alt={league.name}
+                  width={20}
+                  height={20}
+                  className="w-5 h-5"
+                  unoptimized
+                />
+              )}
+              <div className="flex flex-col">
+                <span className="font-semibold text-xs text-gray-300 hover:text-orange-400 transition-colors">
+                  {league.name} ›
+                </span>
+                <span className="text-xs text-gray-400">{league.country}</span>
+              </div>
+            </Link>
           </div>
 
           <div className="space-y-1">
