@@ -46,7 +46,7 @@ mongoose
   .then(() => {
     console.log("✅ MongoDB connected");
     startLiveService(); // 🚀 Start the global 60s poller (Scores + Events)
-    startLiveOddsService(); // 🎲 Start the global 60s poller (Odds)
+
     startLineupPoller(); // 🕵️ Start targeted lineup poller
     startDailyScheduler(); // ⏰ Start daily fixture update
   })
