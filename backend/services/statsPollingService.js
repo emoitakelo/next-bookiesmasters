@@ -59,11 +59,11 @@ export async function pollMatchStatistics() {
 }
 
 export function startStatsPoller() {
-    console.log("🚀 Live Statistics Poller Started (Every 3 mins)");
+    console.log("🚀 Live Statistics Poller Started (Every 60s)");
 
     // Run immediately
     pollMatchStatistics();
 
     // Then interval
-    setInterval(pollMatchStatistics, 3 * 60 * 1000); // 3 minutes
+    setInterval(pollMatchStatistics, 60 * 1000); // 1 minute
 }

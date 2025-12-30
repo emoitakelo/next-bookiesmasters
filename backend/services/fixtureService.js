@@ -120,6 +120,7 @@ export const getFixtureById = async (fixtureId) => {
             // Rich Data
             lineups: fixtureDoc.lineups || [],
             injuries: fixtureDoc.injuries || [],
+            statistics: fixtureDoc.statistics || [],
         };
 
         // Fetch Standings
