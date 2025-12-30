@@ -45,8 +45,8 @@ mongoose
   .then(() => {
     console.log("✅ MongoDB connected");
     startLiveService(); // 🚀 Start the global 60s poller (Scores + Events)
-    startLiveOddsService(); // 🎲 Start the global 60s poller (Odds)
-    startLineupPoller(); // 🕵️ Start targeted lineup poller
+    // 🎲 Start the global 60s poller (Odds)
+    // 🕵️ Start targeted lineup poller
   })
   .catch((err) => console.error("❌ MongoDB connection error:", err.message));
 

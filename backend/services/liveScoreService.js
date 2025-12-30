@@ -15,37 +15,63 @@ let lastLogTime = 0;
 
 export async function pollLiveScores() {
     try {
-        // 1. Fetch ALL live games globally (Cost: 1 API Call)
+        // STEP 1: Get currently LIVE matches from our DB
+        // We track what we THINK is live.
+        const LIVE_STATUSES = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE"];
+        const localLiveMatches = await Fixture.find({
+            "fixture.fixture.status.short": { $in: LIVE_STATUSES }
+        }).select("fixtureId");
+
+        const localLiveIds = new Set(localLiveMatches.map(f => f.fixtureId));
+
+        // STEP 2: Fetch actual LIVE matches from API
         const response = await axios.get(`${BASE_URL}/fixtures`, {
             params: { live: "all" },
-            headers: { "x-apisports-key": API_KEY }
+            headers: { "x-apisports-key": API_KEY, "Accept-Encoding": "identity" } // encoding fix sometimes needed
         });
+        const apiLiveFixtures = response.data.response;
+        const apiLiveIds = new Set(apiLiveFixtures.map(f => f.fixture.id));
 
-        const liveFixtures = response.data.response;
+        // STEP 3: Detect DISAPPEARED matches (In DB but NOT in API)
+        // These are likely finished (FT) or interrupted
+        const disappearedIds = [...localLiveIds].filter(id => !apiLiveIds.has(id));
 
-        // Log only if we have active games, or periodically
+        let recoveryFixtures = [];
+        if (disappearedIds.length > 0) {
+            console.log(`🔎 [LivePoll] Detected ${disappearedIds.length} matches disappeared (finished?). Verifying...`);
+
+            // Fetch these specific ID(s) to get their new status (FT)
+            const idsStr = disappearedIds.join("-"); // API supports id-id-id
+            const recoveryRes = await axios.get(`${BASE_URL}/fixtures`, {
+                params: { ids: idsStr },
+                headers: { "x-apisports-key": API_KEY }
+            });
+            recoveryFixtures = recoveryRes.data.response;
+        }
+
+        // STEP 4: Merge Lists & Update
+        const allUpdates = [...apiLiveFixtures, ...recoveryFixtures];
+
+        if (allUpdates.length === 0) return;
+
+        // Log occasionally
         const now = Date.now();
-        if (liveFixtures.length > 0 || now - lastLogTime > 60000 * 5) {
-            console.log(`📡 [LivePoll] Found ${liveFixtures.length} active matches.`);
+        if (now - lastLogTime > 60000 * 5) {
+            console.log(`📡 [LivePoll] Updating ${apiLiveFixtures.length} live + ${recoveryFixtures.length} finished matches.`);
             lastLogTime = now;
         }
 
-        if (!liveFixtures || liveFixtures.length === 0) return;
-
-        // 2. Bulk Update in MongoDB
-        // We iterate and update only if we have this match in our DB
-        // Using bulkWrite for performance
-        const bulkOps = liveFixtures.map(apiFixture => ({
+        const bulkOps = allUpdates.map(apiFixture => ({
             updateOne: {
                 filter: { fixtureId: apiFixture.fixture.id },
                 update: {
                     $set: {
-                        "fixture.fixture": apiFixture.fixture, // time, status
+                        "fixture.fixture": apiFixture.fixture,
                         "fixture.goals": apiFixture.goals,
                         "fixture.score": apiFixture.score,
                         "fixture.events": apiFixture.events,
                         "fixture.status": apiFixture.fixture.status,
-                        // 🔥 POPULATE LIVESCORE FIELD (Preferred by Formatter)
+                        // Update livescore field
                         livescore: {
                             status: apiFixture.fixture.status,
                             goals: apiFixture.goals,
@@ -58,8 +84,7 @@ export async function pollLiveScores() {
         }));
 
         if (bulkOps.length > 0) {
-            const result = await Fixture.bulkWrite(bulkOps, { ordered: false });
-            // console.log(`   📝 Updated ${result.modifiedCount} matches in DB.`);
+            await Fixture.bulkWrite(bulkOps, { ordered: false });
         }
 
     } catch (err) {
