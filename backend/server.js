@@ -8,6 +8,7 @@ import fixtureRoutes from "./routes/fixtureRoutes.js";
 import { startLiveService } from "./services/liveScoreService.js";
 import { startLiveOddsService } from "./services/liveOddsService.js";
 import { startLineupPoller } from "./services/lineupPollingService.js";
+import { startDailyScheduler } from "./services/dailyUpdateService.js";
 
 import leagueRoutes from "./routes/leagueRoutes.js";
 
@@ -45,8 +46,9 @@ mongoose
   .then(() => {
     console.log("✅ MongoDB connected");
     startLiveService(); // 🚀 Start the global 60s poller (Scores + Events)
-    // 🎲 Start the global 60s poller (Odds)
-    // 🕵️ Start targeted lineup poller
+    startLiveOddsService(); // 🎲 Start the global 60s poller (Odds)
+    startLineupPoller(); // 🕵️ Start targeted lineup poller
+    startDailyScheduler(); // ⏰ Start daily fixture update
   })
   .catch((err) => console.error("❌ MongoDB connection error:", err.message));
 

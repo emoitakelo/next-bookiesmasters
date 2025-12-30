@@ -132,9 +132,7 @@ async function fetchOdds(fixtureId) {
 --------------------------------------------- */
 export async function updateDailyFixtures() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("✅ Connected to MongoDB\n");
-
+    // MongoDB should already be connected by server.js
     console.log("📡 Updating fixtures from today up to +7 days...\n");
 
     // 1. Load saved leagues
@@ -175,17 +173,26 @@ export async function updateDailyFixtures() {
         { upsert: true }
       );
 
-      console.log(`✔ Saved fixture ${fixtureId}`);
+      // console.log(`✔ Saved fixture ${fixtureId}`);
     }
 
     console.log("\n🎉 FIXTURE UPDATE COMPLETED");
 
   } catch (err) {
     console.error("❌ ERROR UPDATING FIXTURES:", err);
-  } finally {
-    await mongoose.disconnect();
-    console.log("🔌 MongoDB disconnected");
   }
+}
+
+export function startDailyScheduler() {
+  console.log("⏰ Daily Update Scheduler Started (Runs automatically every 24h)");
+
+  // Calculate time until next 00:00 UTC (or local time)
+  // For simplicity, let's run it immediately on start, then every 24h
+  updateDailyFixtures();
+
+  setInterval(() => {
+    updateDailyFixtures();
+  }, 24 * 60 * 60 * 1000);
 }
 
 /* ---------------------------------------------
