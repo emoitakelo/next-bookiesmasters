@@ -67,12 +67,18 @@ export default function PredictionsList({
   initialData,
   date,
 }: PredictionsListProps) {
+
+  // Construct URL dynamically
+  const apiUrl = date === "live"
+    ? `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/live`
+    : `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/cards?date=${date}`;
+
   const { data, isValidating } = useSWR(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/fixtures/cards?date=${date}`,
+    apiUrl,
     fetcher,
     {
-      refreshInterval: 1000,   // auto-update every 5s (synced with detail page)
-      fallbackData: { fixtures: initialData }, // Mock the backend structure for fallback
+      refreshInterval: date === "live" ? 5000 : 15000, // Faster refresh for live matches (5s vs 15s)
+      fallbackData: { fixtures: initialData },
       revalidateOnFocus: false,
       dedupingInterval: 1000,
     }

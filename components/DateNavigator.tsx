@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Search } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   date: string; // yyyy-mm-dd from page params
@@ -9,9 +10,13 @@ interface Props {
 
 export default function DateNavigator({ date }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isLivePage = pathname === "/live";
+
   const [year, month, day] = date.split("-").map(Number);
   const currentDate = new Date(year, month - 1, day); // Local midnight
-
+  // ... (rest of date logic remains) ...
+  // skipping unchanged lines for replace tool
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Local midnight today
 
@@ -61,9 +66,13 @@ export default function DateNavigator({ date }: Props) {
     <div className="max-w-xl mx-auto bg-black text-white py-2 px-3 flex items-center justify-between gap-2">
 
       {/* LEFT: LIVE button (circular) */}
-      <button className=" bg-[#1F1F1F] w-8 h-6 rounded-md flex items-center justify-center text-xs ">
+      <Link
+        href="/live"
+        className={`w-8 h-6 rounded-md flex items-center justify-center text-xs font-bold transition-colors ${isLivePage ? "bg-red-600 text-white animate-pulse" : "bg-[#1F1F1F] text-gray-400 hover:text-white"
+          }`}
+      >
         Live
-      </button>
+      </Link>
 
       {/* CENTER: < Date > */}
       <div className="flex items-center gap-3">
