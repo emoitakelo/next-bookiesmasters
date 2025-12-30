@@ -1,4 +1,5 @@
 // routes/leagueRoutes.js
+import express from "express";
 import { getLeagues, getTopScorers, getStandings, getFixtures } from "../controllers/leagueController.js";
 
 const router = express.Router();
