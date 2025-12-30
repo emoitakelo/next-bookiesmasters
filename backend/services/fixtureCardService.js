@@ -27,29 +27,59 @@ export async function getFixturesGroupedByLeague(date) {
     "odds": { $exists: true, $not: { $size: 0 } }
   };
 
-  // Fetch all fixtures for the date
+  // Fetch all fixtures for the date using Aggregation for Deep Filtering
   console.time("DB:FetchFixtures");
-  const fixtures = await Fixture.find(matchFilter)
-    .select({
-      "fixture.id": 1,
-      "fixture.name": 1,
-      "fixture.logo": 1,
-      "fixture.country": 1,
-      "fixture.fixture": 1, // time, status, id
-      "fixture.league": 1,
-      "fixture.teams": 1,
-      "fixture.goals": 1,
-      "fixture.score": 1,
-      "fixture.score": 1,
-      // "fixture.events": 1, // ❌ REMOVED: Not needed for card, saves massive space
-      "fixture.status": 1, // important for sort/filter
-      "odds": { $slice: 1 }, // 🔥 OPTIMIZATION: Only fetch 1st bookmaker (saves ~90% of odds size)
-      "liveOdds": 1, // live odds
-      "livescore": 1, // our specific live data field
-      "fixtureId": 1 // legacy id
-    })
-    .sort({ "fixture.league.id": 1, "fixture.fixture.date": 1 }) // sort by date string (ISO) works chronologically
-    .lean();
+  const fixtures = await Fixture.aggregate([
+    {
+      $match: matchFilter
+    },
+    {
+      $sort: { "fixture.league.id": 1, "fixture.fixture.date": 1 }
+    },
+    {
+      $project: {
+        "fixture.id": 1,
+        "fixture.name": 1,
+        "fixture.logo": 1,
+        "fixture.country": 1,
+        "fixture.fixture": 1,
+        "fixture.league": 1,
+        "fixture.teams": 1,
+        "fixture.goals": 1,
+        "fixture.score": 1,
+        "fixture.status": 1,
+        "liveOdds": 1,
+        "livescore": 1,
+        "fixtureId": 1,
+        // 🔥 KEY OPTIMIZATION: Filter 'odds' array in-situ
+        // We want odds[0].bets, filtered where name="Match Winner"
+        "odds": {
+          $map: {
+            input: { $slice: ["$odds", 1] }, // Take 1st bookmaker
+            as: "bookmaker",
+            in: {
+              id: "$$bookmaker.id",
+              name: "$$bookmaker.name",
+              logo: "$$bookmaker.logo",
+              markets: {
+                $filter: {
+                  input: "$$bookmaker.markets", // Iterate over markets
+                  as: "market",
+                  cond: {
+                    // Check specific name or ID (1=Match Winner)
+                    $or: [
+                      { $eq: ["$$market.name", "Match Winner"] },
+                      { $eq: ["$$market.id", 1] }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]);
   console.timeEnd("DB:FetchFixtures");
 
   // Filter out fixtures that **do not have match winner odds**
