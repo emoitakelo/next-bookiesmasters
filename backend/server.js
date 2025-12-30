@@ -9,6 +9,7 @@ import { startLiveService } from "./services/liveScoreService.js";
 
 import { startLineupPoller } from "./services/lineupPollingService.js";
 import { startDailyScheduler } from "./services/dailyUpdateService.js";
+import { startStatsPoller } from "./services/statsPollingService.js";
 
 import leagueRoutes from "./routes/leagueRoutes.js";
 
@@ -48,6 +49,7 @@ mongoose
     startLiveService(); // 🚀 Start the global 60s poller (Scores + Events)
 
     startLineupPoller(); // 🕵️ Start targeted lineup poller
+    startStatsPoller();  // 📊 Start statistics poller
     startDailyScheduler(); // ⏰ Start daily fixture update
   })
   .catch((err) => console.error("❌ MongoDB connection error:", err.message));

@@ -16,6 +16,7 @@ const FixtureSchema = new mongoose.Schema(
     // Rich Data
     lineups: { type: Array, default: [] },
     injuries: { type: Array, default: [] },
+    statistics: { type: Array, default: [] },
 
     // Live-only data
     livescore: { type: Object, default: null },
