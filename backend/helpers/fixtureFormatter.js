@@ -21,7 +21,18 @@ export function formatFixtureCard(fixtureDoc) {
 
   // 1️⃣ LIVE → Show Minutes (e.g. "34'")
   if (isLive) {
-    displayStatus = status.elapsed ? `${status.elapsed}'` : "Live";
+    if (shortStatus === "HT") {
+      displayStatus = "HT";
+    } else if (status.elapsed) {
+      // Check for extra time (e.g. 45+2, 90+4)
+      if (status.extra) {
+        displayStatus = `${status.elapsed}+${status.extra}'`;
+      } else {
+        displayStatus = `${status.elapsed}'`;
+      }
+    } else {
+      displayStatus = "Live";
+    }
   }
 
   // 2️⃣ FINISHED → Show "FT"
