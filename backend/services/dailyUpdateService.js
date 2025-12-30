@@ -184,12 +184,15 @@ export async function updateDailyFixtures() {
 }
 
 export function startDailyScheduler() {
-  console.log("⏰ Daily Update Scheduler Started (Runs automatically every 24h)");
+  console.log("⏰ Daily Update Scheduler Started (Runs every 24h, first run in 5 mins)");
 
-  // Calculate time until next 00:00 UTC (or local time)
-  // For simplicity, let's run it immediately on start, then every 24h
-  updateDailyFixtures();
+  // Delay the first run by 5 minutes to allow server startup/health-checks to pass
+  setTimeout(() => {
+    console.log("⏰ Starting initial Daily Update...");
+    updateDailyFixtures();
+  }, 5 * 60 * 1000);
 
+  // Then schedule the daily interval
   setInterval(() => {
     updateDailyFixtures();
   }, 24 * 60 * 60 * 1000);
