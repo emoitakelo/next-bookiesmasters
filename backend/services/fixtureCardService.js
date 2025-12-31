@@ -21,10 +21,7 @@ export async function getFixturesGroupedByLeague(date) {
     "fixture.fixture.date": {
       $gte: startOfDayKenya.toISOString(),
       $lte: endOfDayKenya.toISOString()
-    },
-    // 🔥 OPTIMIZATION: Only fetch matches with odds
-    // This filters out thousands of obscure youth/amateur games at the DB level
-    "odds": { $exists: true, $not: { $size: 0 } }
+    }
   };
 
   // Fetch all fixtures for the date using Aggregation for Deep Filtering
@@ -83,8 +80,12 @@ export async function getFixturesGroupedByLeague(date) {
   console.timeEnd("DB:FetchFixtures");
 
   // Filter out fixtures that **do not have match winner odds**
-  // Filter is now done in MongoDB query for performance
-  const fixturesWithOdds = fixtures;
+  const fixturesWithOdds = fixtures.filter(f =>
+    f.odds &&
+    f.odds.length > 0 &&
+    f.odds[0].markets &&
+    f.odds[0].markets.length > 0
+  );
 
   // Group by league
   const grouped = {};
@@ -239,9 +240,17 @@ export async function getLiveFixtures() {
   ]);
   console.timeEnd("DB:FetchLiveFixtures");
 
+  // Filter out fixtures that **do not have match winner odds**
+  const fixturesWithOdds = fixtures.filter(f =>
+    f.odds &&
+    f.odds.length > 0 &&
+    f.odds[0].markets &&
+    f.odds[0].markets.length > 0
+  );
+
   // Group by league
   const grouped = {};
-  fixtures.forEach(doc => {
+  fixturesWithOdds.forEach(doc => {
     const league = doc.fixture.league;
     const leagueId = league.id;
 

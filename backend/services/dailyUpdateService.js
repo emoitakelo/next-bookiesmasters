@@ -36,7 +36,7 @@ function getDatePlus(days) {
    LOAD SAVED LEAGUES FROM MONGO
 --------------------------------------------- */
 async function getSavedLeagueIds() {
-  const leagues = await League.find({});
+  const leagues = await League.find({ odds: true });
   return leagues.map(l => l.league.id); // ensure this matches your schema
 }
 
