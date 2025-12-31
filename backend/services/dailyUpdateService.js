@@ -36,8 +36,9 @@ function getDatePlus(days) {
    LOAD SAVED LEAGUES FROM MONGO
 --------------------------------------------- */
 async function getSavedLeagueIds() {
-  const leagues = await League.find({ odds: true });
-  return leagues.map(l => l.league.id); // ensure this matches your schema
+  const leagues = await League.find({});
+  // console.log(`Found ${leagues.length} saved leagues.`);
+  return leagues.map(l => l.league.id);
 }
 
 /* ---------------------------------------------
@@ -50,21 +51,28 @@ async function fetchFixturesForDates(savedLeagueIds, daysAhead = 2) {
     const date = getDatePlus(day);
     console.log(`📅 Fetching fixtures for ${date}`);
 
-    const res = await api.get(`/fixtures`, {
-      params: { date }
-    });
+    try {
+      const res = await api.get(`/fixtures`, {
+        params: { date }
+      });
 
-    const fixtures = res.data.response || [];
-    console.log(`   → Total fixtures on ${date}: ${fixtures.length}`);
+      if (res.data.errors && Object.keys(res.data.errors).length > 0) {
+        console.error("❌ API Errors:", JSON.stringify(res.data.errors, null, 2));
+      }
 
-    // filter by saved leagues
-    const filtered = fixtures.filter(f =>
-      savedLeagueIds.includes(f.league.id)
-    );
+      const fixtures = res.data.response || [];
+      console.log(`   → Total fixtures on ${date}: ${fixtures.length}`);
 
-    console.log(`   → Saved league fixtures on ${date}: ${filtered.length}\n`);
+      // filter by saved leagues
+      // ONLY keep fixtures that match our saved leagues
+      const filtered = fixtures.filter(f =>
+        savedLeagueIds.includes(f.league.id)
+      );
 
-    combined = combined.concat(filtered);
+      combined = combined.concat(filtered);
+    } catch (err) {
+      console.error(`❌ Error fetching fixtures for date ${date}:`, err.message);
+    }
   }
 
   return combined;
@@ -207,5 +215,18 @@ export function startDailyScheduler() {
    RUN IF EXECUTED DIRECTLY
 --------------------------------------------- */
 if (process.argv[1].includes("dailyUpdateService.js")) {
-  updateDailyFixtures();
+  const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/bookiesmasters";
+  mongoose.connect(MONGO_URI)
+    .then(() => {
+      console.log("🔌 Connected to MongoDB for manual run");
+      return updateDailyFixtures();
+    })
+    .then(() => {
+      console.log("✅ Manual run complete");
+      process.exit(0);
+    })
+    .catch(err => {
+      console.error("❌ Manual run failed:", err);
+      process.exit(1);
+    });
 }

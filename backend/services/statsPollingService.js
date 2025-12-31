@@ -65,5 +65,5 @@ export function startStatsPoller() {
     pollMatchStatistics();
 
     // Then interval
-    setInterval(pollMatchStatistics, 60 * 1000); // 1 minute
+    setInterval(pollMatchStatistics, 5 * 60 * 1000); // 5 minutes
 }
