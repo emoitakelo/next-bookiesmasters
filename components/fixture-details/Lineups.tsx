@@ -25,6 +25,8 @@ interface Lineup {
     };
 }
 
+import FootballPitch from "./FootballPitch";
+
 interface LineupsProps {
     lineups: Lineup[];
 }
@@ -40,6 +42,10 @@ export default function Lineups({ lineups }: LineupsProps) {
     }
 
     const [home, away] = lineups;
+
+    // Check if we have grid data for visualization
+    // We check the first player of home team
+    const hasGridData = home.startXI[0]?.player.grid !== null;
 
     return (
         <div className="p-4 space-y-8">
@@ -58,34 +64,53 @@ export default function Lineups({ lineups }: LineupsProps) {
                 </div>
             </div>
 
-            {/* Starting XI Lists Comparison */}
-            <div className="grid grid-cols-2 gap-4">
-                {/* Home XI */}
-                <div>
-                    <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-3 border-b border-gray-800 pb-2">Starting XI</h4>
-                    <ul className="space-y-2">
-                        {home.startXI.map((item, idx) => (
-                            <li key={idx} className="flex items-center gap-2 text-sm">
-                                <span className="w-5 text-gray-500 text-xs">{item.player.number}</span>
-                                <span className="text-white truncate">{item.player.name}</span>
-                            </li>
-                        ))}
-                    </ul>
+            {/* 🔥 VISUAL PITCH (If Grid Available) */}
+            {hasGridData && (
+                <div className="mb-8">
+                    <FootballPitch home={home} away={away} />
                 </div>
+            )}
 
-                {/* Away XI */}
-                <div>
-                    <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-3 border-b border-gray-800 pb-2 text-right">Starting XI</h4>
-                    <ul className="space-y-2">
-                        {away.startXI.map((item, idx) => (
-                            <li key={idx} className="flex items-center justify-end gap-2 text-sm">
-                                <span className="text-white truncate text-right">{item.player.name}</span>
-                                <span className="w-5 text-gray-500 text-xs text-right">{item.player.number}</span>
-                            </li>
-                        ))}
-                    </ul>
+            {/* Starting XI List (Fallback or Complementary? User visual replaces list mostly, 
+                but keeping list below or hidden is safer. Let's SHOW list if NO grid, or maybe always show sub list)
+                
+                Strategy: If Visual Pitch ON, maybe hide StartXI list to avoid duplication? 
+                Or keep it for "List View" preference? 
+                For now, let's keep the list as well for completeness, or maybe just toggled?
+                User asked to "let be a diagram", implying replacement.
+                But Substitutes MUST be list.
+            */}
+
+            {!hasGridData && (
+                /* Starting XI Lists Comparison (Only show if NO pitch) */
+                <div className="grid grid-cols-2 gap-4">
+                    {/* Home XI */}
+                    <div>
+                        <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-3 border-b border-gray-800 pb-2">Starting XI</h4>
+                        <ul className="space-y-2">
+                            {home.startXI.map((item, idx) => (
+                                <li key={idx} className="flex items-center gap-2 text-sm">
+                                    <span className="w-5 text-gray-500 text-xs">{item.player.number}</span>
+                                    <span className="text-white truncate">{item.player.name}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Away XI */}
+                    <div>
+                        <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-3 border-b border-gray-800 pb-2 text-right">Starting XI</h4>
+                        <ul className="space-y-2">
+                            {away.startXI.map((item, idx) => (
+                                <li key={idx} className="flex items-center justify-end gap-2 text-sm">
+                                    <span className="text-white truncate text-right">{item.player.name}</span>
+                                    <span className="w-5 text-gray-500 text-xs text-right">{item.player.number}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Substitutes Lists Comparison */}
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-800">
