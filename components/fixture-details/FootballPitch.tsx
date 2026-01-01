@@ -110,9 +110,11 @@ export default function FootballPitch({ home, away }: FootballPitchProps) {
             });
 
             // Calculate Vertical Position for this ROW
+            // Enforce halves: Home (50-100%), Away (0-50%)
+            // Max rows ~5. Step 10% ensures we stay within bounds.
             let top = isHome
-                ? 90 - (r - 1) * 18 // Home: start 90%, go up
-                : 10 + (r - 1) * 18; // Away: start 10%, go down
+                ? 92 - (r - 1) * 10 // Home: 92, 82, 72, 62, 52 (All > 50)
+                : 8 + (r - 1) * 10; // Away: 8, 18, 28, 38, 48 (All < 50)
 
             return (
                 <div
