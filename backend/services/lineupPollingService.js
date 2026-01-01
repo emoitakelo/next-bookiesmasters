@@ -38,7 +38,10 @@ export async function pollLineupsForUpcoming() {
                     $or: [
                         { lineups: { $exists: false } },
                         { lineups: { $size: 0 } },
-                        { lineups: null }
+                        { lineups: null },
+                        // Also retry if we have the array but no actual players (API delay)
+                        { "lineups.0.startXI": { $exists: false } },
+                        { "lineups.0.startXI": { $size: 0 } }
                     ]
                 }
             ]
