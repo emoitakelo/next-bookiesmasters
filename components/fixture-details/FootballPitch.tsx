@@ -38,54 +38,6 @@ export default function FootballPitch({ home, away }: FootballPitchProps) {
     };
 
     /**
-     * Calculate Percentage Position
-     * @param grid - Player grid string "R:C"
-     * @param isHome - true for Home (Bottom), false for Away (Top)
-     */
-    const getPositionStyle = (grid: string | null, isHome: boolean) => {
-        const { r, c } = parseGrid(grid);
-
-        // Define Vertical Zones (0% to 100%)
-        // Pitch is effectively split into 2 halves.
-        // HOME (Bottom Half): 50% to 100%
-        // AWAY (Top Half): 0% to 50%
-
-        // Row mapping (API is 1-based index)
-        // For Home: Row 1 (GK) = ~90%, Row 2 = ~75%, etc.
-        // For Away: Row 1 (GK) = ~10%, Row 2 = ~25%, etc.
-
-        // Standard rows are usually 1 (GK), 2 (Def), 3 (Mid), 4 (Fwd)
-        // Sometimes 5 rows.
-        const rowStep = 10; // 10% vertical spacing per row
-
-        let top = 0;
-        let left = 0;
-
-        if (isHome) {
-            // HOME: Row 1 is bottom (near 100%)
-            // Base at 90% (GK), move UP by rowStep for each additional row
-            top = 92 - (r - 1) * 15;
-        } else {
-            // AWAY: Row 1 is top (near 0%)
-            // Base at 8% (GK), move DOWN by rowStep
-            top = 8 + (r - 1) * 15;
-        }
-
-        // Horizontal: Column 1 is usually left-most, but API columns are centered logic?
-        // Actually API grid C is explicitly the column index.
-        // We need to know how many columns are in that row to center them?
-        // OR does API give absolute Grid? e.g. 1..5?
-        // Usually API "C" is literal column index.
-        // Let's rely on simple percentage based on assumed max columns (e.g. 5).
-        // A better way is to count players in this row for this team to center them dynamically.
-        // But let's try a direct map first if C is reliable.
-        // Actually, API documentation says C is simply the index in the line.
-        // We really need to know "Total Players in this Row" to center them.
-
-        return { top: `${top}%` };
-    };
-
-    /**
      * Improved positioning: Group players by ROW to center them properly
      */
     const renderTeam = (lineup: Lineup, isHome: boolean) => {
@@ -110,11 +62,10 @@ export default function FootballPitch({ home, away }: FootballPitchProps) {
             });
 
             // Calculate Vertical Position for this ROW
-            // Enforce halves: Home (50-100%), Away (0-50%)
-            // Max rows ~5. Step 10% ensures we stay within bounds.
+            // Enforce halves: Home (Left/First) -> Top (0-50%), Away (Right/Second) -> Bottom (50-100%)
             let top = isHome
-                ? 92 - (r - 1) * 10 // Home: 92, 82, 72, 62, 52 (All > 50)
-                : 8 + (r - 1) * 10; // Away: 8, 18, 28, 38, 48 (All < 50)
+                ? 10 + (r - 1) * 10 // Home: 10, 20, 30, 40, 50 (Top Half)
+                : 90 - (r - 1) * 10; // Away: 90, 80, 70, 60, 50 (Bottom Half)
 
             return (
                 <div
@@ -183,14 +134,14 @@ export default function FootballPitch({ home, away }: FootballPitchProps) {
             <div className="absolute bottom-0 right-0 w-4 h-4 border-t-2 border-l-2 border-white/40 rounded-tl-full"></div>
 
             {/* TEAM RENDERERS */}
-            {/* Away Team (Top) */}
-            <div className="absolute inset-0 z-10">
-                {renderTeam(away, false)}
-            </div>
-
-            {/* Home Team (Bottom) */}
+            {/* Home Team (Top) */}
             <div className="absolute inset-0 z-10">
                 {renderTeam(home, true)}
+            </div>
+
+            {/* Away Team (Bottom) */}
+            <div className="absolute inset-0 z-10">
+                {renderTeam(away, false)}
             </div>
 
             {/* Team Logos Overlay (Subtle) */}
