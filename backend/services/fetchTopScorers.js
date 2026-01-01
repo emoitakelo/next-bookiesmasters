@@ -92,10 +92,13 @@ async function fetchTopScorersForLeague(leagueId, season) {
     }
 }
 
-export async function run() {
+// Rename to updateTopScorers for consistency
+export async function updateTopScorers(standalone = true) {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("✅ MongoDB Connected");
+        if (standalone) {
+            await mongoose.connect(process.env.MONGO_URI);
+            console.log("✅ MongoDB Connected");
+        }
 
         // Fetch ALL leagues from DB
         const allLeagues = await League.find({});
@@ -103,13 +106,18 @@ export async function run() {
 
         for (const leagueDoc of allLeagues) {
             const id = leagueDoc.league.id;
+            // logic to determine season...
             let season = 2024; // Default fallback
 
             if (leagueDoc.season) {
                 season = leagueDoc.season;
-            } else if (leagueDoc.league.season) {
+            } else if (leagueDoc.league && leagueDoc.league.season) {
+                // Check if nested in league object (some schemas differ)
                 season = leagueDoc.league.season;
             }
+
+            // Correction for 2026 handling if needed or if data is stored differently
+            // Just use what's there.
 
             await fetchTopScorersForLeague(id, season);
 
@@ -118,15 +126,15 @@ export async function run() {
         }
 
         console.log("🎉 All Top Scorers fetched.");
-        process.exit(0);
+        if (standalone) process.exit(0);
 
     } catch (err) {
         console.error("FATAL ERROR:", err);
-        process.exit(1);
+        if (standalone) process.exit(1);
     }
 }
 
 // Allow standalone execution
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-    run();
+    updateTopScorers(true);
 }

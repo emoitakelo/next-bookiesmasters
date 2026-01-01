@@ -44,10 +44,12 @@ async function fetchLeagueStandings(leagueId, season) {
     }
 }
 
-export async function run() {
+export async function updateStandings(standalone = true) {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
-        console.log("✅ Connected to MongoDB");
+        if (standalone) {
+            await mongoose.connect(process.env.MONGO_URI);
+            console.log("✅ Connected to MongoDB");
+        }
 
         const savedLeagues = await getSavedLeagues();
         if (!savedLeagues.length) {
@@ -64,8 +66,6 @@ export async function run() {
             const leagueData = await fetchLeagueStandings(l.id, l.currentSeason);
 
             if (leagueData) {
-                // Upsert the standings document
-                // We store the whole league object part which includes 'standings'
                 await Standing.findOneAndUpdate(
                     { "league.id": l.id, "league.season": l.currentSeason },
                     {
@@ -82,7 +82,6 @@ export async function run() {
                     { upsert: true }
                 );
 
-                // Check if it's a grouped tournament
                 const isGrouped = leagueData.standings.length > 1;
                 const groups = isGrouped ? leagueData.standings.map(g => g[0]?.group).filter(Boolean) : ["Single Table"];
 
@@ -97,8 +96,15 @@ export async function run() {
     } catch (err) {
         console.error("❌ Error:", err);
     } finally {
-        await mongoose.disconnect();
+        if (standalone) {
+            await mongoose.disconnect();
+        }
     }
 }
 
-run();
+// Support legacy run() name if referenced elsewhere or rename usages? 
+// Actually let's just use updateStandings.
+// And check if we need to call it at the bottom.
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    updateStandings(true);
+}

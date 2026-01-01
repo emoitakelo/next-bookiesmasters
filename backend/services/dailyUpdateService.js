@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import League from "../models/League.js";       // your saved leagues
 import Fixture from "../models/Fixture.js";     // unified fixture model
 import { fetchInjuries } from "./enrichmentService.js";
+import { updateStandings } from "./fetch_standings.js";
+import { updateTopScorers } from "./fetchTopScorers.js";
 
 dotenv.config();
 
@@ -189,10 +191,18 @@ export async function updateDailyFixtures() {
       // console.log(`✔ Saved fixture ${fixtureId}`);
     }
 
-    console.log("\n🎉 FIXTURE UPDATE COMPLETED");
+    // 6️⃣ Update Standings
+    console.log("📊 Updating Standings...");
+    await updateStandings(false);
+
+    // 7️⃣ Update Top Scorers
+    console.log("⚽ Updating Top Scorers...");
+    await updateTopScorers(false);
+
+    console.log("\n🎉 FULL DAILY UPDATE COMPLETED");
 
   } catch (err) {
-    console.error("❌ ERROR UPDATING FIXTURES:", err);
+    console.error("❌ ERROR UPDATING FIXTURES/DATA:", err);
   }
 }
 

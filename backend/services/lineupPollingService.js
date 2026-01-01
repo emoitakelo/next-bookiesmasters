@@ -12,18 +12,35 @@ export async function pollLineupsForUpcoming() {
         const now = new Date();
         const lookahead = new Date(now.getTime() + LOOKAHEAD_MINUTES * 60000);
 
+        const LIVE_STATUSES = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE", "INT"];
+
         // QUERY:
-        // 1. Match Date is between NOW and NOW + 45s
-        // 2. Lineups are EMPTY
+        // 1. (Upcoming in 45m OR Currently Live)
+        // 2. AND Lineups are EMPTY
         const query = {
-            "fixture.fixture.date": {
-                $gte: now.toISOString(),
-                $lte: lookahead.toISOString()
-            },
-            $or: [
-                { lineups: { $exists: false } },
-                { lineups: { $size: 0 } },
-                { lineups: null }
+            $and: [
+                {
+                    $or: [
+                        // Future: Starting soon
+                        {
+                            "fixture.fixture.date": {
+                                $gte: now.toISOString(),
+                                $lte: lookahead.toISOString()
+                            }
+                        },
+                        // Live: In progress queries
+                        {
+                            "fixture.fixture.status.short": { $in: LIVE_STATUSES }
+                        }
+                    ]
+                },
+                {
+                    $or: [
+                        { lineups: { $exists: false } },
+                        { lineups: { $size: 0 } },
+                        { lineups: null }
+                    ]
+                }
             ]
         };
 
