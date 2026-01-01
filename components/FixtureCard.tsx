@@ -32,7 +32,7 @@ export default function FixtureCard({
   odds,
   score,
 }: FixtureCardProps) {
-  const isLive = status.includes("'");
+  const isLive = status.includes("'") || status === "HT" || status === "Live";
 
   // helper function
   function getOddsColor(
