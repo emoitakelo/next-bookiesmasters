@@ -44,7 +44,7 @@ const Events: React.FC<EventsProps> = ({ events, homeTeamId }) => {
             {/* Center Line */}
             <div className="absolute left-1/2 top-4 bottom-4 w-px bg-white/5 transform -translate-x-1/2"></div>
 
-            <div className="space-y-4">
+            <div className="space-y-2">
                 {events.map((event, idx) => {
                     const isHome = event.team.id === homeTeamId;
                     const eventIcon = getEventEmoji(event.type, event.detail);
@@ -52,11 +52,11 @@ const Events: React.FC<EventsProps> = ({ events, homeTeamId }) => {
                     return (
                         <div key={idx} className="flex items-center w-full">
                             {/* Home Side */}
-                            <div className="flex-1 flex justify-end pr-5 items-center space-x-2">
+                            <div className="flex-1 flex justify-end pr-2 items-center space-x-1">
                                 {isHome && (
                                     <>
                                         <div className="text-right">
-                                            <div className="text-sm text-gray-200 font-medium leading-tight">{event.player.name}</div>
+                                            <div className="text-xs text-gray-200 font-medium leading-tight">{event.player.name}</div>
                                             <div className="text-[11px] text-gray-500">{event.detail}</div>
                                         </div>
                                         <div className="w-5 flex justify-center">{eventIcon}</div>
@@ -71,13 +71,13 @@ const Events: React.FC<EventsProps> = ({ events, homeTeamId }) => {
                             </div>
 
                             {/* Away Side */}
-                            <div className="flex-1 flex justify-start pl-5 items-center space-x-2">
+                            <div className="flex-1 flex justify-start pl-2 items-center space-x-2">
                                 {!isHome && (
                                     <>
                                         <div className="w-5 flex justify-center">{eventIcon}</div>
                                         <div className="text-left">
-                                            <div className="text-sm text-gray-200 font-medium leading-tight">{event.player.name}</div>
-                                            <div className="text-[11px] text-gray-500">{event.detail}</div>
+                                            <div className="text-xs text-gray-200 font-medium leading-tight">{event.player.name}</div>
+                                            <div className="text-[10px] text-gray-500">{event.detail}</div>
                                         </div>
                                     </>
                                 )}
