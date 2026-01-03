@@ -8,6 +8,7 @@ export const revalidate = 1;
 
 interface FixtureDetailData {
     fixtureId: number;
+    leagueId: number;
     league: string;
     leagueLogo: string;
     date: string;

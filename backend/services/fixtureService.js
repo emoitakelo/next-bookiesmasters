@@ -81,6 +81,7 @@ export const getFixtureById = async (fixtureId) => {
 
         const response = {
             fixtureId: matchData.fixture.id,
+            leagueId: matchData.league.id,
             league: matchData.league.name,
             leagueLogo: matchData.league.logo,
             country: matchData.league.country,

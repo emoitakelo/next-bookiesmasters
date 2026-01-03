@@ -85,7 +85,7 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data: initi
     return (
         <div className="min-h-screen bg-transparent text-white py-4 px-2">
             <div className="max-w-xl mx-auto space-y-4">
-                <LeagueHeader league={data.league} logo={data.leagueLogo} country={data.country} />
+                <LeagueHeader league={data.league} logo={data.leagueLogo} country={data.country} id={data.leagueId} />
 
                 <TeamDisplay
                     homeTeam={data.homeTeam}
