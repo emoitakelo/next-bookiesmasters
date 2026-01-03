@@ -133,7 +133,7 @@ export default async function PredictionsPage({
 
       <PredictionsList initialData={initialData} date={date} />
 
-      <div className="mt-8 mb-12">
+      <div className="mt-1 mb-12">
         <LeagueExplorer />
       </div>
     </>

@@ -45,11 +45,11 @@ export default function LeagueExplorer() {
     );
 
     return (
-        <div className="w-full max-w-xl mx-auto mt-6 bg-transparent">
+        <div className="w-full max-w-xl mx-auto bg-transparent">
 
             {/* League Selector (Tabs) */}
             {/* League Selector (Tabs) */}
-            <div className="flex overflow-x-auto p-2 gap-2 scrollbar-hide mb-2 bg-[#1F1F1F] rounded-xl border border-white/5">
+            <div className="flex overflow-x-auto p-2 gap-2 scrollbar-hide bg-[#1F1F1F] rounded-t-xl border border-white/5 border-b-0">
                 {LEAGUES.map((league) => (
                     <button
                         key={league.id}
@@ -68,7 +68,7 @@ export default function LeagueExplorer() {
             </div>
 
             {/* Content Tabs (Standings | Scorers | Fixtures) */}
-            <div className="flex border-b border-white/5 bg-[#1F1F1F] rounded-t-xl overflow-hidden mx-1">
+            <div className="flex border-x border-b border-white/5 bg-[#1F1F1F] overflow-hidden">
                 {[
                     { id: "standings", label: "Standings" },
                     { id: "fixtures", label: "Fixtures" },
@@ -84,28 +84,28 @@ export default function LeagueExplorer() {
                     >
                         {tab.label}
                         {activeTab === tab.id && (
-                            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-red-500 shadow-[0_-2px_8px_rgba(239,68,68,0.4)]" />
+                            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white" />
                         )}
                     </button>
                 ))}
             </div>
 
             {/* Content Area */}
-            <div className="p-0 min-h-[300px] bg-transparent mt-2">
+            <div className="p-0 min-h-[300px] bg-[#1F1F1F] rounded-b-xl border border-t-0 border-white/5">
                 {activeTab === "standings" && (
-                    <div className="pt-2">
+                    <div className="pt-2 px-2 pb-4">
                         {standings?.standings ? <Standings standings={standings.standings} /> : <Loader />}
                     </div>
                 )}
 
                 {activeTab === "topscorers" && (
-                    <div className="pt-2">
+                    <div className="pt-2 px-2 pb-4">
                         {scorers?.players ? <TopScorers scorers={scorers.players} /> : <Loader />}
                     </div>
                 )}
 
                 {activeTab === "fixtures" && (
-                    <div className="pt-2">
+                    <div className="pt-2 px-2 pb-4">
                         {fixtures ? <LeagueFixtures fixtures={fixtures} /> : <Loader />}
                     </div>
                 )}

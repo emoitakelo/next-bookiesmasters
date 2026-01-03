@@ -40,7 +40,7 @@ const Events: React.FC<EventsProps> = ({ events, homeTeamId }) => {
     }
 
     return (
-        <div className="bg-[#1F1F1F] rounded-xl border border-white/5 py-6 relative">
+        <div className="bg-[#1F1F1F] rounded-xl border border-white/5 py-3 relative">
             {/* Center Line */}
             <div className="absolute left-1/2 top-4 bottom-4 w-px bg-white/5 transform -translate-x-1/2"></div>
 
