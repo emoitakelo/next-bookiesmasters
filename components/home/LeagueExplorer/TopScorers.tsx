@@ -30,16 +30,17 @@ const TopScorers: React.FC<TopScorersProps> = ({ scorers }) => {
         return <div className="p-4 text-center text-gray-500">No top scorers data available.</div>;
     }
 
+
     return (
-        <div className="bg-zinc-900 rounded-lg p-4">
-            <div className="space-y-4">
+        <div className="bg-[#1F1F1F] rounded-xl p-3 border border-white/5">
+            <div className="space-y-3">
                 {scorers.slice(0, 10).map((scorer) => (
-                    <div key={scorer.rank} className="flex items-center justify-between border-b border-zinc-800 pb-3 last:border-0 last:pb-0">
+                    <div key={scorer.rank} className="flex items-center justify-between border-b border-white/5 pb-2 last:border-0 last:pb-0">
 
                         {/* Left: Rank & Player Info */}
-                        <div className="flex items-center gap-4">
-                            <span className={`w-6 text-center font-bold ${scorer.rank === 1 ? 'text-yellow-400' :
-                                    scorer.rank <= 3 ? 'text-gray-300' : 'text-gray-500'
+                        <div className="flex items-center gap-3">
+                            <span className={`w-5 text-center font-bold text-xs ${scorer.rank === 1 ? 'text-yellow-400' :
+                                scorer.rank <= 3 ? 'text-gray-300' : 'text-gray-500'
                                 }`}>
                                 {scorer.rank}
                             </span>
@@ -48,25 +49,25 @@ const TopScorers: React.FC<TopScorersProps> = ({ scorers }) => {
                                 <img
                                     src={scorer.player.photo}
                                     alt={scorer.player.name}
-                                    className="w-10 h-10 rounded-full object-cover bg-gray-800"
+                                    className="w-8 h-8 rounded-full object-cover bg-gray-800"
                                 />
                                 <img
                                     src={scorer.team.logo}
                                     alt={scorer.team.name}
-                                    className="w-4 h-4 absolute -bottom-1 -right-1 rounded-full bg-zinc-900 p-0.5"
+                                    className="w-3.5 h-3.5 absolute -bottom-1 -right-1 rounded-full bg-[#1F1F1F] p-0.5"
                                 />
                             </div>
 
                             <div>
-                                <p className="font-bold text-white text-sm">{scorer.player.name}</p>
-                                <p className="text-xs text-gray-400">{scorer.team.name}</p>
+                                <p className="font-bold text-white text-xs">{scorer.player.name}</p>
+                                <p className="text-[10px] text-gray-400">{scorer.team.name}</p>
                             </div>
                         </div>
 
                         {/* Right: Goals */}
                         <div className="text-right">
-                            <p className="font-bold text-main-accent text-lg">{scorer.statistics.goals.total}</p>
-                            <p className="text-[10px] text-gray-500 uppercase">Goals</p>
+                            <p className="font-bold text-red-500 text-sm">{scorer.statistics.goals.total}</p>
+                            <p className="text-[9px] text-gray-500 uppercase">Goals</p>
                         </div>
 
                     </div>
