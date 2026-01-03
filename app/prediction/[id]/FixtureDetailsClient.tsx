@@ -12,6 +12,7 @@ import LeagueHeader from "@/components/fixture-details/LeagueHeader";
 import Lineups from "@/components/fixture-details/Lineups";
 import Injuries from "@/components/fixture-details/Injuries";
 import Statistics from "@/components/fixture-details/Statistics";
+import LeagueExplorer from "@/components/home/LeagueExplorer";
 
 interface FixtureDetailsClientProps {
     data: any;
@@ -99,6 +100,10 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data: initi
                 <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
                 {renderContent()}
+
+                <div className="pt-6 pb-2">
+                    <LeagueExplorer />
+                </div>
             </div>
         </div>
     );
