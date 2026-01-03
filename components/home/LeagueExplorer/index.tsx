@@ -78,7 +78,7 @@ export default function LeagueExplorer() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={`flex-1 py-2 text-xs font-medium transition-colors relative ${activeTab === tab.id
-                            ? "text-gray-200 bg-white/5"
+                            ? "text-gray-200"
                             : "text-gray-400 hover:text-gray-300 hover:bg-white/5"
                             }`}
                     >
