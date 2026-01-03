@@ -4,8 +4,8 @@ import Image from "next/image";
 
 interface LastMatch {
     date: string;
-    homeTeam: { name: string };
-    awayTeam: { name: string };
+    homeTeam: { name: string; logo?: string };
+    awayTeam: { name: string; logo?: string };
     score: { home: number; away: number };
     result: "W" | "L" | "D";
     color: string;
@@ -58,7 +58,12 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                             <div className="truncate text-gray-500 text-[10px] md:text-xs mr-2">{matchDate}</div>
 
                             {/* 2️⃣ Home Team */}
-                            <div className="truncate font-medium text-right pr-3 text-gray-300">{m.homeTeam.name}</div>
+                            <div className="flex items-center justify-end gap-2 pr-3">
+                                <span className="truncate font-medium text-gray-300">{m.homeTeam.name}</span>
+                                {m.homeTeam.logo && (
+                                    <img src={m.homeTeam.logo} alt={m.homeTeam.name} className="w-5 h-5 object-contain" />
+                                )}
+                            </div>
 
                             {/* 3️⃣ Score with perspective-based badge */}
                             <div className="flex justify-center">
@@ -71,7 +76,12 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                             </div>
 
                             {/* 4️⃣ Away Team */}
-                            <div className="truncate font-medium text-left pl-3 text-gray-300">{m.awayTeam.name}</div>
+                            <div className="flex items-center justify-start gap-2 pl-3">
+                                {m.awayTeam.logo && (
+                                    <img src={m.awayTeam.logo} alt={m.awayTeam.name} className="w-5 h-5 object-contain" />
+                                )}
+                                <span className="truncate font-medium text-gray-300">{m.awayTeam.name}</span>
+                            </div>
                         </div>
                     );
                 })}

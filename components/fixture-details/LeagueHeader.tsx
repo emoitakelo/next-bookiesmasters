@@ -14,10 +14,10 @@ const LeagueHeader: React.FC<LeagueHeaderProps> = ({ league, logo }) => {
                 <img
                     src={logo}
                     alt={league}
-                    className="w-4 h-4 object-contain opacity-70"
+                    className="w-5 h-5 object-contain opacity-70"
                 />
             )}
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
                 {league}
             </span>
         </div>
