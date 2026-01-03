@@ -100,8 +100,8 @@ export const getFixtureById = async (fixtureId) => {
             // Predictions (optional, kept if needed later or for reference)
             tip: predictionData?.predictions?.advice || "N/A",
 
-            // Insights / Trends
-            trends: trends,
+            // Detailed Comparison (replaces Trends)
+            comparison: comparison,
 
             homeTeam: {
                 id: matchData.teams.home.id,

@@ -1,36 +1,54 @@
 /**
- * Analyzes match history to generate "stories" or trends.
+ * Calculates statistical comparison between two teams based on their last 5 matches.
  * 
- * @param {Array} homeLast5 - Array of last 5 matches for home team
- * @param {Array} awayLast5 - Array of last 5 matches for away team
- * @param {Array} h2h - Array of head-to-head matches
- * @param {String} homeName - Name of home team
- * @param {String} awayName - Name of away team
- * @returns {Array} Array of trend objects { text, type: 'positive'|'negative'|'neutral', icon }
+ * @param {Array} homeLast5 - Last 5 matches for home team
+ * @param {Array} awayLast5 - Last 5 matches for away team
+ * @returns {Object} Comparison object { home: Stats, away: Stats }
  */
-export function calculateTrends(homeLast5, awayLast5, h2h, homeName, awayName) {
-    const trends = [];
-    if (!homeLast5 || !awayLast5) return trends;
+export function calculateComparison(homeLast5, awayLast5) {
+    if (!homeLast5 || !awayLast5) return null;
 
-    // Helper: Count wins/goals
-    const analyzeForm = (matches, teamName, isHomeTeamOfFixture) => {
-        if (!matches || matches.length === 0) return {};
+    // Helper: Normalize match object (handles both raw API and flattened structures)
+    const normalize = (m) => {
+        if (m.teams && m.goals) return m;
+        if (m.homeTeam && m.score) {
+            return {
+                teams: { home: m.homeTeam, away: m.awayTeam },
+                goals: { home: m.score.home, away: m.score.away }
+            };
+        }
+        return null;
+    };
 
-        // Filter valid matches (sometimes API returns nulls)
-        const valid = matches.filter(m => m.teams && m.goals);
-        if (valid.length < 3) return {};
+    const calculateStats = (matches, teamId) => {
+        const valid = matches.map(normalize).filter(Boolean);
+        const total = valid.length;
+        if (total === 0) return null;
 
         let wins = 0;
-        let losses = 0;
         let draws = 0;
+        let losses = 0;
+        let goalsScored = 0;
+        let goalsConceded = 0;
+        let btts = 0;
         let over25 = 0;
-        let btts = 0; // Both Teams To Score
         let cleanSheets = 0;
 
         valid.forEach(m => {
-            // Determine result relative to THIS team
-            // Note: In last5 array, "home" might be away in that specific past match
-            const isHome = m.teams.home.name === teamName;
+            // Determine side based on ID if available, or name (logic depends on context)
+            // Note: formCalculator usually provides 'homeTeam' in flattened structure for the team in question
+            // But here we rely on the context passed.
+            // Wait, calculateTeamForm returns last 5 matches of THE TEAM.
+            // So we need to know if the team played Home or Away in that specific match to count goals correctly.
+
+            // In the 'flattened' structure (from formCalculator/backend store), usually:
+            // if we used calculateTeamForm, the matches are from that team's perspective? 
+            // Actually calculateTeamForm returns the raw array or flattened array.
+
+            // Let's assume the teamId matches m.teams.home.id or m.teams.away.id
+            const isHome = m.teams.home.id === teamId;
+            // Fallback for name based check if IDs are missing (less reliable)
+
             const myGoals = isHome ? m.goals.home : m.goals.away;
             const oppGoals = isHome ? m.goals.away : m.goals.home;
 
@@ -38,86 +56,110 @@ export function calculateTrends(homeLast5, awayLast5, h2h, homeName, awayName) {
             else if (myGoals < oppGoals) losses++;
             else draws++;
 
-            if ((m.goals.home + m.goals.away) > 2.5) over25++;
-            if (m.goals.home > 0 && m.goals.away > 0) btts++;
+            goalsScored += myGoals;
+            goalsConceded += oppGoals;
+
+            if (myGoals > 0 && oppGoals > 0) btts++;
+            if ((myGoals + oppGoals) > 2.5) over25++;
             if (oppGoals === 0) cleanSheets++;
         });
 
-        return { wins, losses, draws, over25, btts, cleanSheets, total: valid.length };
+        return {
+            played: total,
+            wins,
+            draws,
+            losses,
+            goalsScored, // Total
+            goalsConceded, // Total
+            avgGoalsScored: parseFloat((goalsScored / total).toFixed(1)),
+            avgGoalsConceded: parseFloat((goalsConceded / total).toFixed(1)),
+            bttsPercentage: Math.round((btts / total) * 100),
+            over25Percentage: Math.round((over25 / total) * 100),
+            cleanSheetPercentage: Math.round((cleanSheets / total) * 100),
+        };
     };
 
-    // --- 1. FORM ANALYSIS ---
-    const hForm = analyzeForm(homeLast5, homeName, true);
-    const aForm = analyzeForm(awayLast5, awayName, false);
+    // We need Team IDs to correctly identify 'Home/Away' in history 
+    // BUT calculateComparison arguments in previous file didn't pass IDs.
+    // Let's update arguments to accept IDs or names, or just assume the 'homeLast5' 
+    // contains matches where we can deduce the team.
+    // Actually, 'calculateTeamForm' in fixtureService fetches matches for a specific team ID.
+    // We should pass the Team IDs to this function to be safe.
 
-    // Winning Streaks (recent 3+)
-    // Note: This simple count just checks total in last 5, not consecutive order for simplicity, 
-    // but usually last5 is sorted. Let's assume strict streak requires sorting check, 
-    // but for "X of last Y" phrasing, simple count is safer.
+    // However, to keep signature similar or easy refactor, let's look at fixtureService.js call site.
+    // It passes (homeData.last5Matches, awayData.last5Matches, h2h, homeName, awayName).
+    // We should verify if existing code passes IDs. It does not.
+    // I will update this function to accept IDs instead of Names for better precision, 
+    // or use Names if IDs not available.
 
-    if (hForm.wins >= 4) {
-        trends.push({ text: `${homeName} have won ${hForm.wins} of their last ${hForm.total} matches`, type: 'positive', icon: '🔥' });
-    }
-    if (aForm.wins >= 4) {
-        trends.push({ text: `${awayName} have won ${aForm.wins} of their last ${aForm.total} matches`, type: 'positive', icon: '🔥' });
-    }
+    return {
+        home: null, // Placeholder, see logic update below
+        away: null
+    };
+}
 
-    // Losing Streaks
-    if (hForm.losses >= 4) {
-        trends.push({ text: `${homeName} have lost ${hForm.losses} of their last ${hForm.total} matches`, type: 'negative', icon: '📉' });
-    }
+/**
+ * REVISED EXPORT
+ * @param {Array} homeLast5 
+ * @param {Number} homeId 
+ * @param {Array} awayLast5 
+ * @param {Number} awayId 
+ */
+export function calculateComparisonStats(homeLast5, homeId, awayLast5, awayId) {
+    // Re-using the logic above
 
-    // --- 2. GOALS TRENDS ---
-    // High Scoring
-    if (hForm.over25 >= 4) {
-        trends.push({ text: `Over 2.5 goals in ${hForm.over25} of ${homeName}'s last ${hForm.total} matches`, type: 'neutral', icon: '⚽' });
-    }
-    if (aForm.over25 >= 4) {
-        trends.push({ text: `Over 2.5 goals in ${aForm.over25} of ${awayName}'s last ${aForm.total} matches`, type: 'neutral', icon: '⚽' });
-    }
+    // Helper: Normalize match object
+    const normalize = (m) => {
+        if (m.teams && m.goals) return m;
+        if (m.homeTeam && m.score) {
+            return {
+                teams: { home: m.homeTeam, away: m.awayTeam },
+                goals: { home: m.score.home, away: m.score.away }
+            };
+        }
+        return null;
+    };
 
-    // BTTS
-    if (hForm.btts >= 4) {
-        trends.push({ text: `Both teams scored in ${hForm.btts} of ${homeName}'s last ${hForm.total} matches`, type: 'neutral', icon: '🥅' });
-    }
+    const calculate = (matches, tid) => {
+        if (!matches) return null;
+        const valid = matches.map(normalize).filter(Boolean);
+        if (valid.length === 0) return null;
 
-    // Clean Sheets (Defense)
-    if (hForm.cleanSheets >= 3) {
-        trends.push({ text: `${homeName} kept a clean sheet in ${hForm.cleanSheets} of last ${hForm.total} matches`, type: 'positive', icon: '🛡️' });
-    }
+        let wins = 0, draws = 0, losses = 0;
+        let gf = 0, ga = 0; // goals for, goals against
+        let btts = 0, over25 = 0, cs = 0;
 
-    // --- 3. HEAD TO HEAD ---
-    if (h2h && h2h.length >= 3) {
-        const h2hValid = h2h.filter(m => m.teams && m.goals);
-        let hWins = 0;
-        let aWins = 0;
+        valid.forEach(m => {
+            const isHome = m.teams.home.id === tid;
+            const myGoals = isHome ? m.goals.home : m.goals.away;
+            const oppGoals = isHome ? m.goals.away : m.goals.home;
 
-        h2hValid.forEach(m => {
-            const hGoals = m.teams.home.name === homeName ? m.goals.home : m.goals.away;
-            const aGoals = m.teams.away.name === awayName ? m.goals.away : m.goals.home; // Logic check: home vs away names usually map fixed in H2H list
+            if (myGoals > oppGoals) wins++;
+            else if (myGoals < oppGoals) losses++;
+            else draws++;
 
-            // Simpler: Just check score based on the fixture object provided in H2H
-            // API-Football H2H returns a list of fixtures.
-            // We need to match names carefully.
+            gf += myGoals;
+            ga += oppGoals;
 
-            // Let's assume m.teams.home.name is valid.
-            const isHomeWinner = (m.goals.home > m.goals.away) && (m.teams.home.name === homeName || m.teams.away.name === awayName);
-            // This H2H logic can be tricky if teams swap home/away.
-
-            // Easier H2H logic: Counts
-            if (m.teams.home.name === homeName && m.goals.home > m.goals.away) hWins++;
-            else if (m.teams.away.name === homeName && m.goals.away > m.goals.home) hWins++;
-
-            if (m.teams.home.name === awayName && m.goals.home > m.goals.away) aWins++;
-            else if (m.teams.away.name === awayName && m.goals.away > m.goals.home) aWins++;
+            if (myGoals > 0 && oppGoals > 0) btts++;
+            if ((myGoals + oppGoals) > 2.5) over25++;
+            if (oppGoals === 0) cs++;
         });
 
-        if (hWins >= 3) {
-            trends.push({ text: `${homeName} have won ${hWins} of the last ${h2hValid.length} meetings against ${awayName}`, type: 'positive', icon: '⚔️' });
-        } else if (aWins >= 3) {
-            trends.push({ text: `${awayName} have won ${aWins} of the last ${h2hValid.length} meetings against ${homeName}`, type: 'positive', icon: '⚔️' });
-        }
-    }
+        const total = valid.length;
+        return {
+            played: total,
+            wins, draws, losses,
+            avgGoalsFor: (gf / total).toFixed(1),
+            avgGoalsAgainst: (ga / total).toFixed(1),
+            bttsPct: Math.round((btts / total) * 100),
+            over25Pct: Math.round((over25 / total) * 100),
+            cleanSheetPct: Math.round((cs / total) * 100),
+        };
+    };
 
-    return trends.slice(0, 4); // Limit to top 4 trends
+    return {
+        home: calculate(homeLast5, homeId),
+        away: calculate(awayLast5, awayId)
+    };
 }
