@@ -10,6 +10,7 @@ import { startLiveService } from "./services/liveScoreService.js";
 import { startLineupPoller } from "./services/lineupPollingService.js";
 import { startDailyScheduler } from "./services/dailyUpdateService.js";
 import { startStatsPoller } from "./services/statsPollingService.js";
+import { startStandingsPoller } from "./services/standingsPollingService.js";
 
 import leagueRoutes from "./routes/leagueRoutes.js";
 
@@ -50,6 +51,7 @@ mongoose
 
     startLineupPoller(); // 🕵️ Start targeted lineup poller
     startStatsPoller();  // 📊 Start statistics poller
+    startStandingsPoller(); // 🏆 Start active standings poller
     startDailyScheduler(); // ⏰ Start daily fixture update
   })
   .catch((err) => console.error("❌ MongoDB connection error:", err.message));

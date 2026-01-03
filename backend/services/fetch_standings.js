@@ -44,25 +44,35 @@ async function fetchLeagueStandings(leagueId, season) {
     }
 }
 
-export async function updateStandings(standalone = true) {
+export async function updateStandings(standalone = true, targetLeagues = null) {
     try {
         if (standalone) {
             await mongoose.connect(process.env.MONGO_URI);
             console.log("✅ Connected to MongoDB");
         }
 
-        const savedLeagues = await getSavedLeagues();
-        if (!savedLeagues.length) {
+        let leaguesToUpdate = await getSavedLeagues();
+        if (!leaguesToUpdate.length) {
             console.log("⚠ No saved leagues found in DB.");
             return;
         }
 
-        console.log(`Checking standings for ${savedLeagues.length} leagues...`);
+        // Filter if specific targets provided
+        if (targetLeagues && targetLeagues.length > 0) {
+            leaguesToUpdate = leaguesToUpdate.filter(l => targetLeagues.includes(l.id));
+        }
 
-        for (const l of savedLeagues) {
+        if (leaguesToUpdate.length === 0) {
+            // console.log("   ℹ No active league standings to update.");
+            return;
+        }
+
+        console.log(`Checking standings for ${leaguesToUpdate.length} leagues...`);
+
+        for (const l of leaguesToUpdate) {
             if (!l.currentSeason) continue;
 
-            console.log(`\nFetching standings: ${l.name} (${l.id}) - Season ${l.currentSeason}`);
+            // console.log(`\nFetching standings: ${l.name} (${l.id}) - Season ${l.currentSeason}`);
             const leagueData = await fetchLeagueStandings(l.id, l.currentSeason);
 
             if (leagueData) {
@@ -83,15 +93,15 @@ export async function updateStandings(standalone = true) {
                 );
 
                 const isGrouped = leagueData.standings.length > 1;
-                const groups = isGrouped ? leagueData.standings.map(g => g[0]?.group).filter(Boolean) : ["Single Table"];
+                // const groups = isGrouped ? leagueData.standings.map(g => g[0]?.group).filter(Boolean) : ["Single Table"];
 
-                console.log(`   ✔ Saved Standings. Structure: ${groups.join(", ")}`);
+                // console.log(`   ✔ Saved Standings for ${l.name}`);
             } else {
-                console.log(`   ⚠ No standings data available.`);
+                // console.log(`   ⚠ No standings data available for ${l.name}`);
             }
         }
 
-        console.log("\n🎉 Finished fetching standings.");
+        console.log("🎉 Finished fetching standings.");
 
     } catch (err) {
         console.error("❌ Error:", err);
