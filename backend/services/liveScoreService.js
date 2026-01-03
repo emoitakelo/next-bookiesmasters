@@ -100,5 +100,5 @@ export function startLiveService() {
     pollLiveScores();
 
     // Then interval
-    setInterval(pollLiveScores, 5000);
+    setInterval(pollLiveScores, 60000);
 }
