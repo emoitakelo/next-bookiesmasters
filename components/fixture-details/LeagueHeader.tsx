@@ -10,7 +10,7 @@ interface LeagueHeaderProps {
 
 const LeagueHeader: React.FC<LeagueHeaderProps> = ({ league, logo, country }) => {
     return (
-        <div className="flex items-center justify-start gap-3 py-2 px-1">
+        <div className="flex items-center justify-start gap-2 py-1 px-1">
             {logo && (
                 <img
                     src={logo}
@@ -19,7 +19,7 @@ const LeagueHeader: React.FC<LeagueHeaderProps> = ({ league, logo, country }) =>
                 />
             )}
             <div className="flex flex-col items-start leading-none gap-0.5">
-                <span className="text-xs font-bold text-gray-200 tracking-widest">
+                <span className="text-sm font-bold text-gray-200 tracking-widest">
                     {league}
                 </span>
                 {country && (
