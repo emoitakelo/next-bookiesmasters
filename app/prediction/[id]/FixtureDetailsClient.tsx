@@ -12,7 +12,7 @@ import LeagueHeader from "@/components/fixture-details/LeagueHeader";
 import Lineups from "@/components/fixture-details/Lineups";
 import Injuries from "@/components/fixture-details/Injuries";
 import Statistics from "@/components/fixture-details/Statistics";
-import LeagueDetailsClient from "@/components/league/LeagueDetailsClient";
+
 
 interface FixtureDetailsClientProps {
     data: any;
@@ -101,15 +101,6 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data: initi
 
                 {renderContent()}
 
-                <div className="pt-6 pb-2">
-                    <LeagueDetailsClient
-                        id={data.leagueId}
-                        name={data.league}
-                        logo={data.leagueLogo}
-                        country={data.country}
-                        embedded={true}
-                    />
-                </div>
             </div>
         </div>
     );
