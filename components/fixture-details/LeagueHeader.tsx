@@ -7,20 +7,21 @@ interface LeagueHeaderProps {
     logo?: string;
 }
 
-const LeagueHeader: React.FC<LeagueHeaderProps> = ({ league, logo }) => (
-    <div className="flex flex-col items-center mb-6">
-        {logo && (
-            <Image
-                src={logo}
-                alt={league}
-                width={40}
-                height={40}
-                className="mb-2 object-contain"
-                unoptimized
-            />
-        )}
-        <h2 className="text-xl font-semibold text-teal-600">{league}</h2>
-    </div>
-);
+const LeagueHeader: React.FC<LeagueHeaderProps> = ({ league, logo }) => {
+    return (
+        <div className="flex items-center justify-end gap-2 py-2 px-1">
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                {league}
+            </span>
+            {logo && (
+                <img
+                    src={logo}
+                    alt={league}
+                    className="w-4 h-4 object-contain opacity-70"
+                />
+            )}
+        </div>
+    );
+};
 
 export default LeagueHeader;

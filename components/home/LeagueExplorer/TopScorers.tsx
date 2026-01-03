@@ -33,9 +33,9 @@ const TopScorers: React.FC<TopScorersProps> = ({ scorers }) => {
 
     return (
         <div className="bg-[#1F1F1F] rounded-xl p-3 border border-white/5">
-            <div className="space-y-3">
+            <div className="space-y-2">
                 {scorers.slice(0, 10).map((scorer) => (
-                    <div key={scorer.rank} className="flex items-center justify-between border-b border-white/5 pb-2 last:border-0 last:pb-0">
+                    <div key={scorer.rank} className="flex items-center justify-between py-1 hover:bg-white/5 rounded px-1 transition-colors">
 
                         {/* Left: Rank & Player Info */}
                         <div className="flex items-center gap-3">

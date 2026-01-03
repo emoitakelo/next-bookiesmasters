@@ -47,23 +47,23 @@ const Standings: React.FC<StandingsProps> = ({ standings }) => {
                         <table className="w-full text-xs text-left">
                             <thead>
                                 <tr className="text-gray-400 border-b border-white/5">
-                                    <th className="py-2 px-2 w-8">#</th>
-                                    <th className="py-2 px-2">Team</th>
-                                    <th className="py-2 px-2 text-center">MP</th>
-                                    <th className="py-2 px-2 text-center">W</th>
-                                    <th className="py-2 px-2 text-center">D</th>
-                                    <th className="py-2 px-2 text-center">L</th>
-                                    <th className="py-2 px-2 text-center">GD</th>
-                                    <th className="py-2 px-2 text-center font-bold">Pts</th>
-                                    <th className="py-2 px-2 text-center hidden sm:table-cell">Form</th>
+                                    <th className="py-1 px-2 w-8">#</th>
+                                    <th className="py-1 px-2">Team</th>
+                                    <th className="py-1 px-2 text-center">MP</th>
+                                    <th className="py-1 px-2 text-center">W</th>
+                                    <th className="py-1 px-2 text-center">D</th>
+                                    <th className="py-1 px-2 text-center">L</th>
+                                    <th className="py-1 px-2 text-center">GD</th>
+                                    <th className="py-1 px-2 text-center font-bold">Pts</th>
+                                    <th className="py-1 px-2 text-center hidden sm:table-cell">Form</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {group.map((team) => (
-                                    <tr key={team.team.id} className="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
-                                        <td className="py-3 px-2">
+                                    <tr key={team.team.id} className="hover:bg-white/5 transition-colors">
+                                        <td className="py-1 px-2">
                                             <span
-                                                className={`flex items-center justify-center w-6 h-6 rounded-full font-medium ${team.rank <= 4 ? 'bg-blue-600/20 text-blue-400' :
+                                                className={`flex items-center justify-center w-5 h-5 text-[10px] rounded-full font-medium ${team.rank <= 4 ? 'bg-blue-600/20 text-blue-400' :
                                                     team.rank >= group.length - 2 ? 'bg-red-600/20 text-red-400' :
                                                         'text-gray-400'
                                                     }`}
@@ -71,34 +71,34 @@ const Standings: React.FC<StandingsProps> = ({ standings }) => {
                                                 {team.rank}
                                             </span>
                                         </td>
-                                        <td className="py-3 px-2">
-                                            <div className="flex items-center space-x-3">
+                                        <td className="py-1 px-2">
+                                            <div className="flex items-center space-x-2">
                                                 <img
                                                     src={team.team.logo}
                                                     alt={team.team.name + ""}
-                                                    className="w-6 h-6 object-contain"
+                                                    className="w-5 h-5 object-contain"
                                                 />
-                                                <span className="font-medium text-gray-200 truncate max-w-[120px]">
+                                                <span className="font-medium text-gray-200 truncate max-w-[120px] text-xs">
                                                     {team.team.name}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="py-3 px-2 text-center text-gray-300">{team.all.played}</td>
-                                        <td className="py-3 px-2 text-center text-gray-400">{team.all.win}</td>
-                                        <td className="py-3 px-2 text-center text-gray-400">{team.all.draw}</td>
-                                        <td className="py-3 px-2 text-center text-gray-400">{team.all.lose}</td>
-                                        <td className={`py-3 px-2 text-center font-medium ${team.goalsDiff > 0 ? 'text-green-400' :
+                                        <td className="py-1 px-2 text-center text-gray-300">{team.all.played}</td>
+                                        <td className="py-1 px-2 text-center text-gray-400">{team.all.win}</td>
+                                        <td className="py-1 px-2 text-center text-gray-400">{team.all.draw}</td>
+                                        <td className="py-1 px-2 text-center text-gray-400">{team.all.lose}</td>
+                                        <td className={`py-1 px-2 text-center font-medium ${team.goalsDiff > 0 ? 'text-green-400' :
                                             team.goalsDiff < 0 ? 'text-red-400' : 'text-gray-400'
                                             }`}>
                                             {team.goalsDiff > 0 ? `+${team.goalsDiff}` : team.goalsDiff}
                                         </td>
-                                        <td className="py-3 px-2 text-center font-bold text-white">{team.points}</td>
-                                        <td className="py-3 px-2 text-center hidden sm:table-cell">
-                                            <div className="flex justify-center space-x-1">
+                                        <td className="py-1 px-2 text-center font-bold text-white">{team.points}</td>
+                                        <td className="py-1 px-2 text-center hidden sm:table-cell">
+                                            <div className="flex justify-center space-x-0.5">
                                                 {team.form?.split('').slice(-5).map((result, i) => (
                                                     <span
                                                         key={i}
-                                                        className={`w-1.5 h-1.5 rounded-full ${result === 'W' ? 'bg-green-500' :
+                                                        className={`w-1 h-1 rounded-full ${result === 'W' ? 'bg-green-500' :
                                                             result === 'D' ? 'bg-orange-500' :
                                                                 'bg-red-500'
                                                             }`}

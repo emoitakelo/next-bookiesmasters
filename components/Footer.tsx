@@ -5,67 +5,67 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-black  text-gray-400 md:justify-center px-2">
+    <footer className="bg-[#1F1F1F] text-gray-400 md:justify-center px-4 py-6 mt-8 border-t border-white/5">
       {/* Main section */}
-      <div className="max-w-3xl mx-auto py-1 grid grid-cols-1 md:grid-cols-3 gap-2 md:w-max md:mx-auto">
+      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:text-center">
 
 
         {/* Brand */}
-        <div className="md:text-center">
-          <h5 className="text-sm font-semibold text-gray-350 ">Bookiesmasters</h5>
-          <p className="text-xs leading-relaxed">
+        <div className="space-y-2">
+          <h5 className="text-sm font-bold text-white uppercase tracking-wider">Bookiesmasters</h5>
+          <p className="text-xs leading-relaxed text-gray-400">
             Get guided football predictions, fixtures, odds, events, livescores and insights powered by data — all in one place.
           </p>
         </div>
 
         {/* Contact + Socials */}
-        <div className="md:text-center">
-          <h5 className="text-sm font-semibold text-gray-350">Stay connected</h5>
-          <p className="text-xs text-gray-400 ">
+        <div className="space-y-2">
+          <h5 className="text-sm font-bold text-white uppercase tracking-wider">Stay connected</h5>
+          <p className="text-xs text-gray-400">
             Have questions? Reach us anytime.
           </p>
 
           <a
             href="mailto:support@bookiesmasters.com"
-            className="flex items-center text-[#5eead4] hover:text-teal-300 text-xs md:justify-center"
+            className="flex items-center text-teal-400 hover:text-teal-300 text-xs md:justify-center transition-colors"
           >
-            <Mail size={16} className="mr-2" /> support@bookiesmasters.com
+            <Mail size={14} className="mr-2" /> support@bookiesmasters.com
           </a>
 
-          <div className="flex space-x-5 mt-1 md:justify-center">
-            <a href="#" className="text-gray-400 hover:text-teal-400 transition">
+          <div className="flex space-x-4 mt-2 md:justify-center">
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">
               <Facebook size={16} />
             </a>
-            <a href="#" className="text-gray-400 hover:text-teal-400 transition">
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">
               <Twitter size={16} />
             </a>
-            <a href="#" className="text-gray-400 hover:text-teal-400 transition">
+            <a href="#" className="text-gray-400 hover:text-white transition-colors">
               <Instagram size={16} />
             </a>
           </div>
         </div>
 
         {/* Quick Links */}
-        <div className="md:text-center">
-          <h5 className="text-sm font-semibold text-gray-350 ">Quick links</h5>
-          <ul className="text-xs ">
+        <div className="space-y-2">
+          <h5 className="text-sm font-bold text-white uppercase tracking-wider">Quick links</h5>
+          <ul className="text-xs space-y-1">
             <li>
-              <Link href="/terms-of-service" className="hover:text-teal-400 transition">
+              <Link href="/terms-of-service" className="hover:text-teal-400 transition-colors">
                 Terms of Service
               </Link>
             </li>
             <li>
-              <Link href="/privacy-policy" className="hover:text-teal-400 transition">
+              <Link href="/privacy-policy" className="hover:text-teal-400 transition-colors">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link href="/contact-us" className="hover:text-teal-400 transition">
+              <Link href="/contact-us" className="hover:text-teal-400 transition-colors">
                 Contact Us
               </Link>
             </li>
             <li>
-              <Link href="/about" className="hover:text-teal-400 transition">
+              <Link href="/about" className="hover:text-teal-400 transition-colors">
                 About Us
               </Link>
             </li>
@@ -74,7 +74,7 @@ export default function Footer() {
       </div>
 
       {/* Footer bottom */}
-      <div className="text-center text-gray-500 text-xs py-4">
+      <div className="text-center text-gray-600 text-[10px] mt-8 pt-4 border-t border-white/5 uppercase tracking-widest">
         © {new Date().getFullYear()} Bookiesmasters. All rights reserved.
       </div>
     </footer>
