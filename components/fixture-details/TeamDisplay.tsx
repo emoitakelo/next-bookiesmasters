@@ -52,7 +52,7 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
     };
 
     return (
-        <div className="flex flex-col items-center mb-3 text-white bg-[#1F1F1F] p-1 rounded-xl shadow-sm border border-white/5">
+        <div className="flex flex-col items-center mb-3 text-white bg-[#1F1F1F] p-2 rounded-xl shadow-sm border border-white/5">
             {/* League/Header info is usually above this component, so we just show teams here */}
 
             <div className="grid grid-cols-3 items-center gap-1 sm:gap-2 max-w-lg w-full">
