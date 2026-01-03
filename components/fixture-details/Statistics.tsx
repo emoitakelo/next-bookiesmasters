@@ -87,11 +87,11 @@ export default function Statistics({ stats }: StatisticsProps) {
                             {/* Bars */}
                             <div className="flex h-1.5 w-full rounded-full overflow-hidden bg-gray-800">
                                 <div
-                                    className={`h-full ${val1Num > val2Num ? 'bg-blue-500' : 'bg-blue-900/40'}`}
+                                    className={`h-full ${val1Num >= val2Num ? 'bg-teal-400' : 'bg-white'}`}
                                     style={{ width: `${pct1}%` }}
                                 />
                                 <div
-                                    className={`h-full ${val2Num > val1Num ? 'bg-red-500' : 'bg-red-900/40'}`}
+                                    className={`h-full ${val2Num > val1Num ? 'bg-teal-400' : 'bg-white'}`}
                                     style={{ width: `${pct2}%` }}
                                 />
                             </div>

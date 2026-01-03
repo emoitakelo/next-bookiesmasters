@@ -27,7 +27,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange }) => {
                 >
                     {tab.label}
                     {activeTab === tab.id && (
-                        <div className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 rounded-t-md" />
+                        <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white rounded-t-md" />
                     )}
                 </button>
             ))}
