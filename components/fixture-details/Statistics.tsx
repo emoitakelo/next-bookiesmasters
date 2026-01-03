@@ -57,17 +57,7 @@ export default function Statistics({ stats }: StatisticsProps) {
         <div className="bg-[#1F1F1F] rounded-xl shadow-sm p-4 max-w-2xl mx-auto border border-white/5">
 
             {/* Header / Team Logos */}
-            <div className="flex justify-between items-center mb-4 px-2">
-                <div className="flex flex-col items-center w-16">
-                    <img src={home.team.logo} alt={home.team.name} className="w-8 h-8 mb-1" />
-                    <span className="text-[10px] font-bold text-center truncate w-full text-gray-300">{home.team.name}</span>
-                </div>
-                <div className="text-gray-600 font-bold text-xs">VS</div>
-                <div className="flex flex-col items-center w-16">
-                    <img src={away.team.logo} alt={away.team.name} className="w-8 h-8 mb-1" />
-                    <span className="text-[10px] font-bold text-center truncate w-full text-gray-300">{away.team.name}</span>
-                </div>
-            </div>
+
 
             {/* Stats List */}
             <div className="space-y-3">
