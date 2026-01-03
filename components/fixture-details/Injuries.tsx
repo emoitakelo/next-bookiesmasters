@@ -59,9 +59,9 @@ export default function Injuries({ injuries }: InjuriesProps) {
 
                 return (
                     <div key={teamName} className="bg-[#1F1F1F] rounded-xl p-4 border border-white/5">
-                        <div className="flex items-center gap-3 mb-4 pb-2 border-b border-[#333]">
-                            <img src={teamLogo} alt={teamName} className="w-8 h-8 object-contain" />
-                            <h3 className="font-bold text-lg text-white">{teamName}</h3>
+                        <div className="flex items-center gap-3 mb-3 pb-2 border-b border-white/5">
+                            <img src={teamLogo} alt={teamName} className="w-6 h-6 object-contain" />
+                            <h3 className="font-bold text-sm text-gray-200">{teamName}</h3>
                         </div>
 
                         <div className="space-y-3">
@@ -71,15 +71,15 @@ export default function Injuries({ injuries }: InjuriesProps) {
                                         <img
                                             src={injury.player.photo}
                                             alt={injury.player.name}
-                                            className="w-10 h-10 rounded-full bg-gray-800 object-cover"
+                                            className="w-8 h-8 rounded-full bg-gray-800 object-cover"
                                         />
                                         <div>
-                                            <p className="font-semibold text-white">{injury.player.name}</p>
-                                            <p className="text-xs text-red-400">{injury.player.type}</p>
+                                            <p className="text-xs font-bold text-white">{injury.player.name}</p>
+                                            <p className="text-[10px] text-red-400">{injury.player.type}</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <span className="px-2 py-1 bg-red-900/30 text-red-500 text-xs rounded border border-red-900">
+                                        <span className="px-1.5 py-0.5 bg-red-900/20 text-red-500 text-[10px] rounded border border-red-900/30">
                                             {injury.player.reason}
                                         </span>
                                     </div>

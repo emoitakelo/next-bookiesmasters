@@ -21,21 +21,21 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
     if (!matches || matches.length === 0) return null;
 
     return (
-        <div className="mb-8 max-w-3xl mx-auto bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+        <div className="mb-6 max-w-3xl mx-auto bg-[#1F1F1F] p-4 rounded-xl shadow-sm border border-white/5">
             {/* 🏆 Title + Team Logo centered */}
-            <div className="flex flex-col items-center mb-4 border-b pb-2">
+            <div className="flex flex-col items-center mb-4 border-b border-white/5 pb-2">
                 <div className="flex items-center justify-center gap-2">
                     {teamLogo && (
                         <Image
                             src={teamLogo}
                             alt={`${teamName} Logo`}
-                            width={32}
-                            height={32}
+                            width={24}
+                            height={24}
                             className="object-contain"
                         />
                     )}
-                    <h4 className="text-md sm:text-lg font-semibold text-gray-800 text-center">
-                        Last 5 Matches: <span className="text-teal-600">{teamName}</span>
+                    <h4 className="text-sm font-bold text-gray-200 text-center uppercase tracking-wide">
+                        Last 5 Matches: <span className="text-teal-400">{teamName}</span>
                     </h4>
                 </div>
             </div>
@@ -52,18 +52,18 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                     return (
                         <div
                             key={i}
-                            className="grid grid-cols-[auto_1fr_auto_1fr] md:grid-cols-4 items-center bg-gray-50 border p-2 rounded text-sm hover:shadow-sm transition-shadow"
+                            className="grid grid-cols-[auto_1fr_auto_1fr] md:grid-cols-4 items-center bg-white/5 border border-transparent p-2 rounded text-xs hover:bg-white/10 transition-colors"
                         >
                             {/* 1️⃣ Date */}
-                            <div className="truncate text-gray-500 text-xs md:text-sm mr-2">{matchDate}</div>
+                            <div className="truncate text-gray-500 text-[10px] md:text-xs mr-2">{matchDate}</div>
 
                             {/* 2️⃣ Home Team */}
-                            <div className="truncate font-medium text-right pr-3 text-gray-700">{m.homeTeam.name}</div>
+                            <div className="truncate font-medium text-right pr-3 text-gray-300">{m.homeTeam.name}</div>
 
                             {/* 3️⃣ Score with perspective-based badge */}
                             <div className="flex justify-center">
                                 <span
-                                    className="w-16 text-center px-2 py-1 rounded font-bold text-xs"
+                                    className="w-14 text-center px-1.5 py-0.5 rounded font-bold text-[10px]"
                                     style={{ backgroundColor: m.color, color: m.result === "D" ? "#7c2d12" : (m.result === "W" ? "#14532d" : "#7f1d1d") }}
                                 >
                                     {m.score.home} - {m.score.away}
@@ -71,7 +71,7 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                             </div>
 
                             {/* 4️⃣ Away Team */}
-                            <div className="truncate font-medium text-left pl-3 text-gray-700">{m.awayTeam.name}</div>
+                            <div className="truncate font-medium text-left pl-3 text-gray-300">{m.awayTeam.name}</div>
                         </div>
                     );
                 })}

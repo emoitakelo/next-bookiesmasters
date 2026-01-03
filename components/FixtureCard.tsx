@@ -68,13 +68,13 @@ export default function FixtureCard({
   return (
     <Link href={`/prediction/${fixtureId}`} className="block">
       <div
-        className={`max-w-xl mx-auto bg-gray-300 rounded-xl shadow-sm hover:shadow-md transition flex items-center justify-evenly p-1 border-l-4 ${isLive ? "border-red-500 " : "border-transparent"
+        className={`max-w-xl mx-auto bg-[#1F1F1F] rounded-xl shadow-sm hover:shadow-md hover:bg-[#2a2a2a] transition flex items-center justify-evenly p-1.5 border-l-4 border-r border-t border-b border-r-white/5 border-t-white/5 border-b-white/5 ${isLive ? "border-l-red-500" : "border-l-transparent"
           }`}
       >
         {/* STATUS */}
-        <div className="w-[45px] sm:w-[55px] text-left">
+        <div className="w-[45px] sm:w-[50px] text-left pl-1">
           <p
-            className={`text-xs sm:text-xs leading-none ${isLive ? "text-red-600 font-medium" : "text-gray-600 font-medium"
+            className={`text-[10px] sm:text-xs leading-none font-bold ${isLive ? "text-red-500 animate-pulse" : "text-gray-500"
               }`}
           >
             {status}
@@ -82,17 +82,17 @@ export default function FixtureCard({
         </div>
 
         {/* TEAMS */}
-        <div className="flex flex-col items-start text-left mx-2 w-[150px] sm:w-[200px]">
+        <div className="flex flex-col items-start text-left mx-2 w-[140px] sm:w-[180px] gap-1.5">
           <div className="flex items-center gap-2">
             <Image
               src={homeTeam.logo}
               alt={homeTeam.name}
               width={14}
               height={14}
-              className="w-4 h-4"
+              className="w-3.5 h-3.5 object-contain"
               unoptimized
             />
-            <span className="font-medium text-gray-800 text-xs sm:text-xs truncate">
+            <span className="font-medium text-gray-200 text-xs truncate">
               {homeTeam.name}
             </span>
           </div>
@@ -103,10 +103,10 @@ export default function FixtureCard({
               alt={awayTeam.name}
               width={14}
               height={14}
-              className="w-4 h-4"
+              className="w-3.5 h-3.5 object-contain"
               unoptimized
             />
-            <span className="font-medium text-gray-800 text-xs sm:text-xs truncate">
+            <span className="font-medium text-gray-200 text-xs truncate">
               {awayTeam.name}
             </span>
           </div>
@@ -115,9 +115,9 @@ export default function FixtureCard({
 
         {/* odds */}
 
-        <div className={`flex flex-row justify-between w-[120px] sm:w-[150px] ${isLive ? "animate-pulse" : ""}`}>
+        <div className={`flex flex-row justify-between w-[100px] sm:w-[130px] ${isLive ? "animate-pulse" : ""}`}>
           <span
-            className={`text-xs sm:text-xs ${getOddsColor(
+            className={`text-xs ${getOddsColor(
               odds.home,
               [odds.home, odds.draw, odds.away]
             )}`}
@@ -125,7 +125,7 @@ export default function FixtureCard({
             {odds.home ?? "-"}
           </span>
           <span
-            className={`text-xs sm:text-xs  ${getOddsColor(
+            className={`text-xs  ${getOddsColor(
               odds.draw,
               [odds.home, odds.draw, odds.away]
             )}`}
@@ -133,7 +133,7 @@ export default function FixtureCard({
             {odds.draw ?? "-"}
           </span>
           <span
-            className={`text-[10px] sm:text-xs  ${getOddsColor(
+            className={`text-xs  ${getOddsColor(
               odds.away,
               [odds.home, odds.draw, odds.away]
             )}`}
@@ -148,7 +148,7 @@ export default function FixtureCard({
 
         {/* SCORE */}
         <div
-          className={`text-right font-medium text-xs sm:text-xs flex flex-col justify-center items-center w-[35px] sm:w-[45px] ${isLive ? "text-red-600" : "text-gray-800"
+          className={`text-right font-bold text-xs flex flex-col justify-center items-center w-[35px] sm:w-[45px] gap-1.5 ${isLive ? "text-red-500" : "text-white"
             }`}
         >
           {score ? (
@@ -158,8 +158,8 @@ export default function FixtureCard({
             </>
           ) : (
             <>
-              <span> </span>
-              <span> </span>
+              <span className="text-gray-600">-</span>
+              <span className="text-gray-600">-</span>
             </>
           )}
         </div>
