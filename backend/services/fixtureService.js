@@ -1,7 +1,6 @@
 import Fixture from "../models/Fixture.js";
 import Standing from "../models/Standing.js";
 import { calculateTeamForm } from "../helpers/formCalculator.js";
-import { calculateComparisonStats } from "../helpers/trendCalculator.js";
 
 export const getFixtureById = async (fixtureId) => {
     try {
@@ -35,17 +34,8 @@ export const getFixtureById = async (fixtureId) => {
             homeData = await calculateTeamForm(matchData.teams.home.id) || homeData;
             awayData = await calculateTeamForm(matchData.teams.away.id) || awayData;
         } catch (err) {
-            console.error(`⚠️ Form calculation failed for fixture ${fixtureIdNum}:`, err.message);
             // Continue with empty form data
         }
-
-        // --- NEW: Calculate Comparison Stats ---
-        const comparison = calculateComparisonStats(
-            homeData.last5Matches,
-            matchData.teams.home.id,
-            awayData.last5Matches,
-            matchData.teams.away.id
-        );
 
         // Prepare Response Object matching frontend expectations
         // Logic adapted from prev/helpers/predictionMerger.js
@@ -100,9 +90,6 @@ export const getFixtureById = async (fixtureId) => {
 
             // Predictions (optional, kept if needed later or for reference)
             tip: predictionData?.predictions?.advice || "N/A",
-
-            // Detailed Comparison (replaces Trends)
-            comparison: comparison,
 
             homeTeam: {
                 id: matchData.teams.home.id,

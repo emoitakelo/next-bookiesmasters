@@ -6,7 +6,6 @@ import H2HSection from "@/components/fixture-details/H2HSection";
 import LastFiveMatches from "@/components/fixture-details/LastFiveMatches";
 import Events from "@/components/fixture-details/Events";
 import Standings from "@/components/fixture-details/Standings";
-import Comparison from "@/components/fixture-details/Comparison";
 import Odds from "@/components/fixture-details/Odds";
 import TeamDisplay from "@/components/fixture-details/TeamDisplay";
 import LeagueHeader from "@/components/fixture-details/LeagueHeader";
@@ -101,15 +100,6 @@ const FixtureDetailsClient: React.FC<FixtureDetailsClientProps> = ({ data: initi
                 <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
                 {renderContent()}
-
-                {/* Statistical Comparison */}
-                <div className="mt-8">
-                    <Comparison
-                        data={data.comparison}
-                        homeTeamName={data.homeTeam.name}
-                        awayTeamName={data.awayTeam.name}
-                    />
-                </div>
 
             </div>
         </div>
