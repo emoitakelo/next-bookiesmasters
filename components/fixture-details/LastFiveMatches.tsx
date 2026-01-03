@@ -33,7 +33,7 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                         />
                     )}
                     <h4 className="text-sm font-bold text-gray-200 tracking-wide">
-                        <span className="text-teal-400">{teamName}</span>
+                        <span className="text-white">{teamName}</span>
                     </h4>
                 </div>
             </div>

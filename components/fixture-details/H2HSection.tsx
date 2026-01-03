@@ -40,7 +40,7 @@ const H2HSection: React.FC<H2HSectionProps> = ({ h2h }) => {
 
     return (
         <div className="mb-6 max-w-3xl mx-auto bg-[#1F1F1F] p-4 rounded-xl shadow-sm border border-white/5">
-            <h3 className="text-sm font-bold text-center text-gray-200 mb-4 uppercase tracking-wider">Head to Head</h3>
+            <h3 className="text-sm font-bold text-left text-gray-200 mb-4">Head to Head</h3>
             <div className="flex flex-col gap-2">
                 {h2h.slice(0, 5).map((match) => {
                     const matchDate = new Date(match.fixture.date).toLocaleDateString("en-US", {
