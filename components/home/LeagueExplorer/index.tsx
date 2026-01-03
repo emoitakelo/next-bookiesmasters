@@ -5,6 +5,7 @@ import useSWR from "swr";
 import Standings from "@/components/fixture-details/Standings";
 import TopScorers from "./TopScorers";
 import LeagueFixtures from "./LeagueFixtures";
+import Loader from "@/components/Loader";
 
 // Hardcoded Big 6 Leagues
 const LEAGUES = [
@@ -48,7 +49,7 @@ export default function LeagueExplorer() {
 
             {/* League Selector (Tabs) */}
             {/* League Selector (Tabs) */}
-            <div className="flex overflow-x-auto p-3 gap-2 scrollbar-hide mb-4 bg-[#1F1F1F] rounded-xl border border-white/5">
+            <div className="flex overflow-x-auto p-2 gap-2 scrollbar-hide mb-2 bg-[#1F1F1F] rounded-xl border border-white/5">
                 {LEAGUES.map((league) => (
                     <button
                         key={league.id}
@@ -93,32 +94,23 @@ export default function LeagueExplorer() {
             <div className="p-0 min-h-[300px] bg-transparent mt-2">
                 {activeTab === "standings" && (
                     <div className="pt-2">
-                        {standings?.standings ? <Standings standings={standings.standings} /> : <LoadingState />}
+                        {standings?.standings ? <Standings standings={standings.standings} /> : <Loader />}
                     </div>
                 )}
 
                 {activeTab === "topscorers" && (
                     <div className="pt-2">
-                        {scorers?.players ? <TopScorers scorers={scorers.players} /> : <LoadingState />}
+                        {scorers?.players ? <TopScorers scorers={scorers.players} /> : <Loader />}
                     </div>
                 )}
 
                 {activeTab === "fixtures" && (
                     <div className="pt-2">
-                        {fixtures ? <LeagueFixtures fixtures={fixtures} /> : <LoadingState />}
+                        {fixtures ? <LeagueFixtures fixtures={fixtures} /> : <Loader />}
                     </div>
                 )}
             </div>
 
-        </div>
-    );
-}
-
-function LoadingState() {
-    return (
-        <div className="flex flex-col items-center justify-center py-20 gap-4 text-gray-500 animate-pulse">
-            <div className="w-10 h-10 border-4 border-zinc-800 border-t-orange-500 rounded-full animate-spin"></div>
-            <p className="text-xs font-medium tracking-wider">LOADING DATA...</p>
         </div>
     );
 }
