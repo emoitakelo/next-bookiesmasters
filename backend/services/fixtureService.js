@@ -1,14 +1,12 @@
 
-import Fixture from "../models/Fixture.js";
-import Standing from "../models/Standing.js";
-import { calculateTeamForm } from "../helpers/formCalculator.js";
+import { calculateTrends } from "../helpers/trendCalculator.js";
 
 export const getFixtureById = async (fixtureId) => {
     try {
         const fixtureIdNum = Number(fixtureId);
 
         // Find custom Fixture document
-        console.log(`🔎 Querying DB for ID: ${fixtureIdNum}`);
+        // console.log(`🔎 Querying DB for ID: ${fixtureIdNum}`);
         const fixtureDoc = await Fixture.findOne({
             $or: [
                 { fixtureId: fixtureIdNum },
@@ -20,7 +18,6 @@ export const getFixtureById = async (fixtureId) => {
             console.log("❌ DB Query returned null");
             return null;
         }
-        console.log("✅ DB Found doc. Processing...");
 
         const matchData = fixtureDoc.fixture;
         const predictionData = fixtureDoc.prediction; // Embedded prediction
@@ -39,6 +36,15 @@ export const getFixtureById = async (fixtureId) => {
             console.error(`⚠️ Form calculation failed for fixture ${fixtureIdNum}:`, err.message);
             // Continue with empty form data
         }
+
+        // --- NEW: Calculate Trends ---
+        const trends = calculateTrends(
+            homeData.last5Matches,
+            awayData.last5Matches,
+            h2hData,
+            matchData.teams.home.name,
+            matchData.teams.away.name
+        );
 
         // Prepare Response Object matching frontend expectations
         // Logic adapted from prev/helpers/predictionMerger.js
@@ -93,6 +99,9 @@ export const getFixtureById = async (fixtureId) => {
 
             // Predictions (optional, kept if needed later or for reference)
             tip: predictionData?.predictions?.advice || "N/A",
+
+            // Insights / Trends
+            trends: trends,
 
             homeTeam: {
                 id: matchData.teams.home.id,
