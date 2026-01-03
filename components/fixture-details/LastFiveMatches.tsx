@@ -26,12 +26,10 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
             <div className="flex flex-col items-center mb-4 border-b border-white/5 pb-2">
                 <div className="flex items-center justify-center gap-2">
                     {teamLogo && (
-                        <Image
+                        <img
                             src={teamLogo}
                             alt={`${teamName} Logo`}
-                            width={24}
-                            height={24}
-                            className="object-contain"
+                            className="w-6 h-6 object-contain"
                         />
                     )}
                     <h4 className="text-sm font-bold text-gray-200 text-center uppercase tracking-wide">
@@ -52,16 +50,16 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                     return (
                         <div
                             key={i}
-                            className="grid grid-cols-[auto_1fr_auto_1fr] md:grid-cols-4 items-center bg-white/5 border border-transparent p-2 rounded text-xs hover:bg-white/10 transition-colors"
+                            className="grid grid-cols-[auto_1fr_auto_1fr] md:grid-cols-4 items-center bg-white/5 hover:bg-white/10 p-2 rounded text-sm transition-colors border border-transparent hover:border-white/5"
                         >
                             {/* 1️⃣ Date */}
-                            <div className="truncate text-gray-500 text-[10px] md:text-xs mr-2">{matchDate}</div>
+                            <div className="truncate text-gray-500 text-xs mr-2">{matchDate}</div>
 
                             {/* 2️⃣ Home Team */}
-                            <div className="flex items-center justify-end gap-2 pr-3">
-                                <span className="truncate font-medium text-gray-300">{m.homeTeam.name}</span>
+                            <div className="flex items-center justify-end gap-2 pr-3 min-w-0">
+                                <span className="truncate font-medium text-gray-300 text-xs md:text-sm">{m.homeTeam.name}</span>
                                 {m.homeTeam.logo && (
-                                    <img src={m.homeTeam.logo} alt={m.homeTeam.name} className="w-5 h-5 object-contain" />
+                                    <img src={m.homeTeam.logo} alt={m.homeTeam.name} className="w-5 h-5 object-contain flex-shrink-0" />
                                 )}
                             </div>
 
@@ -76,11 +74,11 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                             </div>
 
                             {/* 4️⃣ Away Team */}
-                            <div className="flex items-center justify-start gap-2 pl-3">
+                            <div className="flex items-center justify-start gap-2 pl-3 min-w-0">
                                 {m.awayTeam.logo && (
-                                    <img src={m.awayTeam.logo} alt={m.awayTeam.name} className="w-5 h-5 object-contain" />
+                                    <img src={m.awayTeam.logo} alt={m.awayTeam.name} className="w-5 h-5 object-contain flex-shrink-0" />
                                 )}
-                                <span className="truncate font-medium text-gray-300">{m.awayTeam.name}</span>
+                                <span className="truncate font-medium text-gray-300 text-xs md:text-sm">{m.awayTeam.name}</span>
                             </div>
                         </div>
                     );

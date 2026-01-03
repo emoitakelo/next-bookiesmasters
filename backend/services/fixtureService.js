@@ -83,6 +83,7 @@ export const getFixtureById = async (fixtureId) => {
             fixtureId: matchData.fixture.id,
             league: matchData.league.name,
             leagueLogo: matchData.league.logo,
+            country: matchData.league.country,
             date: matchData.fixture.date,
             displayDate,
             score, // { home: 1, away: 2 } or null
