@@ -15,14 +15,14 @@ interface TabsProps {
 
 const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange }) => {
     return (
-        <div className="flex overflow-x-auto gap-4 border-b border-gray-700/50 mb-6 scrollbar-hide">
+        <div className="flex overflow-x-auto gap-1 border-b border-gray-700/50 mb-2 scrollbar-hide">
             {tabs.map((tab) => (
                 <button
                     key={tab.id}
                     onClick={() => onTabChange(tab.id)}
-                    className={`pb-3 px-2 text-sm font-medium transition-colors whitespace-nowrap relative ${activeTab === tab.id
-                            ? "text-orange-500"
-                            : "text-gray-400 hover:text-gray-200"
+                    className={`pb-1 px-1 text-xs font-medium transition-colors whitespace-nowrap relative ${activeTab === tab.id
+                        ? "text-white"
+                        : "text-gray-400 hover:text-gray-200"
                         }`}
                 >
                     {tab.label}
