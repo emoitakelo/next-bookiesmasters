@@ -11,11 +11,13 @@ interface LeagueDetailsClientProps {
     id: number;
     name: string;
     logo: string;
+    country?: string;
+    embedded?: boolean;
 }
 
 const fetcher = (url: string) => fetch(url).then(res => res.json()).then(json => json.data);
 
-export default function LeagueDetailsClient({ id, name, logo }: LeagueDetailsClientProps) {
+export default function LeagueDetailsClient({ id, name, logo, country, embedded = false }: LeagueDetailsClientProps) {
     const [activeTab, setActiveTab] = useState<"fixtures" | "standings" | "topscorers">("standings");
 
     // Fetch Data based on active tab
@@ -38,29 +40,47 @@ export default function LeagueDetailsClient({ id, name, logo }: LeagueDetailsCli
     );
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-white pb-20">
+        <div className={`text-white ${embedded ? 'min-h-0 pb-0' : 'min-h-screen bg-zinc-950 pb-20'}`}>
 
-            {/* Navbar / Back Button */}
-            <div className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
-                <div className="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
-                    <Link href="/" className="p-2 -ml-2 text-gray-400 hover:text-white transition">
-                        ← Back
-                    </Link>
-                    <div className="font-bold text-sm">League Details</div>
-                    <div className="w-8"></div> {/* Spacer */}
+            {/* Navbar / Back Button (Only if NOT embedded) */}
+            {!embedded && (
+                <div className="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
+                    <div className="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
+                        <Link href="/" className="p-2 -ml-2 text-gray-400 hover:text-white transition">
+                            ← Back
+                        </Link>
+                        <div className="font-bold text-sm">League Details</div>
+                        <div className="w-8"></div> {/* Spacer */}
+                    </div>
                 </div>
-            </div>
+            )}
 
-            <div className="max-w-3xl mx-auto">
+            <div className={embedded ? "w-full" : "max-w-3xl mx-auto"}>
 
                 {/* Header */}
-                <div className="p-6 flex flex-col items-center justify-center gap-4 py-8">
-                    <div className="relative">
-                        <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full"></div>
-                        <img src={logo} alt={name} className="w-20 h-20 object-contain relative z-10 drop-shadow-lg" />
+                {embedded ? (
+                    <div className="flex items-start gap-3 py-4 pl-1">
+                        <div className="relative">
+                            <img src={logo} alt={name} className="w-10 h-10 object-contain relative z-10" />
+                        </div>
+                        <div className="flex flex-col items-start leading-none gap-1">
+                            <h2 className="text-sm font-bold text-gray-200 uppercase tracking-widest">{name}</h2>
+                            {country && (
+                                <span className="text-[10px] font-medium text-gray-500 uppercase">
+                                    {country}
+                                </span>
+                            )}
+                        </div>
                     </div>
-                    <h1 className="text-2xl font-bold text-center">{name}</h1>
-                </div>
+                ) : (
+                    <div className="p-6 flex flex-col items-center justify-center gap-4 py-8">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full"></div>
+                            <img src={logo} alt={name} className="w-20 h-20 object-contain relative z-10 drop-shadow-lg" />
+                        </div>
+                        <h1 className="text-2xl font-bold text-center">{name}</h1>
+                    </div>
+                )}
 
                 {/* Tabs */}
                 <div className="flex border-b border-zinc-800 bg-zinc-900/30 sticky top-14 z-40 backdrop-blur-md">
@@ -73,8 +93,8 @@ export default function LeagueDetailsClient({ id, name, logo }: LeagueDetailsCli
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={`flex-1 py-4 text-sm font-medium transition-colors relative ${activeTab === tab.id
-                                    ? "text-orange-400"
-                                    : "text-gray-500 hover:text-gray-300"
+                                ? "text-orange-400"
+                                : "text-gray-500 hover:text-gray-300"
                                 }`}
                         >
                             {tab.label}
