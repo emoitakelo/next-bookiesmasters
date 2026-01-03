@@ -32,7 +32,7 @@ interface OddsProps {
 const Odds: React.FC<OddsProps> = ({ odds }) => {
     if (!odds || odds.length === 0) {
         return (
-            <div className="text-center p-8 text-gray-500 bg-[#1e1e1e] rounded-lg border border-[#2a2a2a]">
+            <div className="text-center p-8 text-gray-500 bg-[#1F1F1F] rounded-xl border border-white/5">
                 <p className="text-sm">No markets available</p>
                 <div className="mt-4">
                     <AffiliateButton bookmakerName="Bet365" link="https://www.bet365.com/" />
@@ -60,7 +60,7 @@ const Odds: React.FC<OddsProps> = ({ odds }) => {
             />
 
             {bookmakerData.markets.map((market) => (
-                <div key={market.id} className="bg-[#1e1e1e] rounded-lg overflow-hidden border border-[#2a2a2a]">
+                <div key={market.id} className="bg-[#1F1F1F] rounded-xl overflow-hidden border border-white/5">
                     <div className="bg-[#252525] px-4 py-2.5 border-b border-[#333]">
                         <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wide">
                             {market.name}

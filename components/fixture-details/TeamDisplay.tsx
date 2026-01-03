@@ -29,6 +29,10 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
     venue,
     score,
 }) => {
+    // Check if match is live/active to apply red color
+    const isLive = ["1H", "HT", "2H", "ET", "BT", "P", "LIVE"].includes(status);
+    const isFinished = ["FT", "AET", "PEN"].includes(status);
+
     const renderFormBars = (forms: { result: string; color: string }[]) => {
         if (!forms || !Array.isArray(forms) || forms.length === 0) return null;
 
@@ -37,7 +41,7 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                 {forms.map((m, idx) => (
                     <span
                         key={idx}
-                        className="px-1 py-1 rounded text-white text-xs font-bold w-5 h-5 flex items-center justify-center"
+                        className="rounded-sm text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center"
                         style={{ backgroundColor: m.color }}
                     >
                         {m.result}
@@ -48,15 +52,13 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
     };
 
     return (
-        <div className="flex flex-col items-center mb-8 text-gray-800 bg-white p-4 rounded-lg shadow-sm">
-            <h2 className="text-lg sm:text-xl font-semibold mb-6 text-center text-gray-700">
-                {homeTeam?.name} vs {awayTeam?.name}
-            </h2>
+        <div className="flex flex-col items-center mb-6 text-white bg-[#1F1F1F] p-4 rounded-xl shadow-sm border border-white/5">
+            {/* League/Header info is usually above this component, so we just show teams here */}
 
-            <div className="grid grid-cols-3 items-center gap-4 sm:gap-6 max-w-2xl w-full">
+            <div className="grid grid-cols-3 items-center gap-2 sm:gap-4 max-w-lg w-full">
                 {/* Home */}
                 <div className="flex flex-col items-center">
-                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 mb-2">
+                    <div className="relative w-12 h-12 sm:w-16 sm:h-16 mb-2">
                         <Image
                             src={homeTeam?.logo}
                             alt={homeTeam?.name}
@@ -65,32 +67,36 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                             unoptimized
                         />
                     </div>
-                    <span className="font-bold text-center text-sm md:text-base">{homeTeam.name}</span>
+                    <span className="font-bold text-center text-xs sm:text-sm text-gray-200 leading-tight">
+                        {homeTeam.name}
+                    </span>
                     {homeTeam.form && renderFormBars(homeTeam.form)}
                 </div>
 
-                {/* Center */}
+                {/* Center - Score/Time */}
                 <div className="flex flex-col items-center justify-center text-center">
-                    {/* 🔥 LIVE SCORE DISPLAY */}
                     {score ? (
                         <div className="flex flex-col items-center">
-                            <div className="text-3xl font-bold tracking-widest text-white px-4 py-1 bg-gray-800 rounded-lg">
+                            {/* Score */}
+                            <div className={`text-2xl sm:text-3xl font-bold tracking-wider ${isLive ? "text-red-500" : "text-white"}`}>
                                 {score.home} - {score.away}
                             </div>
-                            <div className="text-sm font-semibold text-green-500 mt-2 animate-pulse">
-                                {status === "FT" ? "Full Time" : displayDate}
+
+                            {/* Status / Date */}
+                            <div className={`text-xs font-bold mt-1 ${isLive ? "text-red-500 animate-pulse" : "text-gray-400"}`}>
+                                {isFinished ? "Full Time" : displayDate}
                             </div>
                         </div>
                     ) : (
-                        <div className="text-sm sm:text-lg font-bold text-gray-600 mb-2">
-                            {status === "FT" ? "Full Time" : displayDate}
+                        <div className="text-sm font-bold text-gray-400">
+                            {displayDate}
                         </div>
                     )}
                 </div>
 
                 {/* Away */}
                 <div className="flex flex-col items-center">
-                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 mb-2">
+                    <div className="relative w-12 h-12 sm:w-16 sm:h-16 mb-2">
                         <Image
                             src={awayTeam?.logo}
                             alt={awayTeam?.name}
@@ -99,13 +105,15 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                             unoptimized
                         />
                     </div>
-                    <span className="font-bold text-center text-sm md:text-base">{awayTeam.name}</span>
+                    <span className="font-bold text-center text-xs sm:text-sm text-gray-200 leading-tight">
+                        {awayTeam.name}
+                    </span>
                     {awayTeam.form && renderFormBars(awayTeam.form)}
                 </div>
             </div>
 
             {venue && (
-                <p className="mt-6 text-gray-500 text-sm text-center italic border-t pt-2 w-full max-w-md">
+                <p className="mt-4 text-gray-500 text-[10px] sm:text-xs text-center border-t border-white/10 pt-2 w-full max-w-xs">
                     🏟 {venue}
                 </p>
             )}

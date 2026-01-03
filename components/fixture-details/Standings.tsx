@@ -26,7 +26,7 @@ interface StandingsProps {
 const Standings: React.FC<StandingsProps> = ({ standings }) => {
     if (!standings || standings.length === 0) {
         return (
-            <div className="text-center p-4 text-gray-400 bg-zinc-900 rounded-lg">
+            <div className="text-center p-4 text-gray-400 bg-[#1F1F1F] rounded-lg">
                 No standings available
             </div>
         );
@@ -35,7 +35,7 @@ const Standings: React.FC<StandingsProps> = ({ standings }) => {
     return (
         <div className="space-y-6">
             {standings.map((group, groupIndex) => (
-                <div key={groupIndex} className="bg-zinc-900 rounded-lg p-4">
+                <div key={groupIndex} className="bg-[#1F1F1F] rounded-xl border border-white/5 p-4">
                     {/* Only show group name if there are multiple groups (e.g. AFCON) */}
                     {standings.length > 1 && (
                         <h3 className="text-gray-200 font-semibold mb-3 px-2">
@@ -46,7 +46,7 @@ const Standings: React.FC<StandingsProps> = ({ standings }) => {
                     <div className="overflow-x-auto">
                         <table className="w-full text-xs text-left">
                             <thead>
-                                <tr className="text-gray-400 border-b border-zinc-800">
+                                <tr className="text-gray-400 border-b border-white/5">
                                     <th className="py-2 px-2 w-8">#</th>
                                     <th className="py-2 px-2">Team</th>
                                     <th className="py-2 px-2 text-center">MP</th>
@@ -60,12 +60,12 @@ const Standings: React.FC<StandingsProps> = ({ standings }) => {
                             </thead>
                             <tbody>
                                 {group.map((team) => (
-                                    <tr key={team.team.id} className="border-b border-zinc-800 last:border-0 hover:bg-zinc-800/50">
+                                    <tr key={team.team.id} className="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
                                         <td className="py-3 px-2">
                                             <span
                                                 className={`flex items-center justify-center w-6 h-6 rounded-full font-medium ${team.rank <= 4 ? 'bg-blue-600/20 text-blue-400' :
-                                                        team.rank >= group.length - 2 ? 'bg-red-600/20 text-red-400' :
-                                                            'text-gray-400'
+                                                    team.rank >= group.length - 2 ? 'bg-red-600/20 text-red-400' :
+                                                        'text-gray-400'
                                                     }`}
                                             >
                                                 {team.rank}
@@ -88,7 +88,7 @@ const Standings: React.FC<StandingsProps> = ({ standings }) => {
                                         <td className="py-3 px-2 text-center text-gray-400">{team.all.draw}</td>
                                         <td className="py-3 px-2 text-center text-gray-400">{team.all.lose}</td>
                                         <td className={`py-3 px-2 text-center font-medium ${team.goalsDiff > 0 ? 'text-green-400' :
-                                                team.goalsDiff < 0 ? 'text-red-400' : 'text-gray-400'
+                                            team.goalsDiff < 0 ? 'text-red-400' : 'text-gray-400'
                                             }`}>
                                             {team.goalsDiff > 0 ? `+${team.goalsDiff}` : team.goalsDiff}
                                         </td>
@@ -99,8 +99,8 @@ const Standings: React.FC<StandingsProps> = ({ standings }) => {
                                                     <span
                                                         key={i}
                                                         className={`w-1.5 h-1.5 rounded-full ${result === 'W' ? 'bg-green-500' :
-                                                                result === 'D' ? 'bg-orange-500' :
-                                                                    'bg-red-500'
+                                                            result === 'D' ? 'bg-orange-500' :
+                                                                'bg-red-500'
                                                             }`}
                                                     />
                                                 ))}

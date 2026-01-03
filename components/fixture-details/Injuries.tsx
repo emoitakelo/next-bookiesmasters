@@ -58,7 +58,7 @@ export default function Injuries({ injuries }: InjuriesProps) {
                 const teamLogo = teamInjuries[0].team.logo;
 
                 return (
-                    <div key={teamName} className="bg-[#1a1a1a] rounded-xl p-4 border border-[#333]">
+                    <div key={teamName} className="bg-[#1F1F1F] rounded-xl p-4 border border-white/5">
                         <div className="flex items-center gap-3 mb-4 pb-2 border-b border-[#333]">
                             <img src={teamLogo} alt={teamName} className="w-8 h-8 object-contain" />
                             <h3 className="font-bold text-lg text-white">{teamName}</h3>

@@ -23,8 +23,8 @@ interface StatisticsProps {
 export default function Statistics({ stats }: StatisticsProps) {
     if (!stats || stats.length < 2) {
         return (
-            <div className="p-8 text-center text-gray-500 bg-white rounded-lg shadow-sm">
-                <p>No statistics available yet.</p>
+            <div className="p-4 text-center text-gray-500 bg-[#1F1F1F] rounded-lg shadow-sm border border-white/5">
+                <p className="text-xs">No statistics available yet.</p>
             </div>
         );
     }
@@ -54,23 +54,23 @@ export default function Statistics({ stats }: StatisticsProps) {
     ];
 
     return (
-        <div className="bg-white rounded-lg shadow-sm p-4 max-w-2xl mx-auto">
+        <div className="bg-[#1F1F1F] rounded-xl shadow-sm p-4 max-w-2xl mx-auto border border-white/5">
 
             {/* Header / Team Logos */}
-            <div className="flex justify-between items-center mb-6 px-4">
-                <div className="flex flex-col items-center w-20">
-                    <img src={home.team.logo} alt={home.team.name} className="w-10 h-10 mb-2" />
-                    <span className="text-xs font-bold text-center truncate w-full">{home.team.name}</span>
+            <div className="flex justify-between items-center mb-4 px-2">
+                <div className="flex flex-col items-center w-16">
+                    <img src={home.team.logo} alt={home.team.name} className="w-8 h-8 mb-1" />
+                    <span className="text-[10px] font-bold text-center truncate w-full text-gray-300">{home.team.name}</span>
                 </div>
-                <div className="text-gray-400 font-bold text-sm">VS</div>
-                <div className="flex flex-col items-center w-20">
-                    <img src={away.team.logo} alt={away.team.name} className="w-10 h-10 mb-2" />
-                    <span className="text-xs font-bold text-center truncate w-full">{away.team.name}</span>
+                <div className="text-gray-600 font-bold text-xs">VS</div>
+                <div className="flex flex-col items-center w-16">
+                    <img src={away.team.logo} alt={away.team.name} className="w-8 h-8 mb-1" />
+                    <span className="text-[10px] font-bold text-center truncate w-full text-gray-300">{away.team.name}</span>
                 </div>
             </div>
 
             {/* Stats List */}
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {statTypes.map((type) => {
                     // Extract raw values
                     const val1Raw = getVal(home, type);
@@ -88,20 +88,20 @@ export default function Statistics({ stats }: StatisticsProps) {
                     return (
                         <div key={type} className="flex flex-col gap-1">
                             {/* Values & Label */}
-                            <div className="flex justify-between text-xs font-semibold text-gray-700 px-1">
+                            <div className="flex justify-between text-[11px] font-semibold text-gray-300 px-1">
                                 <span>{val1Raw}</span>
                                 <span className="text-gray-500 font-normal">{type}</span>
                                 <span>{val2Raw}</span>
                             </div>
 
                             {/* Bars */}
-                            <div className="flex h-2 w-full rounded-full overflow-hidden bg-gray-100">
+                            <div className="flex h-1.5 w-full rounded-full overflow-hidden bg-gray-800">
                                 <div
-                                    className={`h-full ${val1Num > val2Num ? 'bg-blue-600' : 'bg-blue-300'}`}
+                                    className={`h-full ${val1Num > val2Num ? 'bg-blue-500' : 'bg-blue-900/40'}`}
                                     style={{ width: `${pct1}%` }}
                                 />
                                 <div
-                                    className={`h-full ${val2Num > val1Num ? 'bg-red-600' : 'bg-red-300'}`}
+                                    className={`h-full ${val2Num > val1Num ? 'bg-red-500' : 'bg-red-900/40'}`}
                                     style={{ width: `${pct2}%` }}
                                 />
                             </div>
