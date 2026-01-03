@@ -1,5 +1,5 @@
 
-import { calculateTrends } from "../helpers/trendCalculator.js";
+import { calculateComparisonStats } from "../helpers/trendCalculator.js";
 
 export const getFixtureById = async (fixtureId) => {
     try {
@@ -37,13 +37,12 @@ export const getFixtureById = async (fixtureId) => {
             // Continue with empty form data
         }
 
-        // --- NEW: Calculate Trends ---
-        const trends = calculateTrends(
+        // --- NEW: Calculate Comparison Stats ---
+        const comparison = calculateComparisonStats(
             homeData.last5Matches,
+            matchData.teams.home.id,
             awayData.last5Matches,
-            h2hData,
-            matchData.teams.home.name,
-            matchData.teams.away.name
+            matchData.teams.away.id
         );
 
         // Prepare Response Object matching frontend expectations
