@@ -47,18 +47,19 @@ export default function LeagueExplorer() {
         <div className="w-full max-w-4xl mx-auto mt-6 bg-transparent">
 
             {/* League Selector (Tabs) */}
-            <div className="flex overflow-x-auto p-2 gap-2 scrollbar-hide mb-4">
+            {/* League Selector (Tabs) */}
+            <div className="flex overflow-x-auto p-3 gap-2 scrollbar-hide mb-4 bg-[#1F1F1F] rounded-xl border border-white/5">
                 {LEAGUES.map((league) => (
                     <button
                         key={league.id}
                         onClick={() => setActiveLeague(league.id)}
-                        className={`flex flex-col items-center gap-1.5 min-w-[60px] p-2 rounded-xl transition-all border ${activeLeague === league.id
-                            ? "bg-[#1F1F1F] border-white/5 shadow-sm scale-105"
-                            : "hover:bg-[#1F1F1F]/50 border-transparent opacity-60 hover:opacity-100"
+                        className={`flex flex-col items-center gap-1.5 min-w-[70px] p-2 rounded-lg transition-all ${activeLeague === league.id
+                            ? "opacity-100"
+                            : "opacity-50 hover:opacity-100"
                             }`}
                     >
-                        <img src={league.logo} alt={league.name} className="w-6 h-6 object-contain" />
-                        <span className={`text-xs font-medium whitespace-nowrap ${activeLeague === league.id ? 'text-white' : 'text-gray-500'}`}>
+                        <img src={league.logo} alt={league.name} className="w-8 h-8 object-contain" />
+                        <span className={`text-[10px] font-bold text-center leading-tight ${activeLeague === league.id ? 'text-gray-200' : 'text-gray-500'}`}>
                             {league.name}
                         </span>
                     </button>
@@ -76,7 +77,7 @@ export default function LeagueExplorer() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={`flex-1 py-3 text-xs font-medium transition-colors relative ${activeTab === tab.id
-                            ? "text-white bg-white/5"
+                            ? "text-gray-200 bg-white/5"
                             : "text-gray-400 hover:text-gray-300 hover:bg-white/5"
                             }`}
                     >

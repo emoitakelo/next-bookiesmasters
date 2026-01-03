@@ -59,7 +59,7 @@ const TopScorers: React.FC<TopScorersProps> = ({ scorers }) => {
                             </div>
 
                             <div>
-                                <p className="font-bold text-white text-xs">{scorer.player.name}</p>
+                                <p className="font-bold text-gray-200 text-xs">{scorer.player.name}</p>
                                 <p className="text-[10px] text-gray-400">{scorer.team.name}</p>
                             </div>
                         </div>

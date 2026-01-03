@@ -78,7 +78,7 @@ const TeamDisplay: React.FC<TeamDisplayProps> = ({
                     {score ? (
                         <div className="flex flex-col items-center">
                             {/* Score */}
-                            <div className={`text-2xl sm:text-3xl font-bold tracking-wider ${isLive ? "text-red-500" : "text-white"}`}>
+                            <div className={`text-2xl sm:text-3xl font-bold tracking-wider ${isLive ? "text-red-500" : "text-gray-200"}`}>
                                 {score.home} - {score.away}
                             </div>
 

@@ -145,7 +145,7 @@ export default function FixtureCard({
 
         {/* SCORE */}
         <div
-          className={`text-right font-bold text-xs flex flex-col justify-center items-center w-[35px] sm:w-[45px] gap-1 ${isLive ? "text-red-500" : "text-white"
+          className={`text-right font-bold text-xs flex flex-col justify-center items-center w-[35px] sm:w-[45px] gap-1 ${isLive ? "text-red-500" : "text-gray-200"
             }`}
         >
           {score ? (
