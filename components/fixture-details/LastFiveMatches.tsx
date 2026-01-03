@@ -23,8 +23,8 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
     return (
         <div className="mb-6 max-w-3xl mx-auto bg-[#1F1F1F] p-4 rounded-xl shadow-sm border border-white/5">
             {/* 🏆 Title + Team Logo centered */}
-            <div className="flex flex-col items-center mb-4 border-b border-white/5 pb-2">
-                <div className="flex items-center justify-center gap-2">
+            <div className="flex flex-col items-start mb-4 border-b border-white/5 pb-2">
+                <div className="flex items-center justify-start gap-2">
                     {teamLogo && (
                         <img
                             src={teamLogo}
@@ -32,7 +32,7 @@ const LastFiveMatches: React.FC<LastFiveMatchesProps> = ({ teamLogo, teamName, m
                             className="w-6 h-6 object-contain"
                         />
                     )}
-                    <h4 className="text-sm font-bold text-gray-200 text-center uppercase tracking-wide">
+                    <h4 className="text-sm font-bold text-gray-200 tracking-wide">
                         <span className="text-teal-400">{teamName}</span>
                     </h4>
                 </div>
