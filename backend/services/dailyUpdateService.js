@@ -174,7 +174,19 @@ export async function updateDailyFixtures() {
       // 4️⃣ injuries (Weekly Forecast)
       const injuryReport = await fetchInjuries(fixtureId);
 
-      // 5️⃣ save/update in Mongo
+      // 5️⃣ PRESERVE DATA LOGIC
+      // Check if we already have this fixture and if it has valid events
+      const existingDoc = await Fixture.findOne({ fixtureId: fixtureId }).lean();
+
+      if (existingDoc && existingDoc.fixture && existingDoc.fixture.events && existingDoc.fixture.events.length > 0) {
+        // If the NEW data 'f' has no events (or empty), keep the OLD events
+        if (!f.events || f.events.length === 0) {
+          console.log(`🛡️ Preserving ${existingDoc.fixture.events.length} existing events for fixture ${fixtureId}`);
+          f.events = existingDoc.fixture.events;
+        }
+      }
+
+      // 6️⃣ save/update in Mongo
       await Fixture.findOneAndUpdate(
         { fixtureId: fixtureId },
         {
