@@ -19,11 +19,11 @@ const LeagueHeader: React.FC<LeagueHeaderProps> = ({ league, logo, country }) =>
                 />
             )}
             <div className="flex flex-col items-start leading-none gap-0.5">
-                <span className="text-xs font-bold text-gray-200 uppercase tracking-widest">
+                <span className="text-xs font-bold text-gray-200 tracking-widest">
                     {league}
                 </span>
                 {country && (
-                    <span className="text-[10px] font-medium text-gray-500 uppercase">
+                    <span className="text-[10px] font-medium text-gray-500">
                         {country}
                     </span>
                 )}

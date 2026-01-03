@@ -45,7 +45,7 @@ export default function LeagueExplorer() {
     );
 
     return (
-        <div className="w-full max-w-4xl mx-auto mt-6 bg-transparent">
+        <div className="w-full max-w-xl mx-auto mt-6 bg-transparent">
 
             {/* League Selector (Tabs) */}
             {/* League Selector (Tabs) */}
